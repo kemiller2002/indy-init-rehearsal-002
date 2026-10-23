@@ -74,9 +74,15 @@ jobs:
           CAUSA_BUILD_COMMIT: ${{ github.sha }}
       - name: Zero demonstration data in source and production assets (EXT-DATA-001)
         run: node scripts/check-no-demo-data.mjs
+      # The runner image already carries Chromium's system libraries (it ships Google Chrome); `--with-deps` ran
+      # apt-get and timed out twice. Only the pinned Playwright browser build is fetched, and cached by version.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.64.1
       - name: Install Chromium for Playwright
         timeout-minutes: 8
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Browser acceptance (startup, a11y, responsive, color, MOCKED UI states)
         run: npx playwright test
       - uses: actions/upload-artifact@v4
@@ -129,9 +135,15 @@ jobs:
             sleep 10
           done
           echo "::error::Pages serves ${served:-nothing}, expected $GITHUB_SHA"; exit 1
+      # The runner image already carries Chromium's system libraries (it ships Google Chrome); `--with-deps` ran
+      # apt-get and timed out twice. Only the pinned Playwright browser build is fetched, and cached by version.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.64.1
       - name: Install Chromium for Playwright
         timeout-minutes: 8
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Browser acceptance against the deployed site
         run: npx playwright test
         env:

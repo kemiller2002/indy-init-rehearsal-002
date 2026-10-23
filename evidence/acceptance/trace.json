@@ -1,0 +1,808 @@
+{
+  "UI-001": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/View.fs",
+      "src/kernel/index.html"
+    ],
+    "tests": [
+      "tests/browser/data.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-002": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "P1 interactive causal graph not built in this run (cut per ADRP-012)."
+  },
+  "UI-003": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/browser/investigation.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-004": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/CommandForms.fs",
+      "src/engine/Capabilities.fs"
+    ],
+    "tests": [
+      "tests/browser/write.spec.js",
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-005": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/browser/investigation.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-006": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/Shell.fs",
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/browser/write.spec.js",
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-007": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "P1: timeline category filter and dashboard sort exist; full-text search not built."
+  },
+  "UI-008": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "P1 hypothesis comparison not built."
+  },
+  "UI-009": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/investigation.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "P1: Folio print report built and tested (print media); export formats not built, so the requirement is not claimed."
+  },
+  "UI-010": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/main.js",
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js",
+      "tests/browser/data.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-011": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/keyboard.spec.js",
+      "tests/browser/a11y.spec.js",
+      "tests/browser/responsive.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-012": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "P1 first-run guidance beyond the empty-state text not built."
+  },
+  "UI-013": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/browser/investigation.spec.js",
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-014": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/app.css",
+      "brands/causa.brand.json"
+    ],
+    "tests": [
+      "tests/browser/color.spec.js",
+      "tests/browser/responsive.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-015": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tools/ledger/ledger.py"
+    ],
+    "evidence_paths": [
+      "evidence/acceptance/ledger.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "UI-016": {
+    "owner": "ui",
+    "implementation_paths": [
+      "brands/causa.brand.json"
+    ],
+    "tests": [
+      "tests/browser/color.spec.js"
+    ],
+    "evidence_paths": [
+      "src/kernel/brands/causa.css"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-001": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "scripts/check-no-demo-data.mjs",
+      "tests/browser/data.spec.js",
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-002": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/data.spec.js",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-003": {
+    "owner": "engine",
+    "implementation_paths": [
+      "src/engine/Shell.fs"
+    ],
+    "tests": [
+      "tests/browser/data.spec.js",
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-004": {
+    "owner": "engine",
+    "implementation_paths": [
+      "src/engine/Shell.fs",
+      "src/kernel/index.html"
+    ],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [
+      "docs/decisions/DC-003.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-005": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "BLOCKED",
+    "reason": "Mocked provider tests pass; awaiting the live real-GitHub run on the candidate SHA."
+  },
+  "EXT-DATA-006": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "BLOCKED",
+    "reason": "Mocked: atomic commit, force:false, read-back verified; live run pending."
+  },
+  "EXT-DATA-007": {
+    "owner": "engine",
+    "implementation_paths": [
+      "src/engine/View.fs"
+    ],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/browser/data.spec.js",
+      "tests/browser/write.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-008": {
+    "owner": "engine",
+    "implementation_paths": [
+      "src/engine/Shell.fs",
+      "src/domain"
+    ],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/Causa.Conformance.Tests"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-009": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "scripts/check-no-demo-data.mjs",
+      ".github/workflows/build-and-test.yml"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-010": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/verification-report.md"
+    ],
+    "status": "PASS",
+    "reason": "R001 read only; never pushed."
+  },
+  "EXT-DATA-011": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/Causa.Conformance.Tests"
+    ],
+    "evidence_paths": [
+      "evidence/stack/logs/causa-data-gate.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "EXT-DATA-012": {
+    "owner": "engine",
+    "implementation_paths": [
+      "src/engine/GitHub.fs"
+    ],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-001": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/index.html"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-002": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/causa-icon.svg"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-003": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/main.js"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-004": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/main.js"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-005": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/main.js"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-006": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/boot.spec.js",
+      "tests/browser/responsive.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-007": {
+    "owner": "ui",
+    "implementation_paths": [
+      "src/kernel/causa-icon.svg"
+    ],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "WASM-LOAD-008": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/boot.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-001": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/architecture/ARCHITECTURE.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-002": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/decisions/DC-002.md",
+      "docs/decisions/DC-003.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-003": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/decisions/DC-001.md",
+      "docs/decisions/DC-002.md",
+      "docs/decisions/DC-003.md",
+      "docs/decisions/DC-004.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-004": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [
+      "docs/decisions/DC-004.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-005": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [],
+    "status": "BLOCKED",
+    "reason": "Independent closure review of DC-002..DC-004 in progress."
+  },
+  "DCC-006": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      ".github/workflows/praxis-validation.yml"
+    ],
+    "evidence_paths": [
+      "evidence/quality/dokimos-snapshot.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-007": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-008": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      ".github/workflows/build-and-test.yml"
+    ],
+    "evidence_paths": [],
+    "status": "BLOCKED",
+    "reason": "Deployed identity check exists; no deployment yet (main branch not created)."
+  },
+  "DCC-009": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/browser/"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": "No test skipped, disabled or weakened; changed expectations are documented in DC-003 and F8."
+  },
+  "DCC-010": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-011": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DCC-012": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/architecture/ARCHITECTURE.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-001": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "conditor.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-002": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/architecture/VIEW-CONTRACT.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-003": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/responsive.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-004": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs"
+    ],
+    "evidence_paths": [
+      "docs/architecture/VIEW-CONTRACT.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-005": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/App.Engine.Tests/EngineTests.fs",
+      "tests/live/live-acceptance.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "BLOCKED",
+    "reason": "Live persistence run pending."
+  },
+  "ADRP-006": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/stack-lock.json",
+      "evidence/stack/verification-report.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-007": {
+    "owner": "engine",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/investigation.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": "Timeline deterministic (ordered by version); graph not built (P1)."
+  },
+  "ADRP-008": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/architecture/ARCHITECTURE.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-009": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "docs/decisions/DC-002.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-010": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      ".github/workflows/build-and-test.yml"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-011": {
+    "owner": "ui",
+    "implementation_paths": [],
+    "tests": [
+      "tests/browser/data.spec.js",
+      "tests/browser/write.spec.js"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-012": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-013": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-014": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tools/ledger/ledger.py"
+    ],
+    "evidence_paths": [
+      "evidence/acceptance/ledger.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-015": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/acceptance/run.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "ADRP-016": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [],
+    "status": "NOT_RUN",
+    "reason": "Competition compliance not assessed in this run."
+  },
+  "DEP-CURRENT-001": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tools/stack/discover_stack.py"
+    ],
+    "evidence_paths": [
+      "evidence/stack/release-inventory.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-002": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/verification-report.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-003": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/compatibility-matrix.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-004": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/verification-report.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-005": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/compatibility-matrix.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-006": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tools/stack/check_lock.py"
+    ],
+    "evidence_paths": [
+      "evidence/stack/stack-lock.json"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-007": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [],
+    "evidence_paths": [
+      "evidence/stack/verification-report.md"
+    ],
+    "status": "PASS",
+    "reason": ""
+  },
+  "DEP-CURRENT-008": {
+    "owner": "lead",
+    "implementation_paths": [],
+    "tests": [
+      "tools/stack/check_lock.py",
+      ".github/workflows/build-and-test.yml"
+    ],
+    "evidence_paths": [],
+    "status": "PASS",
+    "reason": ""
+  }
+}

@@ -117,11 +117,10 @@ module View =
                 | InFlight(w, stage) ->
                     let step =
                         match stage with
-                        | CreatingBlobs | CreatingTree | CreatingCommit -> "Preparing one atomic commit"
-                        | UpdatingRef -> "Updating the branch (fast-forward only)"
+                        | Committing -> "Publishing one atomic commit (only if the branch is unchanged)"
                         | ReloadingRef | ReloadingCommit | ReloadingTree -> "The branch moved; checking whether this investigation changed"
                         | Reconciling -> "Confirming whether GitHub received the update"
-                        | VerifyingRef | VerifyingCommit | VerifyingTree | VerifyingBlobs -> "Verifying by reading the commit back"
+                        | VerifyingCommit | VerifyingTree | VerifyingBlobs -> "Verifying by reading the commit back"
                     "syncing", "Saving to GitHub…", w.Description + ": " + step + ". Shown locally; not yet confirmed.", Attention, true
                 | Held(w, hold) ->
                     match hold with

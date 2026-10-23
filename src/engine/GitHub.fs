@@ -124,55 +124,45 @@ module GitHub =
     let getBlob t (sha: string) = get (repo t + "/git/blobs/" + sha)
     let compare t (baseSha: string) (headSha: string) = get (repo t + "/compare/" + baseSha + "..." + headSha)
 
-    let createBlob t (bytes: byte[]) =
+    /// The one publication request: GitHub's GraphQL createCommitOnBranch creates the commit and moves the branch in
+    /// one atomic step, and refuses unless the branch still names `expectedHead` (the commit the decision was made
+    /// against). REST cannot express that guard: its non-forced ref update still fast-forwards from an older, reset
+    /// head (DC-005, closure review 6).
+    let commitOnBranch (t: Target) (expectedHead: string) (headline: string) (body: string) (files: (string * byte[]) list) =
+        let mutation =
+            "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }"
         { Method = "POST"
-          Path = repo t + "/git/blobs"
-          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("content", Convert.ToBase64String bytes); w.WriteString("encoding", "base64"); w.WriteEndObject()))
-          Fresh = false }
-
-    let createTree t (baseTree: string) (entries: (string * string) list) =
-        { Method = "POST"
-          Path = repo t + "/git/trees"
+          Path = "/graphql"
           Body =
             Some(
                 json (fun w ->
                     w.WriteStartObject()
-                    w.WriteString("base_tree", baseTree)
-                    w.WriteStartArray "tree"
-                    entries
-                    |> List.iter (fun (path, sha) ->
+                    w.WriteString("query", mutation)
+                    w.WriteStartObject "variables"
+                    w.WriteStartObject "input"
+                    w.WriteStartObject "branch"
+                    w.WriteString("repositoryNameWithOwner", t.Owner + "/" + t.Repo)
+                    w.WriteString("branchName", t.Branch)
+                    w.WriteEndObject()
+                    w.WriteString("expectedHeadOid", expectedHead)
+                    w.WriteStartObject "message"
+                    w.WriteString("headline", headline)
+                    w.WriteString("body", body)
+                    w.WriteEndObject()
+                    w.WriteStartObject "fileChanges"
+                    w.WriteStartArray "additions"
+                    files
+                    |> List.iter (fun (path, bytes) ->
                         w.WriteStartObject()
                         w.WriteString("path", path)
-                        w.WriteString("mode", "100644")
-                        w.WriteString("type", "blob")
-                        w.WriteString("sha", sha)
+                        w.WriteString("contents", Convert.ToBase64String bytes)
                         w.WriteEndObject())
                     w.WriteEndArray()
+                    w.WriteEndObject()
+                    w.WriteEndObject()
+                    w.WriteEndObject()
                     w.WriteEndObject())
             )
-          Fresh = false }
-
-    let createCommit t (message: string) (tree: string) (parent: string) =
-        { Method = "POST"
-          Path = repo t + "/git/commits"
-          Body =
-            Some(
-                json (fun w ->
-                    w.WriteStartObject()
-                    w.WriteString("message", message)
-                    w.WriteString("tree", tree)
-                    w.WriteStartArray "parents"
-                    w.WriteStringValue parent
-                    w.WriteEndArray()
-                    w.WriteEndObject())
-            )
-          Fresh = false }
-
-    /// A non-forced ref update: GitHub refuses anything but a fast-forward (CONTRACT §9.4.2).
-    let updateRef t (sha: string) =
-        { Method = "PATCH"
-          Path = repo t + "/git/refs/heads/" + refPath t
-          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("sha", sha); w.WriteBoolean("force", false); w.WriteEndObject()))
           Fresh = false }
 
     // ------------------------------------------------------------------------------------------------------------
@@ -236,7 +226,31 @@ module GitHub =
     let parseCommitTree body =
         parse body (fun e -> prop "tree" e |> Option.bind (sha "sha")) "commit"
 
-    let parseCreatedSha body = parse body (sha "sha") "created object"
+    /// The answer to createCommitOnBranch. GraphQL reports refusals as `errors` in a 200 answer: a branch that no
+    /// longer names the expected head is the non-fast-forward case; permission and missing-object errors keep their
+    /// meaning; anything else is a rejection.
+    let parseCommitOnBranch (body: string) : Result<string, ProviderFailure> =
+        try
+            use doc = JsonDocument.Parse body
+            let root = doc.RootElement
+            let oid =
+                prop "data" root
+                |> Option.bind (prop "createCommitOnBranch")
+                |> Option.bind (prop "commit")
+                |> Option.bind (sha "oid")
+            match oid, prop "errors" root with
+            | Some c, None -> Ok c
+            | _, Some errors when errors.ValueKind = JsonValueKind.Array && errors.GetArrayLength() > 0 ->
+                let first = errors[0]
+                let kind = str "type" first |> Option.defaultValue ""
+                let text = str "message" first |> Option.defaultValue ""
+                if kind = "STALE_DATA" || text.Contains("Expected branch to point to", StringComparison.Ordinal) then Error NotFastForward
+                elif kind = "RATE_LIMITED" then Error(Forbidden true)
+                elif kind = "FORBIDDEN" then Error(Forbidden(text.Contains("rate limit", StringComparison.OrdinalIgnoreCase)))
+                elif kind = "NOT_FOUND" then Error NotFound
+                else Error(Rejected(200L, if text = "" then "GraphQL error" else text))
+            | _ -> Error(Malformed "commit on branch")
+        with _ -> Error(Malformed "commit on branch")
 
     /// The compare API's relation of head to base: "identical" or "ahead" means base is in head's history.
     let parseCompareStatus body = parse body (str "status") "comparison"
@@ -297,7 +311,7 @@ module GitHub =
         | Forbidden true -> "GitHub refused the request because the rate limit was reached. Wait and retry."
         | Forbidden false -> "The credential is not permitted to perform this operation on this repository."
         | NotFound -> "The repository, branch or object was not found, or the credential cannot see it."
-        | NotFastForward -> "The branch moved since it was read; the update was not a fast-forward."
+        | NotFastForward -> "The branch moved since it was read; GitHub applied nothing."
         | Rejected(status, _) -> "GitHub rejected the request (HTTP " + string status + ")."
         | Offline -> "The network is unavailable. Nothing was sent."
         | OutcomeUnknown -> "The connection dropped after the request was sent; the outcome is unknown."

@@ -76,11 +76,12 @@ let private otherWriterAppends (prefix: string) (id: string) (statement: string)
 let private openIds =
     Fixtures.ids |> List.filter (fun id -> Transitions.isOpen (snd (Fixtures.loaded id)).State.Lifecycle)
 
+/// Every publication is guarded: it names the commit it must be applied on (no unguarded or forced update exists).
 let private patchBodiesNeverForce (w: World) =
-    for r in w.Requests |> List.filter isPatch do
+    Assert.DoesNotContain(w.Requests, fun r -> r.Method = "PATCH")
+    for r in w.Requests |> List.filter isSave do
         let body = r.Body |> Option.defaultValue ""
-        Assert.Contains("\"force\":false", body)
-        Assert.DoesNotContain("\"force\":true", body)
+        Assert.Matches("\"expectedHeadOid\":\"[0-9a-f]{40}\"", body)
 
 let private sync (w: World) = (live w).Sync
 
@@ -274,6 +275,13 @@ let ``6 extra files, nested paths, stray files and non-UUID directories are CAUS
     Assert.True(flag "invMissing" opened)
     Assert.Contains(Codes.pathInvalid, text "invMissingText" opened)
 
+/// Answer pending effects in FIFO order, setting aside those matching `late` (returned for delivery later).
+let rec private pumpHolding (late: Request -> bool) (held: EffectRequest list) (w: World) : World * EffectRequest list =
+    match w.Pending with
+    | [] -> w, held
+    | (EffectRequest.Http h as e) :: rest when late (requestOf w.Repo h) -> pumpHolding late (held @ [ e ]) { w with Pending = rest }
+    | e :: rest -> pumpHolding late held (answer e { w with Pending = rest })
+
 // ---------------------------------------------------------------------------------------------------------------
 // 7–8. Create
 // ---------------------------------------------------------------------------------------------------------------
@@ -289,14 +297,13 @@ let ``7 creating an investigation publishes exactly three files, verifies by rea
     let opened = before |> openCommand "new-investigation" |> send "cmd.textA" "Checkout latency spike" |> send "cmd.textB" "p99 latency rose to 4s at 09:12 UTC"
     let submitted = opened |> deliver (event "cmd.submit" None None)
     let firstEffects = httpEffects (lastResponse submitted)
-    Assert.Equal(3, firstEffects.Length)
-    Assert.All(firstEffects, fun h -> Assert.Equal(HttpMethod.Post, h.Method); Assert.EndsWith("/git/blobs", h.Url))
+    // One request publishes the three files atomically, guarded by the commit the decision was made on.
+    Assert.Equal(1, firstEffects.Length)
+    Assert.All(firstEffects, fun h -> Assert.Equal(HttpMethod.Post, h.Method); Assert.EndsWith("/graphql", h.Url))
+    Assert.Contains(sprintf "\"expectedHeadOid\":\"%s\"" baseHead, firstEffects[0].Body |> Option.defaultValue "")
     let after = pump submitted
     let sequence = requestsSince n after |> List.map shape
-    Assert.Equal<string list>(
-        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "GET ref"; "PATCH ref"
-          "GET ref"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ],
-        sequence)
+    Assert.Equal<string list>([ "POST graphql"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ], sequence)
     let id = newId before after
     let l = live after
     Assert.Equal(Idle, l.Sync)
@@ -308,7 +315,7 @@ let ``7 creating an investigation publishes exactly three files, verifies by rea
     Assert.Equal(6.0, number "dashValid" after)
     Assert.Equal("synced", text "syncState" after)
     Assert.Equal(InvestigationRoute(id, Overview, None), after.App.Route)
-    // The repository: one fast-forward commit on top of the base; exactly three new paths; nothing else changed.
+    // The repository: one commit on top of the base; exactly three new paths; nothing else changed.
     Assert.NotEqual<string>(baseHead, after.Repo.Head)
     Assert.Equal<string list>([ baseHead ], (headCommit after.Repo).Parents)
     let newFiles = headFiles after.Repo
@@ -413,20 +420,22 @@ let ``9c reapplying a conflicted change re-decides it on top of the remote histo
 // ---------------------------------------------------------------------------------------------------------------
 
 [<Fact>]
-let ``10 offline during blob creation holds the change locally and retry publishes it`` () =
+let ``10 offline during the save holds the change locally and reconciling publishes it exactly once`` () =
     let run = "r10"
     let prefix = Fixtures.workspacePrefix run
-    let w0 = connected run (workspaceRepo run) |> withRule isPostBlob NetworkDown
+    let w0 = connected run (workspaceRepo run) |> withRule isSave NetworkDown
     let baseHead = w0.Repo.Head
     let held = w0 |> createInvestigation "Offline" "written while offline"
+    // A network failure may come after GitHub received the request: never reported as "not written" (DC-003).
     match sync held with
-    | Held(_, NotSent _) -> ()
-    | other -> failwithf "expected Held NotSent, got %A" other
-    Assert.Equal("queued", text "syncState" held)
-    Assert.True(flag "canRetry" held)
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.False(flag "canRetry" held)
+    Assert.True(flag "canReconcile" held)
     Assert.Equal(baseHead, held.Repo.Head)
-    Assert.Empty(held.Requests |> List.filter isPatch)
-    let retried = held |> fire "sync.retry"
+    let retried = held |> fire "sync.reconcile"
+    Assert.Equal(2, retried.Requests |> List.filter isSave |> List.length)
+    Assert.Equal<string list>([ baseHead ], (headCommit retried.Repo).Parents)
     Assert.Equal(Idle, sync retried)
     Assert.Equal("synced", text "syncState" retried)
     let w = live retried
@@ -439,25 +448,34 @@ let ``10 offline during blob creation holds the change locally and retry publish
 // ---------------------------------------------------------------------------------------------------------------
 
 [<Fact>]
-let ``11 an unknown PATCH outcome that did apply is reconciled by reading the ref, then verified`` () =
+let ``11 an unknown save outcome that did apply is reconciled by reading the ref, then verified`` () =
     let run = "r11"
     let w0 = connected run (workspaceRepo run) |> withRule isPatch (UnknownAfter true)
     let n = w0.Requests.Length
     let after = w0 |> createInvestigation "Unknown" "the response was lost"
     let sequence = requestsSince n after |> List.map shape
+    // The ref names a commit other than the base: its tree holds exactly this change, so it is verified, never resent.
     Assert.Equal<string list>(
-        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "GET ref"; "PATCH ref"
-          "GET ref"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ],
-        sequence)
+        [ "POST graphql"; "GET ref"; "GET commit"; "GET tree"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ],
+        sequence |> List.truncate 9)
+    Assert.Equal(1, after.Requests |> List.filter isSave |> List.length)
     Assert.Equal(Idle, sync after)
     Assert.Equal(Some after.Repo.Head, (live after).LastVerified |> Option.map fst)
-    // Success is projected only on the response to the final read-back.
-    let total = after.Responses.Length
-    let synced = after.Responses |> List.map (fun r -> r.View |> Map.tryFind "syncState") |> List.mapi (fun i s -> i, s) |> List.filter (fun (_, s) -> s = Some(ViewValue.Text "synced"))
-    Assert.Equal(total - 1, fst synced.Head)
+    // Success is never projected before the read-back has verified the change. Because the change was found applied
+    // rather than acknowledged, the catalog is re-read too, and "synced" waits for that reload (held back here: its
+    // first ref read is the second one).
+    let refs = ref 0
+    let paused, _ =
+        connected (run + "p") (workspaceRepo (run + "p")) |> withRule isSave (UnknownAfter true)
+        |> openCommand "new-investigation" |> send "cmd.textA" "Unknown" |> send "cmd.textB" "the response was lost"
+        |> deliver (event "cmd.submit" None None)
+        |> pumpHolding (fun r -> r.Method = "GET" && r.Route |> Option.exists (fun p -> p.StartsWith "/git/ref/") && (refs.Value <- refs.Value + 1; refs.Value = 2)) []
+    Assert.True((live paused).LastVerified.IsSome)
+    Assert.DoesNotContain(paused.Responses, fun r -> r.View |> Map.tryFind "syncState" = Some(ViewValue.Text "synced"))
+    Assert.Equal("synced", text "syncState" after)
 
 [<Fact>]
-let ``11b an unknown PATCH outcome that did not apply is retried as a fast-forward`` () =
+let ``11b an unknown save outcome that did not apply is resent under the same guard`` () =
     let run = "r11b"
     let w0 = connected run (workspaceRepo run) |> withRule isPatch (UnknownAfter false)
     let baseHead = w0.Repo.Head
@@ -473,11 +491,11 @@ let ``11c a read-back that differs from what was written is never reported as su
     let bogus = Convert.ToBase64String(Encoding.UTF8.GetBytes "{}")
     let w0 = connected run (workspaceRepo run)
     let n = w0.Requests.Length
-    // Only the verification read (after the PATCH) is corrupted.
+    // Only the verification read (after the save) is corrupted.
     let w1 = { w0 with Rules = [] } |> withRule (fun r -> isGetBlob r && r.CorrelationId <> "") (Respond(200L, sprintf """{"sha":"x","encoding":"base64","content":"%s"}""" bogus))
     let after = w1 |> createInvestigation "Corrupt" "read-back tampered"
     Assert.True(requestsSince n after |> List.exists isPatch)
-    // After the PATCH a mismatch is not a definite failure: the branch moved, so the outcome is unknown (DC-003).
+    // After the save a mismatch is not a definite failure: the branch moved, so the outcome is unknown (DC-003).
     match sync after with
     | Held(_, Unknown _) -> ()
     | other -> failwithf "expected Held Unknown, got %A" other
@@ -546,7 +564,7 @@ let ``12b disconnect cancels in-flight requests and ignores their late answers``
         connectedWorld |> openCommand "new-investigation" |> send "cmd.textA" "T" |> send "cmd.textB" "O"
         |> deliver (event "cmd.submit" None None)
     let inflight = writing.App.Inflight |> Map.toList |> List.map fst |> Set.ofList
-    Assert.Equal(3, inflight.Count)
+    Assert.Equal(1, inflight.Count)
     let disconnected = writing |> deliver (event "disconnect" None None)
     let cancelled = (lastResponse disconnected).Cancellations |> List.map (fun (CorrelationId c) -> c) |> Set.ofList
     Assert.Equal<Set<string>>(inflight, cancelled)
@@ -556,7 +574,10 @@ let ``12b disconnect cancels in-flight requests and ignores their late answers``
     let late = pump disconnected
     Assert.Equal(Disconnected, late.App.Connection)
     Assert.All(late.Responses |> List.skip disconnected.Responses.Length, fun r -> Assert.Empty(r.Effects))
-    Assert.Equal(connectedWorld.Repo.Head, late.Repo.Head)
+    // The one save already sent may have been applied by GitHub (cancelling cannot recall it), but only atomically:
+    // the branch holds the base, or exactly one commit on top of it, never a partial change.
+    Assert.True(late.Repo.Head = connectedWorld.Repo.Head || (headCommit late.Repo).Parents = [ connectedWorld.Repo.Head ])
+    Assert.Equal(1, late.Requests |> List.filter isSave |> List.length)
     // Same during connect.
     let connecting = world (workspaceRepo run) |> init |> fillConnect owner repoName branch run token |> deliver (event "connect.submit" None None)
     let dropped = connecting |> deliver (event "connect.cancel" None None)
@@ -679,10 +700,10 @@ let ``10b retrying a held change after a reload does not overwrite a concurrent 
     let run = "r10b"
     let prefix = Fixtures.workspacePrefix run
     let x = openIds[0]
-    let held = connected run (workspaceRepo run) |> withRule isPostBlob NetworkDown |> observe x "mine, written offline"
+    let held = connected run (workspaceRepo run) |> withRule isSave (Respond(403L, """{"message":"API rate limit exceeded for installation."}""")) |> observe x "mine, rate limited"
     match sync held with
-    | Held(_, NotSent _) -> ()
-    | other -> failwithf "expected Held NotSent, got %A" other
+    | Held(_, WriteFailed _) -> ()
+    | other -> failwithf "expected a retryable Held WriteFailed, got %A" other
     Assert.True(flag "canRefresh" held)
     let moved = { held with Repo = otherWriterAppends prefix x "other writer meanwhile" held.Repo }
     let after = moved |> fire "refresh" |> fire "sync.retry"
@@ -690,7 +711,7 @@ let ``10b retrying a held change after a reload does not overwrite a concurrent 
     patchBodiesNeverForce after
 
 [<Fact>]
-let ``11d an unknown PATCH outcome that applied, with the branch moved on afterwards, is not reported as an unwritten conflict`` () =
+let ``11d an unknown save outcome that applied, with the branch moved on afterwards, is not reported as an unwritten conflict`` () =
     let run = "r11d"
     let prefix = Fixtures.workspacePrefix run
     let notes = "workspaces/demo/" + run + "/notes.txt"
@@ -774,11 +795,11 @@ let ``15b a second submission while a write is in flight starts nothing (DC-002)
 [<Fact>]
 let ``15c a write answer from an earlier generation is ignored (DC-002)`` () =
     let run = "r15c"
-    let w0 = connected run (workspaceRepo run) |> withRule isPostBlob NetworkDown
+    let w0 = connected run (workspaceRepo run) |> withRule isSave NetworkDown
     let held = w0 |> createInvestigation "Held" "offline first"
     match sync held with
-    | Held(_, NotSent _) -> ()
-    | other -> failwithf "expected NotSent, got %A" other
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Unknown, got %A" other
     // Forge a late answer carrying an old correlation id: it answers no open question.
     let stale =
         held |> deliver (BrowserToEngineMessage.EffectResult(EffectResult.HttpResult(CorrelationId "gh-1", EffectOutcome.Success(201L, Limen.Contract.RawJson """{"sha":"0000000000000000000000000000000000000000"}""", None))))
@@ -786,7 +807,7 @@ let ``15c a write answer from an earlier generation is ignored (DC-002)`` () =
     Assert.Empty(stale.Pending)
 
 [<Fact>]
-let ``16 a network failure after the ref update was sent is outcome-unknown, never "not written" (DC-003)`` () =
+let ``16 a network failure after the save was sent is outcome-unknown, never "not written" (DC-003)`` () =
     let run = "r16"
     let w0 = connected run (workspaceRepo run) |> withRule isPatch NetworkDown
     let after = w0 |> createInvestigation "Lost" "the answer was lost"
@@ -795,7 +816,7 @@ let ``16 a network failure after the ref update was sent is outcome-unknown, nev
     | other -> failwithf "expected Held Unknown, got %A" other
     Assert.False(flag "canRetry" after)
     Assert.True(flag "canReconcile" after)
-    // Reconciling (the PATCH never applied) publishes it as a fast-forward and verifies it.
+    // Reconciling (the save never applied) resends it under the same guard and verifies it.
     let reconciled = after |> fire "sync.reconcile"
     Assert.Equal(Idle, sync reconciled)
     Assert.True((live reconciled).LastVerified.IsSome)
@@ -901,17 +922,10 @@ let ``19c the committed route inventory is exactly what Limen renders for the ta
 // Independent closure review regressions (evidence/quality/closure-review-DC-002-004.md, P1–P5)
 // ---------------------------------------------------------------------------------------------------------------
 
-/// Answer pending effects in FIFO order, setting aside those matching `late` (returned for delivery later).
-let rec private pumpHolding (late: Request -> bool) (held: EffectRequest list) (w: World) : World * EffectRequest list =
-    match w.Pending with
-    | [] -> w, held
-    | (EffectRequest.Http h as e) :: rest when late (requestOf w.Repo h) -> pumpHolding late (held @ [ e ]) { w with Pending = rest }
-    | e :: rest -> pumpHolding late held (answer e { w with Pending = rest })
-
 [<Fact>]
-let ``20 P1 reconciling an unknown blob creation after the branch moved recreates the blobs instead of throwing`` () =
+let ``20 P1 reconciling an unsent save after the branch moved rebases it instead of throwing`` () =
     let run = "r20"
-    let held = connected run (workspaceRepo run) |> withRule isPostBlob (UnknownAfter false) |> createInvestigation "P1" "cancelled blob"
+    let held = connected run (workspaceRepo run) |> withRule isSave NetworkDown |> createInvestigation "P1" "lost save"
     match sync held with
     | Held(w, Unknown _) -> Assert.True(w.Commit.IsNone)
     | other -> failwithf "expected Held Unknown, got %A" other
@@ -919,6 +933,7 @@ let ``20 P1 reconciling an unknown blob creation after the branch moved recreate
     let after = moved |> fire "sync.reconcile"
     Assert.Equal(Idle, sync after)
     Assert.True((live after).LastVerified.IsSome)
+    Assert.Equal<string list>([ moved.Repo.Head ], (headCommit after.Repo).Parents)
     patchBodiesNeverForce after
 
 [<Fact>]
@@ -1000,7 +1015,7 @@ let ``21 reads of mutable state are never cacheable: every ref and repository re
     let after = connected run (workspaceRepo run) |> createInvestigation "Fresh" "no cached ref" |> fire "refresh"
     let isRefOrRepo (r: Request) = r.Method = "GET" && (r.Route = Some "" || r.Route |> Option.exists (fun p -> p.StartsWith "/git/ref/"))
     let fresh = after.Requests |> List.filter isRefOrRepo |> List.map (fun r -> r.Url)
-    Assert.True(fresh.Length >= 4)
+    Assert.True(fresh.Length >= 3)
     Assert.All(fresh, fun u -> Assert.Contains("fresh=", u))
     Assert.Equal(fresh.Length, (List.distinct fresh).Length)
     // A fresh engine (a page reload) restarts its correlation ids; its fresh URLs must still differ from the first session's.
@@ -1018,9 +1033,12 @@ let ``21 reads of mutable state are never cacheable: every ref and repository re
 
 let private isGetRef (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/git/ref/"))
 let private isGetCommit (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/git/commits/"))
-let private isPostCommit (r: Request) = r.Method = "POST" && r.Route = Some "/git/commits"
-let private patchedShas (w: World) =
-    w.Requests |> List.filter isPatch |> List.choose (fun r -> r.Body) |> List.map (fun b -> Text.Json.JsonDocument.Parse(b).RootElement.GetProperty("sha").GetString())
+/// The commit each save named as the only head it may be applied on.
+let private guards (w: World) =
+    w.Requests
+    |> List.filter isSave
+    |> List.choose (fun r -> r.Body)
+    |> List.map (fun b -> Text.Json.JsonDocument.Parse(b).RootElement.GetProperty("variables").GetProperty("input").GetProperty("expectedHeadOid").GetString() |> Option.ofObj |> Option.defaultValue "")
 
 [<Fact>]
 let ``22 A no write starts while a reload runs, so a late reload answer cannot roll back a verified save`` () =
@@ -1043,52 +1061,66 @@ let ``22 A no write starts while a reload runs, so a late reload answer cannot r
     Assert.Equal(saved.Repo.Head, (live saved).Head.Commit)
 
 [<Fact>]
-let ``22b C after an accepted PATCH, a branch diverged elsewhere is outcome-unknown; a stale ref read is not`` () =
+let ``22b V1 a save rebuilt on a stale read is refused by GitHub, never applied over the newer head`` () =
     let run = "r22b"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
     let w0 = connected run (workspaceRepo run)
-    let before = w0.Repo.Head
-    // Right after our PATCH someone force-moves the branch to another line of history (parent: the old head).
-    let diverge (repo: Repo) = commitFiles "someone else's line" [ "README.md", Some(Encoding.UTF8.GetBytes "other\n") ] { repo with Head = before }
-    // The first ref read is the pre-update base check; the second is the read after the accepted update.
-    let afterPatch () = let n = ref 0 in fun (r: Request) -> isGetRef r && (n.Value <- n.Value + 1; n.Value = 2)
-    let forced =
+    let h0 = w0.Repo.Head
+    // Another writer changes the same investigation just before our save arrives; the reload after the refusal is
+    // answered by a lagging replica that still names h0, so the engine rebuilds the save on h0 once more.
+    let held =
         w0
-        |> withRule (afterPatch ()) (Concurrent diverge)
-        |> createInvestigation "Forced" "diverged after patch"
-    match sync forced with
-    | Held(_, Unknown _) -> ()
-    | other -> failwithf "a diverged branch after the PATCH was reported as %A" other
-    Assert.True((live forced).LastVerified.IsNone)
-    // A stale replica: the verify-ref read answers the previous head although the branch holds our commit. GitHub
-    // accepted the non-forced PATCH, so the commit read-back decides. (A force-reset to exactly the previous head is
-    // indistinguishable from this by any single read; recorded as a residual in DC-005.)
-    let runS = run + "s"
-    let fresh = connected runS (workspaceRepo runS)
-    let stale =
-        fresh
-        |> withRule (afterPatch ()) (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" fresh.Repo.Head))
-        |> createInvestigation "Stale" "replica lag"
-    Assert.Equal(Idle, sync stale)
-    Assert.True((live stale).LastVerified.IsSome)
+        |> withRule isSave (Concurrent(otherWriterAppends prefix target "other"))
+        |> withRule isGetRef (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" h0))
+        |> observe target "mine"
+    match sync held with
+    | Held(_, Conflict _) -> ()
+    | other -> failwithf "expected Held Conflict, got %A" other
+    // Both saves were guarded by h0; GitHub refused both, and the other writer's commit is still the head.
+    Assert.Equal<string list>([ h0; h0 ], guards held)
+    Assert.Equal<string list>([ h0 ], (headCommit held.Repo).Parents)
 
 [<Fact>]
-let ``22c D a rebased publication never re-sends its pre-rebase commit`` () =
+let ``22c V2 a branch reset between the read and the save is refused; the save is rebuilt on what GitHub holds`` () =
     let run = "r22c"
-    let prefix = Fixtures.workspacePrefix run
-    // The first PATCH meets another writer; after the rebase, the new commit creation's answer is lost.
-    let lost =
-        connected run (workspaceRepo run)
-        |> withRule isPatch (Concurrent(otherWriterAppends prefix openIds[1] "other"))
-        |> withRule isPostCommit (Concurrent id)
-        |> withRule isPostCommit (UnknownAfter false)
-        |> createInvestigation "D" "lost commit answer"
-    match sync lost with
+    let w0 = connected run (workspaceRepo run)
+    let h0 = w0.Repo.Head
+    // Someone resets the branch to another line of history right before our save arrives.
+    let reset (repo: Repo) =
+        let from = match (headCommit repo).Parents with p :: _ -> p | [] -> repo.Head
+        commitFiles "line B" [ "README.md", Some(Encoding.UTF8.GetBytes "line B\n") ] { repo with Head = from }
+    let after = w0 |> withRule isSave (Concurrent reset) |> createInvestigation "Reset" "branch reset mid-save"
+    Assert.Equal(Idle, sync after)
+    let lineB = (headCommit after.Repo).Parents
+    Assert.Equal(1, lineB.Length)
+    Assert.NotEqual<string>(h0, lineB.Head)
+    Assert.Equal("line B", after.Repo.Commits[lineB.Head].Message)
+    Assert.Equal<string list>([ h0; lineB.Head ], guards after)
+    patchBodiesNeverForce after
+
+[<Fact>]
+let ``22d a save whose outcome stays unknown is resent a bounded number of times, then held for the user`` () =
+    let run = "r22d"
+    let w0 = connected run (workspaceRepo run)
+    let lost = [ 1 .. 6 ] |> List.fold (fun w _ -> w |> withRule isSave (UnknownAfter false)) w0
+    let held = lost |> createInvestigation "Lost" "never confirmed"
+    match sync held with
     | Held(_, Unknown _) -> ()
     | other -> failwithf "expected Held Unknown, got %A" other
-    let after = { lost with Rules = [] } |> fire "sync.reconcile"
+    Assert.Equal(Session.maxRebases + 1, held.Requests |> List.filter isSave |> List.length)
+    Assert.Equal(w0.Repo.Head, held.Repo.Head)
+
+[<Fact>]
+let ``22e a server error answering the save is outcome-unknown, never "not written" (DC-003)`` () =
+    let run = "r22e"
+    let held = connected run (workspaceRepo run) |> withRule isSave (Respond(502L, """{"message":"Server Error"}""")) |> createInvestigation "Bad gateway" "5xx"
+    match sync held with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.True(flag "canReconcile" held)
+    let after = held |> fire "sync.reconcile"
     Assert.Equal(Idle, sync after)
-    let shas = patchedShas after
-    Assert.Equal(shas.Length, (List.distinct shas).Length)
     patchBodiesNeverForce after
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1154,15 +1186,15 @@ let ``24b Q2b the reload after a rebased save never adopts the rebase's intermed
     let prefix = Fixtures.workspacePrefix run
     let mid = ref ""
     let seen = ref 0
-    // The first PATCH meets another writer's commit (mid); the engine rebases and saves on top of it.
+    // The first save meets another writer's commit (mid); the engine rebases and saves on top of it.
     let submitted =
         connected run (workspaceRepo run)
         |> withRule isPatch (Concurrent(fun repo -> let moved = otherWriterAppends prefix openIds[1] "other" repo in mid.Value <- moved.Head; moved))
         |> openCommand "new-investigation" |> send "cmd.textA" "Rebased" |> send "cmd.textB" "auto reload"
         |> deliver (event "cmd.submit" None None)
-    // Hold back the fifth ref read (base check, reload after the refused update, base check after the rebase, verify,
-    // then the automatic reload) and answer it with mid.
-    let paused, held = submitted |> pumpHolding (fun r -> isGetRef r && (seen.Value <- seen.Value + 1; seen.Value = 5)) []
+    // Hold back the second ref read (the first is the reload after the refused save; the second the automatic reload
+    // after the rebased save was verified) and answer it with mid.
+    let paused, held = submitted |> pumpHolding (fun r -> isGetRef r && (seen.Value <- seen.Value + 1; seen.Value = 2)) []
     Assert.Equal(1, held.Length)
     let after = { paused with Rules = [] } |> withRule isGetRef (Respond(200L, refBody mid.Value)) |> answer held[0] |> pump
     Assert.Equal(after.Repo.Head, (live after).Head.Commit)

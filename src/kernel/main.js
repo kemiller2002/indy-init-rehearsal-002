@@ -10,6 +10,7 @@ import { DotnetWasmTransport } from "./vendor/limen/hosts/dotnet-wasm-transport.
 import "./vendor/folio/components/register.js";
 
 const START_TIMEOUT_MS = 90000;
+const LOADER_GRACE_MS = 10000;
 
 /** @param {string} id */
 const byId = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
@@ -92,15 +93,21 @@ const start = async () => {
   const timeout = new Promise((_, reject) => {
     timer = setTimeout(() => reject(new Error("timeout")), START_TIMEOUT_MS);
   });
-  // The .NET loader downloads framework files in parallel and reports a failed one (a 503, an integrity mismatch)
-  // only as an unhandled rejection; the start promise then never settles. Any rejection while starting ends the
-  // start at once with the recoverable failure, instead of a spinner until the timeout.
+  // The .NET loader downloads framework files in parallel and reports a failed attempt (a 503, an integrity
+  // mismatch) only as an unhandled rejection; it retries on its own, and after a final failure the start promise
+  // never settles. So a rejection while starting arms a short grace period (re-armed by each further rejection):
+  // a retry that succeeds lets the start finish; otherwise the start ends with the recoverable failure long before
+  // the timeout (DC-006).
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let grace;
   /** @type {(event: PromiseRejectionEvent) => void} */
   let onRejection = () => {};
   const loaderFailure = new Promise((_, reject) => {
     onRejection = (event) => {
       event.preventDefault();
-      reject(new Error("loader"));
+      console.warn("Causa: a download failed while starting; waiting for the loader to retry.", event.reason);
+      clearTimeout(grace);
+      grace = setTimeout(() => reject(new Error("loader")), LOADER_GRACE_MS);
     };
   });
   window.addEventListener("unhandledrejection", onRejection);
@@ -115,6 +122,7 @@ const start = async () => {
     return;
   } finally {
     clearTimeout(timer);
+    clearTimeout(grace);
     window.removeEventListener("unhandledrejection", onRejection);
   }
   if (kernel.status !== "running") {

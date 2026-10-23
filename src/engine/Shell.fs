@@ -302,7 +302,21 @@ module Shell =
         | OpRef, Ok body ->
             match GitHub.parseRef body with
             | Error f -> stop f
-            | Ok commit -> app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
+            | Ok commit when commit = live.Head.Commit -> app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
+            // A different head: a reload never moves the view back in history, so decide by ancestry first.
+            | Ok commit -> app |> emit [ OpRefreshCompare commit, GitHub.compare live.Target live.Head.Commit commit ]
+        | OpRefreshCompare commit, Ok body ->
+            match GitHub.parseCompareStatus body with
+            | Error f -> stop f
+            // Older than what is shown (a lagging replica answered): keep the newer, verified state (DC-005).
+            | Ok "behind" ->
+                let kept =
+                    match live.Reapply with
+                    | Some w -> { live with Refreshing = false; Reapply = None; Sync = Held(w, Conflict "GitHub answered with an older version of the branch, so your change was not re-applied. Try again in a moment.") }
+                    | None -> { live with Refreshing = false }
+                { app with Connection = Connected kept } |> App.notice Neutral "GitHub answered with an older version of the branch than the one shown; the newer state is kept. Reload again in a moment.", []
+            // Newer, or rewritten by someone: show what GitHub holds.
+            | Ok _ -> app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
         | OpCommit commit, Ok body ->
             match GitHub.parseCommitTree body with
             | Error f -> stop f
@@ -512,7 +526,7 @@ module Shell =
                 match app.Connection, op with
                 | Connecting _, _ -> onConnect op r app
                 | Connected live, OpBlob(inv, file, sha) -> onBlob inv file sha r live app
-                | Connected live, (OpRef | OpCommit _ | OpTree _) when generation = 0 && live.Refreshing -> onRefresh op r live app
+                | Connected live, (OpRef | OpRefreshCompare _ | OpCommit _ | OpTree _) when generation = 0 && live.Refreshing -> onRefresh op r live app
                 | Connected live, _ ->
                     match live.Sync with
                     | InFlight(w, stage) when generation <> 0 && w.Generation = generation -> onWrite op r live w stage app
@@ -605,6 +619,9 @@ module Shell =
             let credential = app.ConnectForm |> Map.tryFind "token" |> Option.defaultValue ""
             let form = { app with ConnectForm = app.ConnectForm |> Map.remove "token" }
             match App.live form with
+            // Refused while a reload runs: nothing changes, the typed credential stays in the form for the next try.
+            | Some({ Sync = Held _ } as live) when live.Refreshing ->
+                plain (app |> App.notice Attention "The workspace is being reloaded; use the new token when it finishes. Nothing was changed.")
             | Some({ Sync = Held(w, WriteDenied _) } as live) when not (String.IsNullOrWhiteSpace credential) ->
                 let renewed = { live with Token = credential.Trim() }
                 withEffects (startWrite renewed { w with Blobs = Map.empty; Commit = None; Received = Map.empty; NewHead = None } { form with Connection = Connected renewed })

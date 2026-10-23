@@ -1,7 +1,7 @@
 {
   "schemaVersion": 4,
   "project": "causa-rehearsal-002",
-  "manifestSha256": "d0e7c0ecbd1f4f4f77d279d82aaefe8c3c18137472cb200794c04bc63e315021",
+  "manifestSha256": "18777318dde114b2f7c88b6ec57be09ff12162060831ceb8eb7d4a165b6619be",
   "manifest": {
     "$schema": "../schemas/conditor.schema.json",
     "schemaVersion": 1,
@@ -34,6 +34,10 @@
       {
         "id": "folio",
         "version": "0.4.0"
+      },
+      {
+        "id": "limen-fsharp",
+        "version": "0.9.0"
       }
     ],
     "requirements": [
@@ -210,6 +214,11 @@
     "scaffold": {
       "kind": "fsharp-limen-web",
       "name": "causa"
+    },
+    "registryAuthority": {
+      "kind": "resolved-release-set",
+      "path": ".conditor/authority/resolved-release-set.json",
+      "sha256": "06026da529d5408a7363793790a0eed32b3f5414246fe4509a216adb27d403e3"
     }
   },
   "components": [
@@ -275,6 +284,14 @@
       "descriptorSha256": "51240f698d19e0cd11d527ca9dfb22f3495c383fa6fe2a851bd3c4b224da4f8a",
       "authority": "embedded-component-descriptor",
       "sourceReference": "npm:@echelon-foundry/print-components@0.4.0"
+    },
+    {
+      "id": "limen-fsharp",
+      "version": "0.9.0",
+      "distribution": "nuget",
+      "package": "EchelonFoundry.Limen.Contract,EchelonFoundry.Limen.Guest,EchelonFoundry.Limen.Routing,EchelonFoundry.Limen.Store",
+      "authority": "registry-resolved-set",
+      "sourceReference": "nuget-feed:kemiller2002/limen@v0.9.0#sha256:d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a"
     }
   ],
   "requirements": [

@@ -30,6 +30,10 @@
     {
       "id": "folio",
       "version": "0.4.0"
+    },
+    {
+      "id": "limen-fsharp",
+      "version": "0.9.0"
     }
   ],
   "requirements": [
@@ -206,5 +210,10 @@
   "scaffold": {
     "kind": "fsharp-limen-web",
     "name": "causa"
+  },
+  "registryAuthority": {
+    "kind": "resolved-release-set",
+    "path": ".conditor/authority/resolved-release-set.json",
+    "sha256": "06026da529d5408a7363793790a0eed32b3f5414246fe4509a216adb27d403e3"
   }
 }

@@ -1,7 +1,7 @@
 {
   "schema": "ordo.execution/1",
-  "executionId": "EXE-20261023T143616766Z-78e9b57e",
-  "workItem": "kemiller2002/indy-init-rehearsal-002:R002-BOOT",
+  "executionId": "EXE-20261023T143758594Z-4c8a6d9a",
+  "workItem": "kemiller2002/indy-init-rehearsal-002:R002-WASM",
   "actor": {
     "id": "anthropic/claude-code",
     "kind": "agent",
@@ -25,11 +25,11 @@
     "verification.verdict",
     "review.accept"
   ],
-  "baselineRevision": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
-  "candidateRevision": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
-  "workspace": "checkout:EXE-20261023T143616766Z-78e9b57e",
+  "baselineRevision": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
+  "candidateRevision": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
+  "workspace": "checkout:EXE-20261023T143758594Z-4c8a6d9a",
   "workspaceBinding": {
-    "id": "checkout:EXE-20261023T143616766Z-78e9b57e",
+    "id": "checkout:EXE-20261023T143758594Z-4c8a6d9a",
     "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
     "path": null,
     "mechanism": "working-directory"
@@ -49,7 +49,7 @@
   "evaluator": null,
   "humanOnlyTransitions": [],
   "parentExecution": null,
-  "startedAt": "2026-10-23T14:36:16.888Z",
+  "startedAt": "2026-10-23T14:37:58.747Z",
   "state": "completed",
   "stateReason": null,
   "origin": {

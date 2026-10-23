@@ -4,7 +4,7 @@
   "repository": "indy-init-rehearsal-002",
   "actor": "ros-bootstrap",
   "startedAt": "2026-10-23T12:22:57.777Z",
-  "updatedAt": "2026-10-23T14:36:26Z",
+  "updatedAt": "2026-10-23T14:37:59.795Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -40,31 +40,31 @@
           "path": "evidence/stack/verification-report.md"
         }
       ],
-      "updatedAt": "2026-10-23T14:35:36Z",
+      "updatedAt": "2026-10-23T14:37:43.927Z",
       "telemetryExecutionIds": [
         "EXE-20261023T135022272Z-00da006d"
       ],
       "latestCheckpoint": {
-        "id": "f0a9e91390ef360c5cc627f8",
-        "recordedAt": "2026-10-23T14:35:28Z",
+        "id": "a97fd9878dbdfc4ec24ed147",
+        "recordedAt": "2026-10-23T14:37:42.834Z",
         "executionId": "EXE-20261023T135022272Z-00da006d",
         "repository": "indy-init-rehearsal-002",
         "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "commit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "commit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/indy-init-rehearsal-002"
         },
         "remoteBranch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "remoteCommit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "remoteCommit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "summary": "Stack discovered at every release source, approved against echelon-current 1.25.0, verified as a set (C01-C16), frozen in evidence/stack/stack-lock.json; Limen.Routing 0.9.0 now used (foundations 7/7).",
-        "nextAction": "Complete R002-STACK; drift is recorded, not introduced.",
+        "nextAction": "None; later upstream releases are drift, not introduced.",
         "verification": {
           "status": "verified",
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-23T14:35:36Z"
+      "completedAt": "2026-10-23T14:37:43.927Z"
     },
     {
       "id": "R002-BOOT",
@@ -81,23 +81,23 @@
           "path": ".github/workflows/build-and-test.yml"
         }
       ],
-      "updatedAt": "2026-10-23T14:36:17Z",
+      "updatedAt": "2026-10-23T14:37:50.300Z",
       "telemetryExecutionIds": [
-        "EXE-20261023T143616766Z-78e9b57e"
+        "EXE-20261023T143749017Z-127640a1"
       ],
       "latestCheckpoint": {
-        "id": "9725e2544135f9d82d8aabc1",
-        "recordedAt": "2026-10-23T14:36:16Z",
-        "executionId": "EXE-20261023T143616766Z-78e9b57e",
+        "id": "9bbad2f7ed605262b7fe72fc",
+        "recordedAt": "2026-10-23T14:37:49.172Z",
+        "executionId": "EXE-20261023T143749017Z-127640a1",
         "repository": "indy-init-rehearsal-002",
         "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "commit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "commit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/indy-init-rehearsal-002"
         },
         "remoteBranch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "remoteCommit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "remoteCommit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "summary": "make doctor/restore/build/run/test/validate/package/deploy; CI build-and-test (work attributed post hoc via work reconcile)",
         "nextAction": "None for this item.",
         "verification": {
@@ -105,7 +105,7 @@
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-23T14:36:17Z"
+      "completedAt": "2026-10-23T14:37:50.300Z"
     },
     {
       "id": "R002-DOMAIN",
@@ -122,23 +122,23 @@
           "path": "tests/Causa.Conformance.Tests"
         }
       ],
-      "updatedAt": "2026-10-23T14:36:20Z",
+      "updatedAt": "2026-10-23T14:37:53.491Z",
       "telemetryExecutionIds": [
-        "EXE-20261023T143619600Z-5aa864ae"
+        "EXE-20261023T143752285Z-607a62b4"
       ],
       "latestCheckpoint": {
-        "id": "99d76fbe256bfe1a6a8f7e3a",
-        "recordedAt": "2026-10-23T14:36:19Z",
-        "executionId": "EXE-20261023T143619600Z-5aa864ae",
+        "id": "fe3c79028bbc82be78e064e4",
+        "recordedAt": "2026-10-23T14:37:52.471Z",
+        "executionId": "EXE-20261023T143752285Z-607a62b4",
         "repository": "indy-init-rehearsal-002",
         "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "commit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "commit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/indy-init-rehearsal-002"
         },
         "remoteBranch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "remoteCommit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "remoteCommit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "summary": "Vendored pinned F# domain and Causa.Contract; 94 conformance tests (5 golden, 90 negatives) (work attributed post hoc via work reconcile)",
         "nextAction": "None for this item.",
         "verification": {
@@ -146,7 +146,7 @@
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-23T14:36:20Z"
+      "completedAt": "2026-10-23T14:37:53.491Z"
     },
     {
       "id": "R002-UI",
@@ -163,23 +163,23 @@
           "path": "tests/browser"
         }
       ],
-      "updatedAt": "2026-10-23T14:36:23Z",
+      "updatedAt": "2026-10-23T14:37:56.793Z",
       "telemetryExecutionIds": [
-        "EXE-20261023T143622258Z-790dc0b3"
+        "EXE-20261023T143755625Z-c7b0bc6e"
       ],
       "latestCheckpoint": {
-        "id": "506feaa6b6ceede1fda95a94",
-        "recordedAt": "2026-10-23T14:36:22Z",
-        "executionId": "EXE-20261023T143622258Z-790dc0b3",
+        "id": "ae81ad19f148f87f585dede1",
+        "recordedAt": "2026-10-23T14:37:55.852Z",
+        "executionId": "EXE-20261023T143755625Z-c7b0bc6e",
         "repository": "indy-init-rehearsal-002",
         "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "commit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "commit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/indy-init-rehearsal-002"
         },
         "remoteBranch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "remoteCommit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "remoteCommit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "summary": "Forma-branded Limen UI, UI-001..016 P0 screens, Limen routing; 58 browser tests (work attributed post hoc via work reconcile)",
         "nextAction": "None for this item.",
         "verification": {
@@ -187,7 +187,7 @@
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-23T14:36:23Z"
+      "completedAt": "2026-10-23T14:37:56.793Z"
     },
     {
       "id": "R002-WASM",
@@ -204,23 +204,23 @@
           "path": "tests/browser/boot.spec.js"
         }
       ],
-      "updatedAt": "2026-10-23T14:36:26Z",
+      "updatedAt": "2026-10-23T14:37:59.795Z",
       "telemetryExecutionIds": [
-        "EXE-20261023T143625281Z-e512b810"
+        "EXE-20261023T143758594Z-4c8a6d9a"
       ],
       "latestCheckpoint": {
-        "id": "161ffd9197b78616a8968704",
-        "recordedAt": "2026-10-23T14:36:25Z",
-        "executionId": "EXE-20261023T143625281Z-e512b810",
+        "id": "7fb06e04cc828ca4c9a1671c",
+        "recordedAt": "2026-10-23T14:37:58.789Z",
+        "executionId": "EXE-20261023T143758594Z-4c8a6d9a",
         "repository": "indy-init-rehearsal-002",
         "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "commit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "commit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "remote": {
           "name": "origin",
           "url": "https://github.com/kemiller2002/indy-init-rehearsal-002"
         },
         "remoteBranch": "claude/causa-rehearsal-002-kickoff-i2ihli",
-        "remoteCommit": "4219e23bbba8e6ee2a122d2dc05b177a20e8d745",
+        "remoteCommit": "49866b71c8ef79ddc1339cc0d427ca5d0756dea9",
         "summary": "Untrimmed .NET WebAssembly engine behind Limen BrowserKernel, loading experience WASM-LOAD-001..008 (work attributed post hoc via work reconcile)",
         "nextAction": "None for this item.",
         "verification": {
@@ -228,7 +228,7 @@
           "mechanism": "git-remote-observation"
         }
       },
-      "completedAt": "2026-10-23T14:36:26Z"
+      "completedAt": "2026-10-23T14:37:59.795Z"
     }
   ]
 }

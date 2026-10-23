@@ -1,7 +1,7 @@
 {
   "run_id": "causa-rehearsal-002",
-  "source_commit_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
-  "deployed_commit_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+  "source_commit_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+  "deployed_commit_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
   "deployed_url": "https://kevinmmiller.us/indy-init-rehearsal-002/",
   "contract_version": "causa-storage-v1.0.0",
   "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
@@ -10,7 +10,7 @@
       "id": "G0",
       "name": "Scope",
       "scope": "requirements pinned (Indy-init@b5d9d79), owners, priorities",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "conditor.json",
@@ -24,7 +24,7 @@
       "id": "G1",
       "name": "Dependencies",
       "scope": "echelon-current 1.25.0 stack verified as a set and frozen",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "evidence/stack/verification-report.md",
@@ -39,7 +39,7 @@
       "id": "G2",
       "name": "Interfaces",
       "scope": "engine/kernel view contract; producer and consumer tests",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "docs/architecture/VIEW-CONTRACT.md",
@@ -53,7 +53,7 @@
       "id": "G3",
       "name": "Domain",
       "scope": "F# domain decisions, illegal transitions and forged histories",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "tests/Causa.Conformance.Tests",
@@ -66,7 +66,7 @@
       "id": "G4",
       "name": "Frozen data",
       "scope": "5 golden scenarios, 90 negative fixtures, identities of causa-storage-v1.0.0",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "tests/Causa.Conformance.Tests",
@@ -79,7 +79,7 @@
       "id": "G5",
       "name": "UI",
       "scope": "P0 screens, loading, keyboard, accessibility, responsive, color",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "tests/browser"
@@ -92,20 +92,20 @@
       "id": "G6",
       "name": "Persistence",
       "scope": "real GitHub provider: read, write, read-back, reload, conflict, refusal",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
-        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+        "evidence/acceptance/live-run-39990408889/live-acceptance.json"
       ],
-      "started_at": "2026-10-23T16:25:36Z",
-      "completed_at": "2026-10-23T16:27:44Z",
-      "note": "causa-data run 39986660673 on 645f3ca; its tree 250b154 equals the candidate's"
+      "started_at": "2026-10-23T16:52:40Z",
+      "completed_at": "2026-10-23T16:55:01Z",
+      "note": "causa-data run 39990408889 on 63b2232; its tree 1ce2a0e equals the candidate's"
     },
     {
       "id": "G7",
       "name": "Defect class",
       "scope": "independent review and SHA-bound closure of DC-001..DC-006",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "BLOCKED",
       "evidence_paths": [
         "docs/decisions",
@@ -114,16 +114,17 @@
         "evidence/quality/closure-review-3.md"
       ],
       "started_at": null,
-      "completed_at": null
+      "completed_at": null,
+      "note": "the fixes for closure-review-3's findings (63b2232) were merged on the owner's instruction before a fourth independent review reported (UD-4)"
     },
     {
       "id": "G8",
       "name": "Candidate",
       "scope": "full CI on the candidate: build, conformance, engine, browser, foundations, Praxis",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
-        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/afc3703006b4b4839322d673e954f8ad9bb415c9/checks"
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/5608698c63f5f7f447edb716b3fcd5536b5282d2/checks"
       ],
       "started_at": null,
       "completed_at": null
@@ -132,14 +133,14 @@
       "id": "G9",
       "name": "Deployment",
       "scope": "served build-info.json names the candidate; deployed acceptance on it",
-      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
       "status": "PASS",
       "evidence_paths": [
         "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
-        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/afc3703006b4b4839322d673e954f8ad9bb415c9/checks"
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/5608698c63f5f7f447edb716b3fcd5536b5282d2/checks"
       ],
       "started_at": null,
-      "completed_at": "2026-10-23T16:39:10Z"
+      "completed_at": "2026-10-23T17:11:00Z"
     }
   ],
   "defect_classes": [
@@ -166,10 +167,11 @@
         "P2",
         "P3",
         "P5",
-        "A (second review)"
+        "A (second review)",
+        "refused renewal swapped token (third review, low)"
       ],
-      "fix_sha": "645f3ca",
-      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3",
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3 (A CLOSED; low residual fixed in 63b2232, not re-reviewed)",
       "status": "OPEN"
     },
     {
@@ -207,11 +209,12 @@
       "variants": [
         "browser cache",
         "nonce repeated across page loads (shared cache)",
-        "C (post-PATCH ref read unjudged)"
+        "C (post-PATCH ref read unjudged)",
+        "reload answered by a lagging replica (third review, medium)"
       ],
-      "fix_sha": "645f3ca",
-      "reviewer_evidence": "live runs 39980845597 (diagnostics), 39982330584 and 39986660673 PASS; closure-review-2 (CLOSED)",
-      "status": "CLOSED"
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "live runs 39980845597 (diagnostics), 39982330584, 39986660673, 39990408889 PASS; closure-review-2 (CLOSED); closure-review-3 (OPEN: reload), fixed in 63b2232, not re-reviewed",
+      "status": "OPEN"
     },
     {
       "id": "DC-006",
@@ -219,22 +222,23 @@
       "violated_invariant": "a failed framework download ends the start promptly with recovery (WASM-LOAD-005)",
       "original_repro": "deployed acceptance run 39983316689",
       "variants": [
-        "CDN 503 + integrity failure on one .wasm"
+        "CDN 503 + integrity failure on one .wasm",
+        "first fix failed starts the loader would have recovered (third review, medium)"
       ],
-      "fix_sha": "645f3ca",
-      "reviewer_evidence": "closure-review-3",
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "closure-review-3 (OPEN), fixed in 63b2232, not re-reviewed",
       "status": "OPEN"
     }
   ],
   "metrics": {
     "first_green_elapsed_seconds": 6255,
     "first_candidate_elapsed_seconds": 10994,
-    "accepted_elapsed_seconds": 15897,
-    "candidate_count": 4,
+    "accepted_elapsed_seconds": 17807,
+    "candidate_count": 5,
     "repeated_defect_class_count": 4,
     "token_count": null,
     "ci_queue_seconds": null,
-    "ci_test_seconds": 408,
+    "ci_test_seconds": 592,
     "verified_requirement_count": null,
     "milestones": {
       "start": "2026-10-23T12:14:13Z",
@@ -249,12 +253,12 @@
         "not_after": "2026-10-23T15:11:41Z"
       },
       "first_candidate_on_main": "2026-10-23T15:17:27Z",
-      "accepted": "2026-10-23T16:39:10Z"
+      "accepted": "2026-10-23T17:11:00Z"
     },
     "unavailable": {
       "token_count": "the runtime does not expose token usage to the session",
       "ci_queue_seconds": "not aggregated across runs; per-run timings are in GitHub Actions",
-      "ci_test_seconds_scope": "wall-clock of the accepted candidate's run 39987600253 (build, tests, deploy, deployed acceptance); not summed over earlier runs"
+      "ci_test_seconds_scope": "wall-clock of the accepted candidate's main run (build, tests, deploy, deployed acceptance); not summed over earlier runs"
     }
   },
   "unresolved_decisions": [
@@ -269,6 +273,12 @@
       "owner": "repository owner",
       "impact": "P1 features (causal graph, search, comparison, export, first-run guidance) not built",
       "disposition": "deferred; listed NOT_RUN in the ledger"
+    },
+    {
+      "id": "UD-4",
+      "owner": "repository owner",
+      "impact": "63b2232 merged to main before the fourth independent closure review reported",
+      "disposition": "owner instruction 'Assume all reviewed please merge'; G7 stays BLOCKED in this ledger until that review is recorded"
     },
     {
       "id": "UD-3",

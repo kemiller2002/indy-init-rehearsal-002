@@ -520,9 +520,12 @@
     "tests": [
       ".github/workflows/build-and-test.yml"
     ],
-    "evidence_paths": [],
-    "status": "BLOCKED",
-    "reason": "Deployed identity check exists; no deployment yet (main branch not created)."
+    "evidence_paths": [
+      "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
+      "https://github.com/kemiller2002/indy-init-rehearsal-002/actions/runs/39991592706"
+    ],
+    "status": "PASS",
+    "reason": "Deployed build-info.json names main 5608698; deployed acceptance passed on it (run 39991592706)."
   },
   "DCC-009": {
     "owner": "lead",

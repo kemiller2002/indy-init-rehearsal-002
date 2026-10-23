@@ -812,6 +812,19 @@ let ``17 a repository answered under another name is refused, not loaded (F6)`` 
     Assert.Empty(items "investigations" w)
 
 [<Fact>]
+let ``17b a repository answer without a role (installation token) still offers writing and GitHub decides (DC-004)`` () =
+    let run = "r17b"
+    let w0 =
+        world (workspaceRepo run)
+        |> withRule (fun r -> r.Method = "GET" && r.Route = Some "") (Respond(200L, sprintf """{"full_name":"%s/%s","private":true}""" owner repoName))
+        |> init
+        |> connect run
+    Assert.True(flag "canCreate" w0)
+    let after = w0 |> createInvestigation "Installation" "token without a reported role"
+    Assert.Equal(Idle, sync after)
+    Assert.True((live after).LastVerified.IsSome)
+
+[<Fact>]
 let ``18 a refused write can be retried with a renewed credential without losing the change (F9)`` () =
     let run = "r18"
     let w0 = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(401L, """{"message":"Bad credentials"}"""))
@@ -827,3 +840,33 @@ let ``18 a refused write can be retried with a renewed credential without losing
     Assert.Equal(Idle, sync renewed)
     Assert.True((live renewed).LastVerified.IsSome)
     Assert.False((renewed.App.ConnectForm).ContainsKey "token")
+
+// ---------------------------------------------------------------------------------------------------------------
+// Routing through Limen.Routing (SAF-URL-9)
+// ---------------------------------------------------------------------------------------------------------------
+
+[<Fact>]
+let ``19 every Causa route round-trips through the Limen routing codec`` () =
+    let id = "a6747bd3-0000-4000-8000-000000000001"
+    let entity = "b6747bd3-0000-4000-8000-000000000002"
+    let routes =
+        [ Home; InvestigationRoute(id, Overview, None) ]
+        @ (Tab.all |> List.map (fun t -> InvestigationRoute(id, t, None)) |> List.filter (fun r -> r <> InvestigationRoute(id, Overview, None)))
+        @ (Tab.all |> List.map (fun t -> InvestigationRoute(id, t, Some entity)))
+    routes |> List.iter (fun r -> Assert.Equal(r, Route.parse (Route.format r)))
+    Assert.Equal("#/i/" + id + "/timeline", Route.format (InvestigationRoute(id, Timeline, None)))
+
+[<Fact>]
+let ``19b unknown, malformed and non-identifier locations are not found, never another view`` () =
+    [ "#/nope"; "#/i/not-a-uuid"; "#/i/a6747bd3-0000-4000-8000-000000000001/bogus"; "#/i/A6747BD3-0000-4000-8000-000000000001"; "#/%zz" ]
+    |> List.iter (fun h ->
+        match Route.parse h with
+        | NotFoundRoute _ -> ()
+        | other -> failwithf "%s resolved to %A" h other)
+    Assert.Equal(Home, Route.parse "")
+    Assert.Equal(Home, Route.parse "#/")
+
+[<Fact>]
+let ``19c the committed route inventory is exactly what Limen renders for the table`` () =
+    let committed = File.ReadAllText(Path.Combine(__SOURCE_DIRECTORY__, "..", "..", ".echelon", "routes.json"))
+    Assert.Equal(Route.inventory (), committed)

@@ -13,6 +13,7 @@
     <PackageReference Include="EchelonFoundry.Aegis.Core" Version="1.0.0" />
     <PackageReference Include="EchelonFoundry.Limen.Contract" Version="0.9.0" />
     <PackageReference Include="EchelonFoundry.Limen.Guest" Version="0.9.0" />
+    <PackageReference Include="EchelonFoundry.Limen.Routing" Version="0.9.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Operational.fs" />
@@ -22,6 +23,7 @@
     <Compile Include="GitHub.fs" />
     <Compile Include="CommandForms.fs" />
     <Compile Include="Session.fs" />
+    <Compile Include="Routes.fs" />
     <Compile Include="App.fs" />
     <Compile Include="Capabilities.fs" />
     <Compile Include="View.fs" />

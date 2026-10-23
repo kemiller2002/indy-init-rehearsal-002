@@ -19,10 +19,11 @@ type Target =
       Branch: string
       Root: DataRoot }
 
-/// Repository facts read on connect. `CanPush` is the repository role GitHub reports for the credential's user; the
-/// credential itself may still be narrower, so a refused write is handled as AccessDenied at write time.
+/// Repository facts read on connect. `CanPush` is the repository role GitHub reports for the credential's user
+/// (`None` when GitHub reports no role, as for GitHub App installation tokens). It is advisory either way: the
+/// credential may be narrower than the role, so a refused write is handled as WriteDenied at write time (DC-004).
 type Access =
-    { CanPush: bool
+    { CanPush: bool option
       IsPrivate: bool
       FullName: string }
 
@@ -216,7 +217,7 @@ module GitHub =
         parse body (fun e ->
             match str "full_name" e, flag "private" e with
             | Some name, Some isPrivate ->
-                let push = prop "permissions" e |> Option.bind (flag "push") |> Option.defaultValue false
+                let push = prop "permissions" e |> Option.bind (flag "push")
                 Some { CanPush = push; IsPrivate = isPrivate; FullName = name }
             | _ -> None) "repository"
 

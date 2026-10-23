@@ -55,6 +55,14 @@ module View =
     // Connection and sync
     // ------------------------------------------------------------------------------------------------------------
 
+
+    let private connectedLabel (l: Live) =
+        match l.Access.CanPush with
+        | _ when not (Target.writable l.Target) -> "Connected · read-only"
+        | Some true -> "Connected · read & write"
+        | None -> "Connected · write not reported"
+        | Some false -> "Connected · read-only"
+
     let private connection (app: App) =
         let state, label, detail, tone =
             match app.Connection with
@@ -68,7 +76,7 @@ module View =
                     | ListingTree -> "Listing investigations"
                 "connecting", "Connecting…", step + " (" + Target.identity target + ").", Attention
             | Connected l ->
-                "connected", (if l.Access.CanPush && Target.writable l.Target then "Connected · read & write" else "Connected · read-only"),
+                "connected", connectedLabel l,
                 Target.identity l.Target + " at " + short l.Head.Commit, Positive
             | Refused(target, refusal) ->
                 let kind, text =
@@ -224,7 +232,9 @@ module View =
           t (
               match live with
               | Some l when not (Target.writable l.Target) -> "Read-only: frozen fixtures"
-              | Some l when l.Access.CanPush -> "Read and write (repository role); writes go to " + Target.rootLabel l.Target
+              | Some l when l.Access.CanPush = Some true -> "Read and write (repository role); writes go to " + Target.rootLabel l.Target
+              | Some l when l.Access.CanPush = None ->
+                  "GitHub did not report a repository role for this credential; saving is offered and GitHub decides. Writes go to " + Target.rootLabel l.Target
               | Some _ -> "Read-only: the credential's user cannot push"
               | None -> ""
           )

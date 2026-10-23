@@ -14,6 +14,97 @@
     },
     {
       "guards": [],
+      "name": "investigation",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/i/{id:string}",
+      "requires": [],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "tab",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "tab",
+          "required": true,
+          "type": "enum",
+          "values": [
+            "overview",
+            "hypotheses",
+            "evidence",
+            "questions",
+            "causes",
+            "timeline",
+            "report"
+          ]
+        }
+      ],
+      "pattern": "/i/{id:string}/{tab:enum}",
+      "requires": [],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
+      "name": "entity",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "type": "string",
+          "values": null
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "tab",
+          "required": true,
+          "type": "enum",
+          "values": [
+            "overview",
+            "hypotheses",
+            "evidence",
+            "questions",
+            "causes",
+            "timeline",
+            "report"
+          ]
+        },
+        {
+          "default": null,
+          "in": "path",
+          "name": "entity",
+          "required": true,
+          "type": "string",
+          "values": null
+        }
+      ],
+      "pattern": "/i/{id:string}/{tab:enum}/{entity:string}",
+      "requires": [],
+      "returnTarget": true
+    },
+    {
+      "guards": [],
       "name": "notFound",
       "params": [
         {

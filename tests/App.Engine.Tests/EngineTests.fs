@@ -1011,3 +1011,82 @@ let ``21 reads of mutable state are never cacheable: every ref and repository re
     // Content-addressed reads keep their stable URL: caching them is correct.
     let addressed = after.Requests |> List.filter (fun r -> r.Method = "GET" && not (isRefOrRepo r)) |> List.map (fun r -> r.Url)
     Assert.All(addressed, fun u -> Assert.DoesNotContain("fresh=", u))
+
+// ---------------------------------------------------------------------------------------------------------------
+// Second independent closure review (evidence/quality/closure-review-2.md, A, C, D)
+// ---------------------------------------------------------------------------------------------------------------
+
+let private isGetRef (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/git/ref/"))
+let private isGetCommit (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/git/commits/"))
+let private isPostCommit (r: Request) = r.Method = "POST" && r.Route = Some "/git/commits"
+let private patchedShas (w: World) =
+    w.Requests |> List.filter isPatch |> List.choose (fun r -> r.Body) |> List.map (fun b -> Text.Json.JsonDocument.Parse(b).RootElement.GetProperty("sha").GetString())
+
+[<Fact>]
+let ``22 A no write starts while a reload runs, so a late reload answer cannot roll back a verified save`` () =
+    let run = "r22"
+    let denied = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(401L, """{"message":"Bad credentials"}""")) |> createInvestigation "Renew" "during refresh"
+    // A reload starts; its commit read is held back.
+    let reloading, late = { denied with Rules = [] } |> deliver (event "refresh" None None) |> pumpHolding isGetCommit []
+    Assert.True((live reloading).Refreshing)
+    Assert.False(flag "canRenew" reloading)
+    let refused = reloading |> send "connect.token" token |> fire "auth.renew"
+    match sync refused with
+    | Held(_, WriteDenied _) -> ()
+    | other -> failwithf "a write started during a reload: %A" other
+    Assert.Equal(0, requestsSince reloading.Requests.Length refused |> List.filter isWrite |> List.length)
+    // The reload finishes; then the renewed save is verified and the view shows it.
+    let reloaded = late |> List.fold (fun (w: World) e -> answer e w) refused |> pump
+    Assert.False((live reloaded).Refreshing)
+    let saved = reloaded |> send "connect.token" token |> fire "auth.renew"
+    Assert.Equal(Idle, sync saved)
+    Assert.Equal(saved.Repo.Head, (live saved).Head.Commit)
+
+[<Fact>]
+let ``22b C after an accepted PATCH, a branch diverged elsewhere is outcome-unknown; a stale ref read is not`` () =
+    let run = "r22b"
+    let w0 = connected run (workspaceRepo run)
+    let before = w0.Repo.Head
+    // Right after our PATCH someone force-moves the branch to another line of history (parent: the old head).
+    let diverge (repo: Repo) = commitFiles "someone else's line" [ "README.md", Some(Encoding.UTF8.GetBytes "other\n") ] { repo with Head = before }
+    let forced =
+        w0
+        |> withRule isPatch (Concurrent id)
+        |> withRule isGetRef (Concurrent diverge)
+        |> createInvestigation "Forced" "diverged after patch"
+    match sync forced with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "a diverged branch after the PATCH was reported as %A" other
+    Assert.True((live forced).LastVerified.IsNone)
+    // A stale replica: the verify-ref read answers the previous head although the branch holds our commit. GitHub
+    // accepted the non-forced PATCH, so the commit read-back decides. (A force-reset to exactly the previous head is
+    // indistinguishable from this by any single read; recorded as a residual in DC-005.)
+    let runS = run + "s"
+    let fresh = connected runS (workspaceRepo runS)
+    let stale =
+        fresh
+        |> withRule isPatch (Concurrent id)
+        |> withRule isGetRef (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" fresh.Repo.Head))
+        |> createInvestigation "Stale" "replica lag"
+    Assert.Equal(Idle, sync stale)
+    Assert.True((live stale).LastVerified.IsSome)
+
+[<Fact>]
+let ``22c D a rebased publication never re-sends its pre-rebase commit`` () =
+    let run = "r22c"
+    let prefix = Fixtures.workspacePrefix run
+    // The first PATCH meets another writer; after the rebase, the new commit creation's answer is lost.
+    let lost =
+        connected run (workspaceRepo run)
+        |> withRule isPatch (Concurrent(otherWriterAppends prefix openIds[1] "other"))
+        |> withRule isPostCommit (Concurrent id)
+        |> withRule isPostCommit (UnknownAfter false)
+        |> createInvestigation "D" "lost commit answer"
+    match sync lost with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    let after = { lost with Rules = [] } |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync after)
+    let shas = patchedShas after
+    Assert.Equal(shas.Length, (List.distinct shas).Length)
+    patchBodiesNeverForce after

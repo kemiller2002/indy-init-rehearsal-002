@@ -92,15 +92,30 @@ const start = async () => {
   const timeout = new Promise((_, reject) => {
     timer = setTimeout(() => reject(new Error("timeout")), START_TIMEOUT_MS);
   });
+  // The .NET loader downloads framework files in parallel and reports a failed one (a 503, an integrity mismatch)
+  // only as an unhandled rejection; the start promise then never settles. Any rejection while starting ends the
+  // start at once with the recoverable failure, instead of a spinner until the timeout.
+  /** @type {(event: PromiseRejectionEvent) => void} */
+  let onRejection = () => {};
+  const loaderFailure = new Promise((_, reject) => {
+    onRejection = (event) => {
+      event.preventDefault();
+      reject(new Error("loader"));
+    };
+  });
+  window.addEventListener("unhandledrejection", onRejection);
   try {
-    await Promise.race([kernel.start(), timeout]);
+    await Promise.race([kernel.start(), timeout, loaderFailure]);
   } catch (error) {
     fail(error instanceof Error && error.message === "timeout"
       ? "Starting took too long. Your connection may be slow or interrupted."
-      : "The application engine could not be loaded in this browser.");
+      : error instanceof Error && error.message === "loader"
+        ? "Part of the application could not be downloaded. Your connection or the site may be briefly unavailable."
+        : "The application engine could not be loaded in this browser.");
     return;
   } finally {
     clearTimeout(timer);
+    window.removeEventListener("unhandledrejection", onRejection);
   }
   if (kernel.status !== "running") {
     fail("The application engine did not accept this page (version mismatch). Reload to get a consistent version.");

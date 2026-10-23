@@ -120,10 +120,12 @@ module Shell =
     // Deciding and publishing commands
     // ------------------------------------------------------------------------------------------------------------
 
-    /// Begin publishing. Only from Idle or Held: a write never replaces another write in flight (DC-002).
+    /// Begin publishing. Only from Idle or Held, and never while a reload is running: a write never replaces another
+    /// write in flight, and a reload's late answers could otherwise roll back what the write verified (DC-002).
     let private startWrite (live: Live) (w: Write) (app: App) =
         match live.Sync with
         | InFlight _ -> app |> App.notice Critical "A change is already being saved; nothing else was started.", []
+        | _ when live.Refreshing -> app |> App.notice Attention "The workspace is being reloaded; try again when it finishes. Your change is kept.", []
         | Idle | Held _ ->
             let generated = { w with Generation = app.Counter + 1 }
             { app with Connection = Connected { live with Sync = InFlight(generated, CreatingBlobs) } }
@@ -396,6 +398,10 @@ module Shell =
         | OpReconcileCompare sha, Ok body ->
             match GitHub.parseCompareStatus body, w.Commit with
             | Ok("identical" | "ahead"), Some ours -> continueWith VerifyingCommit { w with Moved = true } [ OpVerifyCommit ours, GitHub.getCommit live.Target ours ]
+            // After an accepted PATCH, a ref read older than our commit is a stale replica answering (DC-005): GitHub
+            // already said the branch moved, so read back the commit. A diverged branch was reset by someone: unknown.
+            | Ok "behind", Some ours when stage = VerifyingRef -> continueWith VerifyingCommit w [ OpVerifyCommit ours, GitHub.getCommit live.Target ours ]
+            | Ok _, _ when stage = VerifyingRef -> unknown "GitHub accepted the branch update, but the branch now points elsewhere. Confirm what GitHub holds before doing anything else."
             | Ok _, _ -> continueWith ReloadingCommit w [ OpReloadCommit sha, GitHub.getCommit live.Target sha ]
             | Error f, _ -> fail f
         | OpReloadRef, Ok body ->
@@ -418,7 +424,8 @@ module Shell =
                 if now = w.BaseEntries then
                     // The branch moved but this investigation did not: rebase onto the new head (CONTRACT §9.4.2a).
                     // The catalog's read point (live.Head) does not move: other investigations were not re-read.
-                    let w' = { w with Attempts = w.Attempts + 1; BaseCommit = head.Commit; BaseTree = head.Tree; Moved = true }
+                    // The rebased publication gets a new commit; the old one must never be sent again (review D).
+                    let w' = { w with Attempts = w.Attempts + 1; BaseCommit = head.Commit; BaseTree = head.Tree; Moved = true; Commit = None }
                     if Session.fileNames |> List.forall w'.Blobs.ContainsKey then
                         { app with Connection = Connected { live with Sync = InFlight(w', CreatingTree) } } |> emitGen w'.Generation [ Session.treeRequest live w' ]
                     else
@@ -430,7 +437,8 @@ module Shell =
         | OpVerifyRef, Ok body ->
             match GitHub.parseRef body, w.Commit with
             | Ok sha, Some commit when sha = commit -> continueWith VerifyingCommit w [ OpVerifyCommit commit, GitHub.getCommit live.Target commit ]
-            | Ok _, Some commit -> continueWith VerifyingCommit w [ OpVerifyCommit commit, GitHub.getCommit live.Target commit ]
+            // The branch does not name our commit: decide by ancestry, never by assumption (review C).
+            | Ok sha, Some commit -> continueWith VerifyingRef w [ OpReconcileCompare sha, GitHub.compare live.Target commit sha ]
             | Error f, _ -> fail f
             | _, None -> fail (Malformed "write sequence")
         | OpVerifyCommit commit, Ok body ->

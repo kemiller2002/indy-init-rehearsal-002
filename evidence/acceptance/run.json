@@ -1,0 +1,13 @@
+{
+  "run_id": "causa-rehearsal-002",
+  "source_commit_sha": "3eb799553f89b1447c920b1e581b884df0b12d09",
+  "source_tree_sha": "8bd21cb5ddc07b828f880409b02b5cba47be82ba",
+  "deployed_commit_sha": null,
+  "deployed_url": "https://kevinmmiller.us/indy-init-rehearsal-002/",
+  "contract_version": "causa-storage-v1.0.0",
+  "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
+  "gates": [],
+  "defect_classes": [],
+  "metrics": {},
+  "unresolved_decisions": []
+}

@@ -91,7 +91,7 @@ def record(source, deployed, accepted_at, g7, g9):
         "repeated_defect_class_count": 4,
         "token_count": None,
         "ci_queue_seconds": None,
-        "ci_test_seconds": None,
+        "ci_test_seconds": 408,
         "verified_requirement_count": None,
         "milestones": {
             "start": START, "first_build": "2026-10-23T12:26:32Z", "first_functional_screen": "2026-10-23T12:58:34Z",
@@ -101,7 +101,7 @@ def record(source, deployed, accepted_at, g7, g9):
             "first_candidate_on_main": "2026-10-23T15:17:27Z", "accepted": accepted_at},
         "unavailable": {"token_count": "the runtime does not expose token usage to the session",
                         "ci_queue_seconds": "not aggregated across runs; per-run timings are in GitHub Actions",
-                        "ci_test_seconds": "not aggregated across runs; per-run timings are in GitHub Actions"},
+                        "ci_test_seconds_scope": "wall-clock of the accepted candidate's run 39987600253 (build, tests, deploy, deployed acceptance); not summed over earlier runs"},
     }
     decisions = [
         {"id": "UD-1", "owner": "repository owner", "impact": "main was created from the session by the owner; branch protection not applied",

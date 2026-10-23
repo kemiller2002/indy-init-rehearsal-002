@@ -1,7 +1,7 @@
 {
   "run_id": "causa-rehearsal-002",
   "source_commit_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
-  "deployed_commit_sha": null,
+  "deployed_commit_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
   "deployed_url": "https://kevinmmiller.us/indy-init-rehearsal-002/",
   "contract_version": "causa-storage-v1.0.0",
   "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
@@ -133,13 +133,13 @@
       "name": "Deployment",
       "scope": "served build-info.json names the candidate; deployed acceptance on it",
       "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
-      "status": "BLOCKED",
+      "status": "PASS",
       "evidence_paths": [
         "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
         "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/afc3703006b4b4839322d673e954f8ad9bb415c9/checks"
       ],
       "started_at": null,
-      "completed_at": null
+      "completed_at": "2026-10-23T16:39:10Z"
     }
   ],
   "defect_classes": [
@@ -229,12 +229,12 @@
   "metrics": {
     "first_green_elapsed_seconds": 6255,
     "first_candidate_elapsed_seconds": 10994,
-    "accepted_elapsed_seconds": null,
+    "accepted_elapsed_seconds": 15897,
     "candidate_count": 4,
     "repeated_defect_class_count": 4,
     "token_count": null,
     "ci_queue_seconds": null,
-    "ci_test_seconds": null,
+    "ci_test_seconds": 408,
     "verified_requirement_count": null,
     "milestones": {
       "start": "2026-10-23T12:14:13Z",
@@ -249,12 +249,12 @@
         "not_after": "2026-10-23T15:11:41Z"
       },
       "first_candidate_on_main": "2026-10-23T15:17:27Z",
-      "accepted": null
+      "accepted": "2026-10-23T16:39:10Z"
     },
     "unavailable": {
       "token_count": "the runtime does not expose token usage to the session",
       "ci_queue_seconds": "not aggregated across runs; per-run timings are in GitHub Actions",
-      "ci_test_seconds": "not aggregated across runs; per-run timings are in GitHub Actions"
+      "ci_test_seconds_scope": "wall-clock of the accepted candidate's run 39987600253 (build, tests, deploy, deployed acceptance); not summed over earlier runs"
     }
   },
   "unresolved_decisions": [

@@ -1,0 +1,69 @@
+{
+  "run": "r002-live-39982330584",
+  "owner": "kemiller2002",
+  "repo": "causa-data",
+  "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
+  "baseUrl": "local dist/site",
+  "checks": [
+    {
+      "id": "L1-empty-first-launch",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L2-denied-without-authorization",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L3-authorized-read-and-replay",
+      "outcome": "PASS",
+      "verified": 5
+    },
+    {
+      "id": "L4-new-investigation-github-write-read-back",
+      "outcome": "PASS",
+      "commit": "f30c305b6e270f69acec8defac1cf58c2a282419",
+      "investigationId": "f89e91b1-9701-4c88-846b-eb52470f04a9"
+    },
+    {
+      "id": "L4b-reload-requires-reauthorization-and-reloads",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L5-concurrent-write-conflict-protection",
+      "outcome": "PASS",
+      "headAfterB": "bb21f767a7169570db90d9aaa8e13788a0308b11"
+    },
+    {
+      "id": "L5b-conflict-recovery-reapply",
+      "outcome": "PASS",
+      "finalCommit": "fb426d0f9bd8870dbc70adbae37000bc4a25103b",
+      "versions": 3
+    },
+    {
+      "id": "L6-malformed-data-refusal",
+      "outcome": "PASS",
+      "code": "CAUSA.MANIFEST_MISMATCH"
+    }
+  ],
+  "timings": {
+    "fixturesLoadMs": 4150,
+    "createWriteVerifyMs": 3647
+  },
+  "diagnostics": {
+    "writtenCommit": "f30c305b6e270f69acec8defac1cf58c2a282419",
+    "refReads": [
+      {
+        "at": "2026-10-23T15:56:35.942Z",
+        "url": "/repos/kemiller2002/causa-data/git/ref/heads/claude/causa-rehearsal-002-kickoff-i2ihli?fresh=afc96bbff04e4d98a1e8a50440e59aa1",
+        "status": 200,
+        "sha": "f30c305b6e270f69acec8defac1cf58c2a282419",
+        "fromCache": false,
+        "age": null,
+        "cacheControl": "private, max-age=60, s-maxage=60",
+        "etag": "W/\"6ba687bf51a19f682642ce24d9357802b7519fb705f8f2f840b1ad86713e4f77\"",
+        "requestId": "5002:280612:15E6B25:473CEB8:6ADB83B3",
+        "nodeHeadAtAnswer": "f30c305b6e270f69acec8defac1cf58c2a282419"
+      }
+    ]
+  }
+}

@@ -233,7 +233,8 @@ module Shell =
         | Ok(files, newLoaded) ->
             let rewritten =
                 { w with Envelope = envelope; Files = files; Loaded = newLoaded; BaseEntries = Session.baseEntries live w.InvestigationId
-                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; MayHaveApplied = false; Attempts = 0
+                         // The same command (same id) may already have landed once and been removed: keep the flag (review 10, R10-1).
+                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; Attempts = 0
                          Received = Map.empty; NewHead = None }
             startWrite cleared rewritten app
 
@@ -387,15 +388,17 @@ module Shell =
             | ReloadingRef | ReloadingCommit | ReloadingTree | Recognising -> false
         // An Unknown hold always means an earlier send may have landed; the flag travels with the held write.
         let unknown detail = hold live { w with MayHaveApplied = true } (Unknown detail) app
+        // GitHub.describe Offline says "Nothing was sent", which is untrue once a request may have arrived (review 10, R10-2).
+        let cause f = match f with Offline -> "the network connection failed." | _ -> GitHub.describe f
         let fail f =
             match stage, f with
             // An earlier send may have landed: even a refusal of this request says nothing about that one (review 7, F1).
-            | _ when w.MayHaveApplied -> unknown ("The save may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
+            | _ when w.MayHaveApplied -> unknown ("The save may have been applied (" + cause f + ") Confirm what GitHub received before doing anything else.")
             // A refusal GitHub states (HTTP status or GraphQL error) means nothing was applied.
             | Committing, (Unauthorized | Forbidden _ | NotFound) -> holdFor live w f app
             | Committing, ProviderFailure.Rejected(status, _) when status < 500L -> holdFor live w f app
             // A network failure (Offline included) may come after GitHub received the request: never "not written".
-            | _ when afterSend -> unknown ("The save may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
+            | _ when afterSend -> unknown ("The save may have been applied (" + cause f + ") Confirm what GitHub received before doing anything else.")
             | _ -> holdFor live w f app
         let publish w' = continueWith Committing w' [ Session.commitRequest live w' ]
         let reload sha = continueWith ReloadingCommit w [ OpReloadCommit sha, GitHub.getCommit live.Target sha ]

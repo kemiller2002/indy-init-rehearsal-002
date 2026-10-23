@@ -56,21 +56,25 @@ let private filesAt (repo: Repo) (prefix: string) (id: string) : Map<string, byt
 let private validateAt (repo: Repo) (prefix: string) (id: string) =
     Store.ofFileMap id (filesAt repo prefix id) |> Result.bind (Store.validate Fixtures.schemaSet)
 
-/// Another writer appends a domain-valid observation to an investigation and moves the branch.
-let private otherWriterAppends (prefix: string) (id: string) (statement: string) : Repo -> Repo =
+/// Another writer records a domain-valid observation (given command and observation ids) and moves the branch.
+let private otherWriterRecords (commandId: Guid) (observationId: Guid) (prefix: string) (id: string) (statement: string) : Repo -> Repo =
     fun repo ->
         let files = Store.ofFileMap id (filesAt repo prefix id) |> Result.defaultWith (fun e -> failwith e.Code)
         let loaded = Store.validate Fixtures.schemaSet files |> Result.defaultWith (fun e -> failwith e.Code)
         let envelope =
-            { CommandId = Guid "5e1f0000-0000-4000-8000-000000000001"
+            { CommandId = commandId
               Investigation = loaded.State.Id
               ExpectedVersion = Some loaded.State.Version
               Actor = Actor.human "other-writer"
               RequestedAt = baseTime
-              Command = RecordObservation(Id.create (Guid "5e1f0000-0000-4000-8000-000000000002"), statement, None) }
+              Command = RecordObservation(Id.create observationId, statement, None) }
         let events = Decide.execute (Some loaded.State) envelope |> Result.defaultWith (fun es -> failwithf "%A" es)
         let next, _ = Store.append Fixtures.schemaSet loaded loaded.State.Version events |> Result.defaultWith (fun e -> failwith e.Code)
         repo |> commitFiles "other writer" (Fixtures.fileMapOf next |> List.map (fun (n, b) -> prefix + id + "/" + n, Some b))
+
+/// Another writer appends a domain-valid observation to an investigation and moves the branch.
+let private otherWriterAppends (prefix: string) (id: string) (statement: string) : Repo -> Repo =
+    otherWriterRecords (Guid "5e1f0000-0000-4000-8000-000000000001") (Guid "5e1f0000-0000-4000-8000-000000000002") prefix id statement
 
 /// Frozen investigations whose lifecycle is open (content may still be appended).
 let private openIds =
@@ -1441,3 +1445,59 @@ let ``27c N2 re-applying a landed new investigation whose directory was then alt
     let discarded = reapplied |> fire "sync.discard"
     Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
     Assert.Equal(1, discarded.Requests |> List.filter isSave |> List.length)
+
+// ---------------------------------------------------------------------------------------------------------------
+// Tenth independent closure review (evidence/quality/closure-review-10.md: T1, R10-1, R10-2)
+// ---------------------------------------------------------------------------------------------------------------
+
+/// A landed observation (answer lost), then reverted and appended to by another writer: Conflict with the flag set.
+let private landedThenReverted (run: string) =
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let baseFiles = filesAt (workspaceRepo run) prefix target
+    let revertThenAppend (repo: Repo) =
+        let reverted = commitFiles "revert" [ for KeyValue(n, b) in baseFiles -> prefix + target + "/" + n, Some b ] repo
+        otherWriterAppends prefix target "other, after revert" reverted
+    let held =
+        connected run (workspaceRepo run) |> withRule isSave (UnknownAfter true) |> withRule isGetRef (Concurrent revertThenAppend)
+        |> observe target "landed, then reverted"
+    prefix, target, { held with Rules = [] }
+
+[<Fact>]
+let ``28 T1 a refused re-apply of a command that may have landed never says "not saved"`` () =
+    let prefix, target, held = landedThenReverted "r28"
+    let observation =
+        match sync held with
+        | Held(w, Conflict _) ->
+            match w.Envelope.Command with
+            | RecordObservation(oid, _, _) -> oid.Value
+            | other -> failwithf "unexpected command %A" other
+        | other -> failwithf "expected Held Conflict, got %A" other
+    // Another writer records an observation with the same id: the domain refuses to re-apply ours (DUPLICATE_ID).
+    let taken = { held with Repo = held.Repo |> otherWriterRecords (Guid "5e1f0000-0000-4000-8000-0000000000aa") observation prefix target "same id" }
+    let after = taken |> fire "sync.reapply"
+    let notice = text "noticeText" after
+    Assert.Contains("could not be re-applied", notice)
+    Assert.Contains("may have been saved", notice)
+    Assert.DoesNotContain("not saved", notice)
+
+[<Fact>]
+let ``28b R10-1 a re-applied command that met another change keeps "may have been saved" through discard`` () =
+    let prefix, target, held = landedThenReverted "r28b"
+    let other = otherWriterRecords (Guid "5e1f0000-0000-4000-8000-0000000000bb") (Guid "5e1f0000-0000-4000-8000-0000000000bc") prefix target "meanwhile"
+    let after = held |> withRule isSave (Concurrent other) |> fire "sync.reapply"
+    match sync after with
+    | Held(w, Conflict detail) ->
+        Assert.True(w.MayHaveApplied)
+        Assert.DoesNotContain("not written", detail)
+    | other -> failwithf "expected Held Conflict, got %A" other
+    let discarded = { after with Rules = [] } |> fire "sync.discard"
+    Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
+
+[<Fact>]
+let ``28c R10-2 an outcome-unknown save never says "Nothing was sent"`` () =
+    let held = connected "r28c" (workspaceRepo "r28c") |> withRule isSave NetworkDown |> createInvestigation "Offline" "unknown"
+    match sync held with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.DoesNotContain("Nothing was sent", text "syncDetail" held)

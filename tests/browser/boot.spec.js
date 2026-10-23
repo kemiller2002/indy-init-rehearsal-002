@@ -83,6 +83,32 @@ test.describe("WASM-LOAD: failure and retry", () => {
   });
 });
 
+test.describe("WASM-LOAD: a framework file fails mid-boot", () => {
+  // What the deployed site met right after a Pages deploy: one framework file answered 503, its body failed the
+  // integrity check, and the .NET loader rejected. The user must still get the recoverable failure, not a dead page.
+  test.use({ allowedConsoleErrors: /Failed to load resource|integrity|SRI|Fetch API cannot load/i });
+
+  test("a 503 on one framework .wasm shows the recoverable failure; Retry reloads to ready", async ({ page }) => {
+    let failed = false;
+    const one = /\/wasm\/_framework\/System\.ComponentModel\.EventBasedAsync\.[^/]*\.wasm$/;
+    await page.route(one, (route) => {
+      failed = true;
+      return route.fulfill({ status: 503, contentType: "text/html", body: "<h1>503 Service Unavailable</h1>" });
+    });
+    await page.goto("./");
+    // Well before the 90 s start timeout: the failure is reported as soon as the loader rejects.
+    await expect(page.locator("html")).toHaveAttribute("data-boot", "failed", { timeout: 30_000 });
+    expect(failed).toBe(true);
+    await expect(page.locator("#causa-boot").getByRole("alert")).toContainText("could not be downloaded");
+    await expect(page.getByRole("button", { name: "Retry" })).toBeFocused();
+    await page.unroute(one);
+    const reloaded = page.waitForEvent("load");
+    await page.getByRole("button", { name: "Retry" }).click();
+    await reloaded;
+    await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 90_000 });
+  });
+});
+
 test.describe("WASM-LOAD: reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 

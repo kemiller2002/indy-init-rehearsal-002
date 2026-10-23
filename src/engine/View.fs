@@ -131,16 +131,19 @@ module View =
                     | WriteFailed detail -> "failed", "Save failed", detail + " Your change is preserved here.", Critical, false
                     | Unknown detail -> "unknown", "Outcome unknown", detail + " Confirm before retrying.", Critical, false
         let held hold = match App.live app with Some { Sync = Held(_, h) } -> hold h | _ -> false
+        // Retry, renew, re-apply and reconcile all start provider work, which is refused while a reload runs:
+        // they are offered only when they would be accepted (review B).
+        let actionable hold = held hold && not (App.live app |> Option.exists (fun l -> l.Refreshing))
         [ "syncState", t state
           "syncLabel", t label
           "syncDetail", t detail
           "syncTone", t (toneKey tone)
           "syncBusy", b busy
           "hasHeld", b (held (fun _ -> true))
-          "canRetry", b (held (function NotSent _ | WriteFailed _ -> true | _ -> false))
-          "canRenew", b (held (function WriteDenied _ | Unknown _ -> true | _ -> false))
-          "canReapply", b (held (function Conflict _ -> true | _ -> false))
-          "canReconcile", b (held (function Unknown _ -> true | _ -> false))
+          "canRetry", b (actionable (function NotSent _ | WriteFailed _ -> true | _ -> false))
+          "canRenew", b (actionable (function WriteDenied _ | Unknown _ -> true | _ -> false))
+          "canReapply", b (actionable (function Conflict _ -> true | _ -> false))
+          "canReconcile", b (actionable (function Unknown _ -> true | _ -> false))
           "canDiscard", b (held (fun _ -> true))
           "canRefresh", b (match App.live app with Some l -> (match l.Sync with InFlight _ -> false | _ -> not l.Refreshing) | None -> false)
           "refreshDisabled", b (match App.live app with Some l -> (match l.Sync with InFlight _ -> true | _ -> l.Refreshing) | None -> true) ]

@@ -138,7 +138,7 @@ module View =
           "syncBusy", b busy
           "hasHeld", b (held (fun _ -> true))
           "canRetry", b (held (function NotSent _ | WriteFailed _ -> true | _ -> false))
-          "canRenew", b (held (function WriteDenied _ -> true | _ -> false))
+          "canRenew", b (held (function WriteDenied _ | Unknown _ -> true | _ -> false))
           "canReapply", b (held (function Conflict _ -> true | _ -> false))
           "canReconcile", b (held (function Unknown _ -> true | _ -> false))
           "canDiscard", b (held (fun _ -> true))

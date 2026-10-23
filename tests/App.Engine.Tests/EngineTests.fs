@@ -742,7 +742,7 @@ let ``15 sync events during an in-flight write neither replace nor discard it (D
         |> deliver (event "sync.reapply" None None)
         |> deliver (event "sync.discard" None None)
         |> deliver (event "sync.retry" None None)
-        |> deliver (event "sync.refresh" None None)
+        |> deliver (event "refresh" None None)
     match sync poked with
     | InFlight _ -> ()
     | other -> failwithf "an event replaced the in-flight write: %A" other
@@ -870,3 +870,100 @@ let ``19b unknown, malformed and non-identifier locations are not found, never a
 let ``19c the committed route inventory is exactly what Limen renders for the table`` () =
     let committed = File.ReadAllText(Path.Combine(__SOURCE_DIRECTORY__, "..", "..", ".echelon", "routes.json"))
     Assert.Equal(Route.inventory (), committed)
+
+// ---------------------------------------------------------------------------------------------------------------
+// Independent closure review regressions (evidence/quality/closure-review-DC-002-004.md, P1–P5)
+// ---------------------------------------------------------------------------------------------------------------
+
+/// Answer pending effects in FIFO order, setting aside those matching `late` (returned for delivery later).
+let rec private pumpHolding (late: Request -> bool) (held: EffectRequest list) (w: World) : World * EffectRequest list =
+    match w.Pending with
+    | [] -> w, held
+    | (EffectRequest.Http h as e) :: rest when late (requestOf w.Repo h) -> pumpHolding late (held @ [ e ]) { w with Pending = rest }
+    | e :: rest -> pumpHolding late held (answer e { w with Pending = rest })
+
+[<Fact>]
+let ``20 P1 reconciling an unknown blob creation after the branch moved recreates the blobs instead of throwing`` () =
+    let run = "r20"
+    let held = connected run (workspaceRepo run) |> withRule isPostBlob (UnknownAfter false) |> createInvestigation "P1" "cancelled blob"
+    match sync held with
+    | Held(w, Unknown _) -> Assert.True(w.Commit.IsNone)
+    | other -> failwithf "expected Held Unknown, got %A" other
+    let moved = { held with Repo = held.Repo |> commitFiles "unrelated" [ "README.md", Some(Encoding.UTF8.GetBytes "changed\n") ] }
+    let after = moved |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync after)
+    Assert.True((live after).LastVerified.IsSome)
+    patchBodiesNeverForce after
+
+[<Fact>]
+let ``20b P2 a re-apply whose target is refused at listing returns to a visible hold`` () =
+    let run = "r20b"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let held = connected run (workspaceRepo run) |> withRule isPatch (Concurrent(otherWriterAppends prefix target "other")) |> observe target "mine"
+    match sync held with
+    | Held(_, Conflict _) -> ()
+    | other -> failwithf "expected Held Conflict, got %A" other
+    let broken = { held with Repo = held.Repo |> commitFiles "stray" [ prefix + target + "/stray.txt", Some(Encoding.UTF8.GetBytes "x") ] }
+    let after = broken |> fire "sync.reapply"
+    match sync after with
+    | Held(_, Conflict _) -> ()
+    | other -> failwithf "expected a visible Held Conflict, got %A" other
+    Assert.True((live after).Reapply.IsNone)
+    Assert.True(flag "hasHeld" after)
+    Assert.True(flag "canDiscard" after)
+
+[<Fact>]
+let ``20c P3 a late blob answer during the reload does not start the re-apply from the old state`` () =
+    let run = "r20c"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let w0 = connected run (workspaceRepo run)
+    // A refresh whose blob reads are held back, then a complete one.
+    let stalled, lateBlobs = w0 |> deliver (event "refresh" None None) |> pumpHolding isGetBlob []
+    let fresh = stalled |> fire "refresh"
+    let held = fresh |> withRule isPatch (Concurrent(otherWriterAppends prefix target "other")) |> observe target "mine"
+    match sync held with
+    | Held(_, Conflict _) -> ()
+    | other -> failwithf "expected Held Conflict, got %A" other
+    let patches = held.Requests |> List.filter isPatch |> List.length
+    let reloading = held |> deliver (event "sync.reapply" None None)
+    let poked = lateBlobs |> List.fold (fun (w: World) e -> answer e w) { reloading with Pending = reloading.Pending }
+    match sync poked with
+    | InFlight _ -> failwith "a late blob answer started the re-apply before the reload listed the target"
+    | _ -> ()
+    let after = poked |> pump
+    Assert.Equal(Idle, sync after)
+    Assert.Equal(patches + 1, after.Requests |> List.filter isPatch |> List.length)
+    patchBodiesNeverForce after
+
+[<Fact>]
+let ``20d P4 a rate-limited write is retryable, not a credential refusal`` () =
+    let run = "r20d"
+    let w0 = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(403L, """{"message":"API rate limit exceeded for installation."}"""))
+    let held = w0 |> createInvestigation "Rate" "limited"
+    match sync held with
+    | Held(_, WriteFailed _) -> ()
+    | other -> failwithf "expected a retryable WriteFailed, got %A" other
+    Assert.True(flag "canRetry" held)
+    let retried = held |> fire "sync.retry"
+    Assert.Equal(Idle, sync retried)
+
+[<Fact>]
+let ``20e P5 a late error from the held attempt does not abort the reconciliation`` () =
+    let run = "r20e"
+    let w0 = connected run (workspaceRepo run)
+    let submitted = w0 |> openCommand "new-investigation" |> send "cmd.textA" "P5" |> send "cmd.textB" "late" |> deliver (event "cmd.submit" None None)
+    let verifying, late = submitted |> pumpHolding (fun r -> isGetBlob r && r.CorrelationId <> "") []
+    Assert.Equal(3, late.Length)
+    let failed = { verifying with Rules = [] } |> withRule isGetBlob NetworkDown |> answer late[0]
+    match sync failed with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    let reconciling = { failed with Rules = [] } |> deliver (event "sync.reconcile" None None)
+    let poked = reconciling |> withRule isGetBlob NetworkDown |> answer late[1]
+    match sync poked with
+    | InFlight(_, Reconciling) -> ()
+    | other -> failwithf "a late answer from the held attempt changed the reconciliation: %A" other
+    let after = { poked with Rules = [] } |> pump
+    Assert.Equal(Idle, sync after)

@@ -127,6 +127,19 @@ test("L4 create a new investigation: atomic commit, independent read-back, reloa
   await expect(page.locator(".causa-masthead")).toContainText("Not connected");
   await page.goto("./#/");
   await expect(page.getByRole("heading", { name: "Connect data repository" })).toBeVisible();
+  // Evidence for the reconnect: every ref read the page makes (what it asked, what GitHub answered, cache headers),
+  // beside an independent read from Node at the same moment. Recorded whatever the outcome.
+  const refReads = [];
+  page.on("response", async (response) => {
+    if (!response.url().includes("/git/ref/")) return;
+    const h = response.headers();
+    const sha = await response.json().then((b) => b?.object?.sha ?? null).catch(() => null);
+    refReads.push({ at: new Date().toISOString(), url: response.url().replace(/^https:\/\/api\.github\.com/, ""), status: response.status(),
+      sha, fromCache: response.fromServiceWorker() || (await response.request().timing()).responseStart === -1,
+      age: h["age"] ?? null, cacheControl: h["cache-control"] ?? null, etag: h["etag"] ?? null, requestId: h["x-github-request-id"] ?? null,
+      nodeHeadAtAnswer: await head().catch(() => null) });
+  });
+  results.diagnostics = { writtenCommit: after, refReads };
   await connect(page, { root: run });
   await expect(page.locator('.causa-card[data-status="valid"]')).toHaveCount(1, { timeout: 120_000 });
   await expect(page.locator(".causa-card__title")).toContainText(`R002 live acceptance ${run}`);

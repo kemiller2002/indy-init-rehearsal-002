@@ -261,6 +261,18 @@
             </template>
             <template data-if="hasInvestigation">
               <div class="causa-stack">
+                <template data-if="hasHeld">
+                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-inv-title" role="alert">
+                    <h2 id="held-inv-title" data-text="syncLabel"></h2>
+                    <p data-text="syncDetail"></p>
+                    <div class="causa-actions">
+                      <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
+                      <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
+                      <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
+                      <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>
+                    </div>
+                  </section>
+                </template>
                 <header class="causa-record">
                   <p class="causa-record__kicker">Investigation</p>
                   <h1 id="inv-title" class="causa-record__title" data-text="invTitle"></h1>

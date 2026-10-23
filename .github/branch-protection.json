@@ -3,8 +3,8 @@
   "branch": "main",
   "requiredStatusChecks": [
     "build-and-test",
-    "foundations / verify-foundations",
-    "validate"
+    "validate",
+    "foundations / verify-foundations"
   ],
   "strictStatusChecks": false,
   "enforceAdmins": true,

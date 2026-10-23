@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/cause.schema.json",
+  "title": "cause projection entity",
+  "description": "Causal assertion projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "outcome",
+    "members",
+    "mechanism",
+    "state",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "outcome": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "causal-member.schema.json"
+      }
+    },
+    "mechanism": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/causeState"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

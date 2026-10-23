@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/golden-scenarios.schema.json",
+  "title": "Causa v1 golden scenario summary",
+  "description": "contract/v1.0.0/golden/scenarios.json: informative generator summary; not authoritative.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "scenarios"
+  ],
+  "properties": {
+    "formatVersion": {
+      "$ref": "common.schema.json#/$defs/formatVersion"
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scenarioKey",
+          "investigationId",
+          "commands",
+          "events",
+          "eventTypes",
+          "refusals"
+        ],
+        "properties": {
+          "scenarioKey": {
+            "$ref": "common.schema.json#/$defs/slug"
+          },
+          "investigationId": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "commands": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Commands issued by the generator: persisted command groups plus refused commands."
+          },
+          "events": {
+            "$ref": "common.schema.json#/$defs/aggregateVersion"
+          },
+          "eventTypes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Distinct event types, sorted ordinally."
+          },
+          "refusals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "step",
+                "expectedCode",
+                "engineCodes"
+              ],
+              "properties": {
+                "step": {
+                  "$ref": "common.schema.json#/$defs/versionOrZero"
+                },
+                "expectedCode": {
+                  "type": "string",
+                  "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"
+                },
+                "engineCodes": {
+                  "type": "string",
+                  "description": "Every code the engine returned, joined by '; '."
+                }
+              }
+            },
+            "description": "Commands the engine refused, as expected (never persisted). step is the 0-based generator step index."
+          }
+        }
+      }
+    }
+  }
+}

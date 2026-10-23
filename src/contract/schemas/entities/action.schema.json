@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/action.schema.json",
+  "title": "action projection entity",
+  "description": "Investigative action projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "kind",
+    "purpose",
+    "targetHypothesisIds",
+    "state",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/actionKind"
+    },
+    "purpose": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "targetHypothesisIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/actionState"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

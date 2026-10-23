@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/EvidenceAdmitted.schema.json",
+  "title": "EvidenceAdmitted payload",
+  "description": "Admits evidence. Text content is verbatim; artifacts are referenced by absolute http(s) URL, never embedded (R3.5). Verification starts 'unverified'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "contentKind",
+    "content",
+    "category",
+    "source",
+    "capturedAt"
+  ],
+  "properties": {
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "contentKind": {
+      "$ref": "../common.schema.json#/$defs/contentKind"
+    },
+    "content": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "category": {
+      "$ref": "../common.schema.json#/$defs/evidenceCategory"
+    },
+    "source": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "capturedAt": {
+      "$ref": "../common.schema.json#/$defs/nullableTimestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "contentKind": {
+            "const": "artifact"
+          }
+        },
+        "required": [
+          "contentKind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "../common.schema.json#/$defs/httpUrl"
+          }
+        }
+      }
+    }
+  ]
+}

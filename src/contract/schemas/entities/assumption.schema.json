@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/assumption.schema.json",
+  "title": "assumption projection entity",
+  "description": "Assumption projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "proposition",
+    "materiality",
+    "state",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "proposition": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "materiality": {
+      "$ref": "../common.schema.json#/$defs/materiality"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/assumptionState"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

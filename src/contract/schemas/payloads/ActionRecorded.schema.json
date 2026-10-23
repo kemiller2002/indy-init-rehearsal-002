@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ActionRecorded.schema.json",
+  "title": "ActionRecorded payload",
+  "description": "Proposes an investigative action; starts 'proposed'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actionId",
+    "kind",
+    "purpose",
+    "targetHypothesisIds"
+  ],
+  "properties": {
+    "actionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/actionKind"
+    },
+    "purpose": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "targetHypothesisIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ConclusionRecorded.schema.json",
+  "title": "ConclusionRecorded payload",
+  "description": "A conclusion with explicit residual uncertainty (R6.4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "conclusionId",
+    "statement",
+    "strength",
+    "causeIds",
+    "residualUncertainty"
+  ],
+  "properties": {
+    "conclusionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "strength": {
+      "$ref": "../common.schema.json#/$defs/conclusionStrength"
+    },
+    "causeIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "residualUncertainty": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

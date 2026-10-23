@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/VerificationRecorded.schema.json",
+  "title": "VerificationRecorded payload",
+  "description": "A verification of a criterion; a satisfied outcome must cite evidence (R7.4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verificationId",
+    "criterionId",
+    "outcome",
+    "evidenceIds"
+  ],
+  "properties": {
+    "verificationId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "criterionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "outcome": {
+      "$ref": "../common.schema.json#/$defs/verificationOutcome"
+    },
+    "evidenceIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "satisfied"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    }
+  ]
+}

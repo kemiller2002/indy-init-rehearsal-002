@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/LifecycleChanged.schema.json",
+  "title": "LifecycleChanged payload",
+  "description": "Investigation lifecycle transition, discriminated by the command that caused it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "from",
+    "to",
+    "command",
+    "reason"
+  ],
+  "properties": {
+    "from": {
+      "$ref": "../common.schema.json#/$defs/lifecycle"
+    },
+    "to": {
+      "$ref": "../common.schema.json#/$defs/lifecycleTarget"
+    },
+    "command": {
+      "$ref": "../common.schema.json#/$defs/lifecycleCommand"
+    },
+    "reason": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "activateInvestigation"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "active"
+          },
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markAwaitingEvidence"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "awaitingEvidence"
+          },
+          "reason": {
+            "$ref": "../common.schema.json#/$defs/text"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markAwaitingVerification"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "awaitingVerification"
+          },
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "resolveInvestigation"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "resolved"
+          },
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "closeInvestigation"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "closed"
+          },
+          "reason": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "reopenInvestigation"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "active"
+          },
+          "reason": {
+            "$ref": "../common.schema.json#/$defs/text"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "verificationFailed"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "active"
+          },
+          "reason": {
+            "$ref": "../common.schema.json#/$defs/text"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "verificationFailed"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "from": {
+            "const": "awaitingVerification"
+          }
+        }
+      }
+    }
+  ]
+}

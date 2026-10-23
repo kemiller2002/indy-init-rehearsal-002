@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/actor.schema.json",
+  "title": "Causa v1 actor and provenance",
+  "description": "Actor identity (non-secret, stable) and entity provenance. Agents carry provider and model (engine ActorKind.Agent).",
+  "$defs": {
+    "actor": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actorId",
+            "kind"
+          ],
+          "properties": {
+            "actorId": {
+              "$ref": "common.schema.json#/$defs/text"
+            },
+            "kind": {
+              "enum": [
+                "human",
+                "system"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actorId",
+            "kind",
+            "provider",
+            "model"
+          ],
+          "properties": {
+            "actorId": {
+              "$ref": "common.schema.json#/$defs/text"
+            },
+            "kind": {
+              "const": "agent"
+            },
+            "provider": {
+              "$ref": "common.schema.json#/$defs/text"
+            },
+            "model": {
+              "$ref": "common.schema.json#/$defs/text"
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor",
+        "recordedAt"
+      ],
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "recordedAt": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      },
+      "description": "Who created the entity and the occurredAt of the event that created it."
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/EvidenceSuperseded.schema.json",
+  "title": "EvidenceSuperseded payload",
+  "description": "Marks evidence as superseded by a replacement; the original remains in history.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "replacementEvidenceId",
+    "reason"
+  ],
+  "properties": {
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "replacementEvidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "reason": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

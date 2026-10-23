@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/AssumptionRecorded.schema.json",
+  "title": "AssumptionRecorded payload",
+  "description": "Records an explicit assumption; starts 'explicitUnverified'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assumptionId",
+    "proposition",
+    "materiality"
+  ],
+  "properties": {
+    "assumptionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "proposition": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "materiality": {
+      "$ref": "../common.schema.json#/$defs/materiality"
+    }
+  }
+}

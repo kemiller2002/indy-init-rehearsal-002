@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/conclusion.schema.json",
+  "title": "conclusion projection entity",
+  "description": "Conclusion projection; the current conclusion is the one with the highest recordedAtVersion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "statement",
+    "strength",
+    "causeIds",
+    "residualUncertainty",
+    "recordedAtVersion",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "strength": {
+      "$ref": "../common.schema.json#/$defs/conclusionStrength"
+    },
+    "causeIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "residualUncertainty": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "recordedAtVersion": {
+      "$ref": "../common.schema.json#/$defs/aggregateVersion"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

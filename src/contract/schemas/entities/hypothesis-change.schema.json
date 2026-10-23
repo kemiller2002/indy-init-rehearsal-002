@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/hypothesis-change.schema.json",
+  "title": "hypothesis-change projection entity",
+  "description": "One entry of a hypothesis's change history, in history order.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "from",
+    "to",
+    "command",
+    "reason",
+    "evidenceIds",
+    "at",
+    "aggregateVersion"
+  ],
+  "properties": {
+    "from": {
+      "$ref": "../common.schema.json#/$defs/hypothesisState"
+    },
+    "to": {
+      "$ref": "../common.schema.json#/$defs/hypothesisTarget"
+    },
+    "command": {
+      "$ref": "../common.schema.json#/$defs/hypothesisCommand"
+    },
+    "reason": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "evidenceIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "at": {
+      "$ref": "../common.schema.json#/$defs/timestamp"
+    },
+    "aggregateVersion": {
+      "$ref": "../common.schema.json#/$defs/aggregateVersion"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markPlausible"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "plausible"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markSupported"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "supported"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markWeakened"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "weakened"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "falsify"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "falsified"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "supersede"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "superseded"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "reopen"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "to": {
+            "const": "plausible"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markSupported"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "markWeakened"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "falsify"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "command": {
+            "const": "reopen"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    }
+  ]
+}

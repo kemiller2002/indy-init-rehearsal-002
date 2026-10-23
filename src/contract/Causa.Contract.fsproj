@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Causa storage contract v1.0.0 reader/writer: byte-identical vendor copy of kemiller2002/causa-data
+       @causa-storage-v1.0.0 tools/src/Causa.Contract, plus its normative schemas (src/VENDOR.json). -->
+  <PropertyGroup>
+    <AssemblyName>Causa.Contract</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Json.fs" />
+    <Compile Include="Errors.fs" />
+    <Compile Include="Wire.fs" />
+    <Compile Include="Events.fs" />
+    <Compile Include="Projection.fs" />
+    <Compile Include="SchemaCheck.fs" />
+    <Compile Include="Store.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="schemas/**/*.schema.json" LogicalName="causa-schemas/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../domain/Causa.Domain.fsproj" />
+  </ItemGroup>
+</Project>

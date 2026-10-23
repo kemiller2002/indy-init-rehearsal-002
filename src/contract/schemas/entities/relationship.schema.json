@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/relationship.schema.json",
+  "title": "relationship projection entity",
+  "description": "Evidence-hypothesis relationship projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "evidenceId",
+    "hypothesisId",
+    "kind",
+    "rationale",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "hypothesisId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/relationshipKind"
+    },
+    "rationale": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

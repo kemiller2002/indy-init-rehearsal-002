@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/observation.schema.json",
+  "title": "observation projection entity",
+  "description": "Observation projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "original",
+    "observedAt",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "original": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "observedAt": {
+      "$ref": "../common.schema.json#/$defs/nullableTimestamp"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/CausalAssertionRecorded.schema.json",
+  "title": "CausalAssertionRecorded payload",
+  "description": "Proposes a causal explanation composed of hypotheses with roles; starts 'proposed'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "causeId",
+    "outcome",
+    "members",
+    "mechanism"
+  ],
+  "properties": {
+    "causeId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "outcome": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "../entities/causal-member.schema.json"
+      }
+    },
+    "mechanism": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

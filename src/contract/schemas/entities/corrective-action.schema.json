@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/corrective-action.schema.json",
+  "title": "corrective-action projection entity",
+  "description": "Corrective action projection. awaitingSinceVersion is the aggregateVersion at which the current verification round began (0 = never).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "kind",
+    "description",
+    "targetCauseIds",
+    "state",
+    "awaitingSinceVersion",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/correctiveActionKind"
+    },
+    "description": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "targetCauseIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/correctiveActionState"
+    },
+    "awaitingSinceVersion": {
+      "$ref": "../common.schema.json#/$defs/versionOrZero"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

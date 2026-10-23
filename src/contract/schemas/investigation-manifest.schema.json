@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/investigation-manifest.schema.json",
+  "title": "Causa v1 investigation manifest",
+  "description": "Per-investigation manifest. Contains no provider metadata (no Git SHA, branch, path or token).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "investigationId",
+    "schemaVersion",
+    "semanticVersion",
+    "aggregateVersion",
+    "eventCount",
+    "eventsSha256",
+    "snapshotVersion",
+    "snapshotSha256",
+    "domainPacks",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "formatVersion": {
+      "$ref": "common.schema.json#/$defs/formatVersion"
+    },
+    "investigationId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/schemaVersion"
+    },
+    "semanticVersion": {
+      "$ref": "common.schema.json#/$defs/semanticVersion"
+    },
+    "aggregateVersion": {
+      "$ref": "common.schema.json#/$defs/aggregateVersion"
+    },
+    "eventCount": {
+      "$ref": "common.schema.json#/$defs/aggregateVersion"
+    },
+    "eventsSha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "snapshotVersion": {
+      "const": 1
+    },
+    "snapshotSha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "domainPacks": {
+      "type": "array",
+      "maxItems": 0,
+      "description": "No domain packs exist in v1.0.0."
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "updatedAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
+  }
+}

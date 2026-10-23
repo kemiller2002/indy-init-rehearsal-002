@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ContradictionTransitioned.schema.json",
+  "title": "ContradictionTransitioned payload",
+  "description": "Contradiction state change with its basis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contradictionId",
+    "state",
+    "basis"
+  ],
+  "properties": {
+    "contradictionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/contradictionTarget"
+    },
+    "basis": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

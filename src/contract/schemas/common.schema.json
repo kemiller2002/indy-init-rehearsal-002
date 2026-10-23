@@ -1,0 +1,376 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/common.schema.json",
+  "title": "Causa v1 primitive and enumeration definitions",
+  "description": "Domain identifiers, primitive types, version references and every persisted enumeration.",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "description": "Lowercase canonical RFC 4122 text, 36 characters, not the nil UUID.",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "not": {
+        "const": "00000000-0000-0000-0000-000000000000"
+      }
+    },
+    "uuidList": {
+      "type": "array",
+      "description": "Ordered list of distinct UUIDs; order is significant and preserved.",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/uuid"
+      }
+    },
+    "nonEmptyUuidList": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/uuidList"
+        },
+        {
+          "minItems": 1
+        }
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC instant with exactly three fractional digits and 'Z'.",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{3}Z$"
+    },
+    "nullableTimestamp": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "text": {
+      "type": "string",
+      "description": "Verbatim text containing at least one non-whitespace character. Never trimmed or normalized.",
+      "minLength": 1,
+      "pattern": "[^\\t\\n\\u000b\\f\\r \\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+    },
+    "nullableText": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "httpUrl": {
+      "type": "string",
+      "description": "Absolute http(s) URL (engine rule R3.5).",
+      "pattern": "^[Hh][Tt][Tt][Pp][Ss]?://[^\\t\\n\\u000b\\f\\r \\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+    },
+    "sha256": {
+      "type": "string",
+      "description": "Lowercase hexadecimal SHA-256 digest.",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "aggregateVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "versionOrZero": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "formatVersion": {
+      "const": "1.0.0",
+      "description": "Wire format version of this contract."
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "semanticVersion": {
+      "const": "1.0.0",
+      "description": "Semantic (domain meaning) version; changes only via approved semantic evolution."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "errorCode": {
+      "type": "string",
+      "pattern": "^CAUSA\\.[A-Z_]+$"
+    },
+    "lifecycle": {
+      "enum": [
+        "draft",
+        "active",
+        "awaitingEvidence",
+        "awaitingVerification",
+        "resolved",
+        "closed",
+        "archived"
+      ]
+    },
+    "hypothesisState": {
+      "enum": [
+        "proposed",
+        "plausible",
+        "supported",
+        "weakened",
+        "falsified",
+        "superseded"
+      ]
+    },
+    "unknownState": {
+      "enum": [
+        "identified",
+        "investigating",
+        "resolved",
+        "acceptedResidual",
+        "superseded"
+      ]
+    },
+    "materiality": {
+      "enum": [
+        "blocking",
+        "material",
+        "nonMaterial",
+        "informational"
+      ]
+    },
+    "assumptionState": {
+      "enum": [
+        "explicitUnverified",
+        "provisionallyAccepted",
+        "verified",
+        "rejected",
+        "expired"
+      ]
+    },
+    "contradictionState": {
+      "enum": [
+        "detected",
+        "triaged",
+        "investigating",
+        "resolved",
+        "acceptedResidual",
+        "superseded"
+      ]
+    },
+    "actionState": {
+      "enum": [
+        "proposed",
+        "approved",
+        "inProgress",
+        "completed",
+        "interpreted",
+        "rejected",
+        "cancelled"
+      ]
+    },
+    "actionKind": {
+      "enum": [
+        "test",
+        "inspection",
+        "query",
+        "comparison",
+        "experiment"
+      ]
+    },
+    "causeState": {
+      "enum": [
+        "proposed",
+        "confirmed",
+        "reopened",
+        "superseded"
+      ]
+    },
+    "causeRole": {
+      "enum": [
+        "rootCause",
+        "contributingFactor",
+        "trigger",
+        "enablingCondition"
+      ]
+    },
+    "correctiveActionState": {
+      "enum": [
+        "proposed",
+        "approved",
+        "inProgress",
+        "implemented",
+        "awaitingVerificationOfEffect",
+        "verifiedEffective",
+        "verificationFailed",
+        "reworkRequired",
+        "cancelled"
+      ]
+    },
+    "correctiveActionKind": {
+      "enum": [
+        "mitigation",
+        "workaround",
+        "correction",
+        "prevention"
+      ]
+    },
+    "evidenceCategory": {
+      "enum": [
+        "directObservation",
+        "measurement",
+        "log",
+        "document",
+        "experimentResult",
+        "testimony",
+        "externalReference"
+      ]
+    },
+    "verificationStatus": {
+      "enum": [
+        "unverified",
+        "partiallyVerified",
+        "verified",
+        "invalidated"
+      ]
+    },
+    "relationshipKind": {
+      "enum": [
+        "supports",
+        "contradicts",
+        "discriminates",
+        "insufficient"
+      ]
+    },
+    "predictionStrength": {
+      "enum": [
+        "necessary",
+        "expected",
+        "discriminating",
+        "nonDiscriminating"
+      ]
+    },
+    "predictionTiming": {
+      "enum": [
+        "prospective",
+        "retrospective"
+      ]
+    },
+    "verificationOutcome": {
+      "enum": [
+        "satisfied",
+        "failed",
+        "inconclusive"
+      ]
+    },
+    "conclusionStrength": {
+      "enum": [
+        "plausibleExplanation",
+        "leadingExplanation",
+        "supportedCause",
+        "confirmedCause",
+        "acceptedWithResidualUncertainty"
+      ]
+    },
+    "proposalKind": {
+      "enum": [
+        "hypothesis",
+        "unknown",
+        "action"
+      ]
+    },
+    "proposalState": {
+      "enum": [
+        "active",
+        "accepted",
+        "rejected"
+      ]
+    },
+    "hypothesisCommand": {
+      "enum": [
+        "markPlausible",
+        "markSupported",
+        "markWeakened",
+        "falsify",
+        "supersede",
+        "reopen"
+      ]
+    },
+    "lifecycleCommand": {
+      "enum": [
+        "activateInvestigation",
+        "markAwaitingEvidence",
+        "markAwaitingVerification",
+        "resolveInvestigation",
+        "closeInvestigation",
+        "reopenInvestigation",
+        "verificationFailed"
+      ]
+    },
+    "contentKind": {
+      "enum": [
+        "text",
+        "artifact"
+      ]
+    },
+    "lifecycleTarget": {
+      "enum": [
+        "active",
+        "awaitingEvidence",
+        "awaitingVerification",
+        "resolved",
+        "closed"
+      ]
+    },
+    "hypothesisTarget": {
+      "enum": [
+        "plausible",
+        "supported",
+        "weakened",
+        "falsified",
+        "superseded"
+      ]
+    },
+    "unknownTarget": {
+      "enum": [
+        "investigating",
+        "resolved",
+        "acceptedResidual"
+      ]
+    },
+    "assumptionTarget": {
+      "enum": [
+        "provisionallyAccepted",
+        "verified",
+        "rejected"
+      ]
+    },
+    "contradictionTarget": {
+      "enum": [
+        "triaged",
+        "resolved",
+        "acceptedResidual"
+      ]
+    },
+    "actionTarget": {
+      "enum": [
+        "approved",
+        "rejected",
+        "inProgress",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "correctiveActionTarget": {
+      "enum": [
+        "approved",
+        "cancelled",
+        "inProgress",
+        "implemented",
+        "awaitingVerificationOfEffect",
+        "verificationFailed",
+        "verifiedEffective",
+        "reworkRequired"
+      ]
+    }
+  }
+}

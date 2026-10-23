@@ -44,3 +44,7 @@ node_modules/
 test-results/
 playwright-report/
 # conditor:build-outputs:end
+
+# R002: test-only external data checkout and build caches
+.cache/
+dist/

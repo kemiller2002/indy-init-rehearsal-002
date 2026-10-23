@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/CorrectiveActionRecorded.schema.json",
+  "title": "CorrectiveActionRecorded payload",
+  "description": "Proposes a corrective action; mitigation is distinct from correction (R7.2).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "correctiveActionId",
+    "kind",
+    "description",
+    "targetCauseIds"
+  ],
+  "properties": {
+    "correctiveActionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/correctiveActionKind"
+    },
+    "description": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "targetCauseIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    }
+  }
+}

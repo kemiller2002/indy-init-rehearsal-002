@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/finding.schema.json",
+  "title": "finding projection entity",
+  "description": "Finding projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "actionId",
+    "originalResult",
+    "interpretation",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "actionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "originalResult": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "interpretation": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

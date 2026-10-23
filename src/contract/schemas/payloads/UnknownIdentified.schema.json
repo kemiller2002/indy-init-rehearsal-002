@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/UnknownIdentified.schema.json",
+  "title": "UnknownIdentified payload",
+  "description": "Identifies an open question; starts 'identified'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unknownId",
+    "question",
+    "materiality"
+  ],
+  "properties": {
+    "unknownId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "question": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "materiality": {
+      "$ref": "../common.schema.json#/$defs/materiality"
+    }
+  }
+}

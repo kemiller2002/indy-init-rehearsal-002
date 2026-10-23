@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- G3/G4: replays the frozen causa-data v1.0.0 dataset (5 golden scenarios, 90 negative fixtures) through
+       R002's own compiled domain and contract reader. The data is fetched at test time by
+       tools/data/fetch-causa-data.sh into .cache/ and is never part of the application. -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Conformance.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/engine/App.Engine.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+</Project>

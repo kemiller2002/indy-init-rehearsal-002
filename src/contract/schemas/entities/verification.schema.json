@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/verification.schema.json",
+  "title": "verification projection entity",
+  "description": "Verification projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "criterionId",
+    "outcome",
+    "evidenceIds",
+    "recordedAtVersion",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "criterionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "outcome": {
+      "$ref": "../common.schema.json#/$defs/verificationOutcome"
+    },
+    "evidenceIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "recordedAtVersion": {
+      "$ref": "../common.schema.json#/$defs/aggregateVersion"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "satisfied"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidenceIds": {
+            "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+          }
+        }
+      }
+    }
+  ]
+}

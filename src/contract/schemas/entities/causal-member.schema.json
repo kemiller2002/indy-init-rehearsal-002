@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/causal-member.schema.json",
+  "title": "causal-member projection entity",
+  "description": "A member of a causal assertion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hypothesisId",
+    "role"
+  ],
+  "properties": {
+    "hypothesisId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "role": {
+      "$ref": "../common.schema.json#/$defs/causeRole"
+    }
+  }
+}

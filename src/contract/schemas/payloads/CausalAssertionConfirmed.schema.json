@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/CausalAssertionConfirmed.schema.json",
+  "title": "CausalAssertionConfirmed payload",
+  "description": "Confirms a cause after the cause gate passed; 'policy' identifies the policy version applied (engine Policy.id).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "causeId",
+    "policy"
+  ],
+  "properties": {
+    "causeId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "policy": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

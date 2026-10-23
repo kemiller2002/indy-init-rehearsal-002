@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ProposalWasAccepted.schema.json",
+  "title": "ProposalWasAccepted payload",
+  "description": "A human accepted a proposal; targetId is the id of the entity the acceptance created (preceding event of the same correlationId).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposalId",
+    "targetId"
+  ],
+  "properties": {
+    "proposalId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "targetId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    }
+  }
+}

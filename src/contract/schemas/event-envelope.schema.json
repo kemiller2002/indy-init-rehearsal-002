@@ -1,0 +1,720 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/event-envelope.schema.json",
+  "title": "Causa v1 authoritative event envelope",
+  "description": "One line of events.ndjson. eventId = UUIDv5(eventNamespace, investigationId/aggregateVersion/correlationId) (CONTRACT §5.2).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "eventId",
+    "investigationId",
+    "aggregateVersion",
+    "eventType",
+    "occurredAt",
+    "actor",
+    "semanticVersion",
+    "correlationId",
+    "payload"
+  ],
+  "properties": {
+    "formatVersion": {
+      "$ref": "common.schema.json#/$defs/formatVersion"
+    },
+    "eventId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "investigationId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "aggregateVersion": {
+      "$ref": "common.schema.json#/$defs/aggregateVersion"
+    },
+    "eventType": {
+      "enum": [
+        "InvestigationStarted",
+        "LifecycleChanged",
+        "ObservationRecorded",
+        "HypothesisRecorded",
+        "HypothesisTransitioned",
+        "EvidenceAdmitted",
+        "EvidenceSuperseded",
+        "EvidenceVerificationAssessed",
+        "EvidenceRelated",
+        "UnknownIdentified",
+        "UnknownTransitioned",
+        "AssumptionRecorded",
+        "AssumptionTransitioned",
+        "ContradictionRecorded",
+        "ContradictionTransitioned",
+        "PredictionRecorded",
+        "ActionRecorded",
+        "ActionTransitioned",
+        "FindingRecorded",
+        "NegativeKnowledgeEstablished",
+        "CausalAssertionRecorded",
+        "CausalAssertionConfirmed",
+        "CausalAssertionReopened",
+        "CorrectiveActionRecorded",
+        "CorrectiveActionTransitioned",
+        "CriterionRecorded",
+        "VerificationRecorded",
+        "ConclusionRecorded",
+        "ProposalRecorded",
+        "ProposalWasAccepted",
+        "ProposalWasRejected"
+      ]
+    },
+    "occurredAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "actor": {
+      "$ref": "actor.schema.json#/$defs/actor"
+    },
+    "semanticVersion": {
+      "$ref": "common.schema.json#/$defs/semanticVersion"
+    },
+    "correlationId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "InvestigationStarted"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/InvestigationStarted.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "LifecycleChanged"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/LifecycleChanged.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ObservationRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ObservationRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "HypothesisRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/HypothesisRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "HypothesisTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/HypothesisTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "EvidenceAdmitted"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/EvidenceAdmitted.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "EvidenceSuperseded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/EvidenceSuperseded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "EvidenceVerificationAssessed"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/EvidenceVerificationAssessed.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "EvidenceRelated"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/EvidenceRelated.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "UnknownIdentified"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/UnknownIdentified.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "UnknownTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/UnknownTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "AssumptionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/AssumptionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "AssumptionTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/AssumptionTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ContradictionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ContradictionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ContradictionTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ContradictionTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "PredictionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/PredictionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ActionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ActionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ActionTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ActionTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "FindingRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/FindingRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "NegativeKnowledgeEstablished"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/NegativeKnowledgeEstablished.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CausalAssertionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CausalAssertionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CausalAssertionConfirmed"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CausalAssertionConfirmed.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CausalAssertionReopened"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CausalAssertionReopened.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CorrectiveActionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CorrectiveActionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CorrectiveActionTransitioned"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CorrectiveActionTransitioned.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "CriterionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/CriterionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "VerificationRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/VerificationRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ConclusionRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ConclusionRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ProposalRecorded"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ProposalRecorded.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ProposalWasAccepted"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ProposalWasAccepted.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "ProposalWasRejected"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "payloads/ProposalWasRejected.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "actor": {
+            "properties": {
+              "kind": {
+                "const": "agent"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          }
+        },
+        "required": [
+          "actor"
+        ]
+      },
+      "then": {
+        "properties": {
+          "eventType": {
+            "const": "ProposalRecorded"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "eventType": {
+            "const": "InvestigationStarted"
+          }
+        },
+        "required": [
+          "eventType"
+        ]
+      },
+      "then": {
+        "properties": {
+          "aggregateVersion": {
+            "const": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "praxis.inbox-claim/1",
+  "claimId": "INPUT-3896785a51f77d4d",
+  "state": "claimed",
+  "source": {
+    "path": ".praxis/inbox/documents/causa-rehearsal-002-kickoff.md",
+    "fileName": "causa-rehearsal-002-kickoff.md",
+    "sha256": "73c5a3e1c93a93dd44f85208df4d573342ec486614dc8b233fed412a586deffd",
+    "size": 1729
+  },
+  "claimedAt": "2026-10-23T12:30:41.159Z",
+  "claimant": {
+    "kind": "agent",
+    "id": "anthropic/claude-code",
+    "provider": "anthropic",
+    "model": "unknown",
+    "runtime": "claude-code"
+  },
+  "executionId": null,
+  "derivations": [],
+  "noDerivationReason": null,
+  "closedAt": null,
+  "releaseReason": null,
+  "rejectionReason": null
+}

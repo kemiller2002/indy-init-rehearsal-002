@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/root-manifest.schema.json",
+  "title": "Causa v1 root fixture manifest",
+  "description": "fixtures/v1.0.0/manifest.json. Investigations ordered by investigationId; negative fixtures never listed as valid.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "datasetId",
+    "createdAt",
+    "schemaSha256",
+    "investigations",
+    "negativeFixtures"
+  ],
+  "properties": {
+    "formatVersion": {
+      "$ref": "common.schema.json#/$defs/formatVersion"
+    },
+    "datasetId": {
+      "const": "causa-demo-v1"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "schemaSha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "investigations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "investigationId",
+          "scenarioKey",
+          "title",
+          "expectedVersion",
+          "expectedLifecycle",
+          "expectedStateSha256",
+          "eventsSha256",
+          "manifestSha256",
+          "snapshotSha256"
+        ],
+        "properties": {
+          "investigationId": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "scenarioKey": {
+            "$ref": "common.schema.json#/$defs/slug"
+          },
+          "title": {
+            "$ref": "common.schema.json#/$defs/text"
+          },
+          "expectedVersion": {
+            "$ref": "common.schema.json#/$defs/aggregateVersion"
+          },
+          "expectedLifecycle": {
+            "$ref": "common.schema.json#/$defs/lifecycle"
+          },
+          "expectedStateSha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "eventsSha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "manifestSha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "snapshotSha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "negativeFixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "expectedErrorCode"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^negative/[a-z0-9][a-z0-9-]*\\.json$"
+          },
+          "expectedErrorCode": {
+            "$ref": "common.schema.json#/$defs/errorCode"
+          }
+        }
+      }
+    }
+  }
+}

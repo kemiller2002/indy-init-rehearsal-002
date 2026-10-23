@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/EvidenceVerificationAssessed.schema.json",
+  "title": "EvidenceVerificationAssessed payload",
+  "description": "Records an assessment of the evidence's verification status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidenceId",
+    "verification"
+  ],
+  "properties": {
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "verification": {
+      "$ref": "../common.schema.json#/$defs/verificationStatus"
+    }
+  }
+}

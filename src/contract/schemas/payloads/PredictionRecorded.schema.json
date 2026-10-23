@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/PredictionRecorded.schema.json",
+  "title": "PredictionRecorded payload",
+  "description": "A prediction derived from a hypothesis. Timing is as decided by the engine (A11), not as requested.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "predictionId",
+    "hypothesisId",
+    "statement",
+    "strength",
+    "timing"
+  ],
+  "properties": {
+    "predictionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "hypothesisId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "strength": {
+      "$ref": "../common.schema.json#/$defs/predictionStrength"
+    },
+    "timing": {
+      "$ref": "../common.schema.json#/$defs/predictionTiming"
+    }
+  }
+}

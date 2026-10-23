@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ProposalRecorded.schema.json",
+  "title": "ProposalRecorded payload",
+  "description": "A proposal (typically from an AI agent); never evidence or authoritative state (D-004, R15.2).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposalId",
+    "kind",
+    "text",
+    "rationale"
+  ],
+  "properties": {
+    "proposalId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/proposalKind"
+    },
+    "text": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "rationale": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

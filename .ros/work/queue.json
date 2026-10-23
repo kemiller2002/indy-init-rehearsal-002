@@ -26,6 +26,195 @@
       },
       "source": "conditor",
       "sourceReference": "docs/requirements/REHEARSAL-ACCEPTANCE-LEDGER.md"
+    },
+    {
+      "id": "R002-STACK",
+      "title": "Phase 0: discover, verify and lock the current Echelon stack",
+      "description": "DEP-CURRENT-001..008; evidence/stack/*. Derived from INPUT-3896785a51f77d4d.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:30:58.659Z",
+      "updatedAt": "2026-10-23T12:30:58.659Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-BOOT",
+      "title": "Phase 1: reproducible build/run/test/validate/package/deploy commands",
+      "description": "Makefile entry points over Conditor scaffold.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:30:59.003Z",
+      "updatedAt": "2026-10-23T12:30:59.003Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-DOMAIN",
+      "title": "Domain and contracts: vendored pinned engine + causa-data contract, conformance replay",
+      "description": "Interface freeze boundaries A,C; G2/G3/G4.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:30:59.399Z",
+      "updatedAt": "2026-10-23T12:30:59.399Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-STORAGE",
+      "title": "External GitHub storage provider: connect, validate, replay, optimistic append, independent read-back",
+      "description": "EXT-DATA-001..012; CONTRACT 9.4; Boundary D.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:30:59.814Z",
+      "updatedAt": "2026-10-23T12:30:59.814Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-UI",
+      "title": "Forma UI, Causa palette, responsive shell, UI-001..016",
+      "description": "CAUSA-UI-EXPERIENCE-REQUIREMENTS; SCREEN-CONTRACTS.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:31:00.229Z",
+      "updatedAt": "2026-10-23T12:31:00.229Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-WASM",
+      "title": "Limen/WASM host and loading experience",
+      "description": "WASM-LOAD-001..008.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:31:00.593Z",
+      "updatedAt": "2026-10-23T12:31:00.593Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-REPORT",
+      "title": "Folio investigation report",
+      "description": "UI-009, Boundary E.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:31:00.947Z",
+      "updatedAt": "2026-10-23T12:31:00.947Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-SECURITY",
+      "title": "Independent security and adversarial verification",
+      "description": "Phase 5; DCC-002..005.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:31:01.368Z",
+      "updatedAt": "2026-10-23T12:31:01.368Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
+    },
+    {
+      "id": "R002-RELEASE",
+      "title": "Acceptance ledger, exact-SHA GitHub Pages deployment, experiment metrics",
+      "description": "G0-G10; DCC-008.",
+      "tags": [],
+      "priority": "high",
+      "status": "captured",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:31:01.721Z",
+      "updatedAt": "2026-10-23T12:31:01.721Z",
+      "createdBy": "unknown",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "anthropic/claude-code",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "manual",
+      "sourceReference": null
     }
   ]
 }

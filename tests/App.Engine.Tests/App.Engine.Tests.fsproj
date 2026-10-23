@@ -7,7 +7,6 @@
     <ProjectReference Include="../../src/engine/App.Engine.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EngineTests.fs" />
     <Compile Include="RouteTests.fs" />
   </ItemGroup>
   <ItemGroup>

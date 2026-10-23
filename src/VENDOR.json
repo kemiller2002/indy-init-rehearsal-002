@@ -1,0 +1,460 @@
+{
+  "schema": "causa-r002.vendor/1",
+  "note": "Byte-identical copies. Do not edit; re-run tools/vendor/vendor.py from the pinned sources.",
+  "sources": [
+    {
+      "id": "causa-domain-engine",
+      "repository": "kemiller2002/indy-init-rehearsal-001",
+      "ref": "55f49f61c939a3a780cee592f36f732a1328f981",
+      "files": [
+        {
+          "upstream": "src/engine/Primitives.fs",
+          "path": "src/domain/Primitives.fs",
+          "blob": "ec283eb6d98e8c0ae799fab83d0d468d5fb6d02b",
+          "sha256": "68cce3d80859130bcc4e40e6b093bf071b155336e17d662c9d0973bb4c578916"
+        },
+        {
+          "upstream": "src/engine/Model.fs",
+          "path": "src/domain/Model.fs",
+          "blob": "da7099e2ebb87d4027bda727e485bfeab8245310",
+          "sha256": "cf9bdaabf2f40bcbb3b395c45f0ed239e92fabce2f8cc90f9857415a3d3a4b52"
+        },
+        {
+          "upstream": "src/engine/Commands.fs",
+          "path": "src/domain/Commands.fs",
+          "blob": "e9308672885b710cc8459bf1aa006bed7e79e92b",
+          "sha256": "9816f46b09bfa0efab81356911de11361e466f0b2a7356cf93e017af04fa11d3"
+        },
+        {
+          "upstream": "src/engine/Decide.fs",
+          "path": "src/domain/Decide.fs",
+          "blob": "da3a0d0706df27e32110d036e7e63fd859a9d123",
+          "sha256": "074f5b82734e8b6170e125706f7cb3c178c8d57f78f87dad400c1ac6139ee578"
+        },
+        {
+          "upstream": "src/engine/Codec.fs",
+          "path": "src/domain/Codec.fs",
+          "blob": "63ddda9ed80feae568555b7e2ba12502e30e2e47",
+          "sha256": "72263420c35e11ef5f960bfc254b4452e3f348c9d2b6741d1165de62f49311b6"
+        }
+      ],
+      "commit": "55f49f61c939a3a780cee592f36f732a1328f981"
+    },
+    {
+      "id": "causa-storage-contract",
+      "repository": "kemiller2002/causa-data",
+      "ref": "causa-storage-v1.0.0",
+      "files": [
+        {
+          "upstream": "tools/src/Causa.Contract/Json.fs",
+          "path": "src/contract/Json.fs",
+          "blob": "a9e476ea828072903e9493e1337460f385487282",
+          "sha256": "76e876e662ba66b7843d366eb3c75a01c0eb39848072b2892a931c2002ea7f46"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/Errors.fs",
+          "path": "src/contract/Errors.fs",
+          "blob": "68361d25dcfd7c9e479f78c8c699413dac58f8a6",
+          "sha256": "74ee12c6ce377bc8696030855cf0c522bdbf0fb4a7eb42795d8db6757a749810"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/Wire.fs",
+          "path": "src/contract/Wire.fs",
+          "blob": "644db60fcdbfb938a268e71b413d4049a171d977",
+          "sha256": "7cd3d61e6d03d9d26debb1f3495618a3aea6364c70d842af45f3d524def39f79"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/Events.fs",
+          "path": "src/contract/Events.fs",
+          "blob": "701f0df16312ba3f51aa90132ff770062a6470f7",
+          "sha256": "70b03eaa5d2fbb314f07f3d328327c5045553e16f4adf013c03bf80f7b173ce9"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/Projection.fs",
+          "path": "src/contract/Projection.fs",
+          "blob": "c59b2e989dc32d129304e7d87ea7aa2bf3a94054",
+          "sha256": "e7afb81b78797c524db71dd377f121ece64b5b5b9ae348a2e87c1acfc8b00e4d"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/SchemaCheck.fs",
+          "path": "src/contract/SchemaCheck.fs",
+          "blob": "efd01d17a6d0d2a19a55a59022e08ec422da8b0d",
+          "sha256": "d1c02da3a5f2e6d3c7c1ef1f68ec6725c85b47fb1fb8bad576e0d1705e1acf4d"
+        },
+        {
+          "upstream": "tools/src/Causa.Contract/Store.fs",
+          "path": "src/contract/Store.fs",
+          "blob": "b20102fe3311780eb373ebd416533bede3dad93b",
+          "sha256": "bfe1aa8227940bd72aeaec6314d64df49a2bcce84faedf39b2130d601cfaa85b"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/actor.schema.json",
+          "path": "src/contract/schemas/actor.schema.json",
+          "blob": "b5cfc40cfbbeffed23fce112ada59a4381258a12",
+          "sha256": "67446d851703fd3a3af135230d6fc3af70c0a337a65eda0684f053b1fa685ebe"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/bundle.json",
+          "path": "src/contract/schemas/bundle.json",
+          "blob": "9963416294956d24ae62a31a3d7e320bfc609037",
+          "sha256": "0a68af8c93190d2e4d6c27beb2f8cb67c3aebdda586d01beb7122b71af179152"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/common.schema.json",
+          "path": "src/contract/schemas/common.schema.json",
+          "blob": "adefb4ffd22b28640f2635b6151c71d1f831ebd8",
+          "sha256": "76c08104289560420196bce44037f1e43fe7ead1212b300ae2276606c2531fdb"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/action.schema.json",
+          "path": "src/contract/schemas/entities/action.schema.json",
+          "blob": "33430cea1b9db77569bad99ec69fd38715448c37",
+          "sha256": "7b4ff6bca06164726f0b21ca2e730f1d45299a91b7803d2ae54f07ea20161a94"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/assumption.schema.json",
+          "path": "src/contract/schemas/entities/assumption.schema.json",
+          "blob": "0c44f5e6e36e2fac5dce377bc8633ac8cac2660c",
+          "sha256": "4817eb5e24d4ac8a121d753ebaf8f5c86de35d6599dd036e47a160f9b9d2f197"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/causal-member.schema.json",
+          "path": "src/contract/schemas/entities/causal-member.schema.json",
+          "blob": "27b0fbf9620b3c944bd081ef3b7a2fbb13bdb81b",
+          "sha256": "2ab8a614d50abbb6fd2e97821c7b54d8e26d16afbbf8c81ac58776706b36d798"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/cause.schema.json",
+          "path": "src/contract/schemas/entities/cause.schema.json",
+          "blob": "8687448e253dcfe5ffa1f9bdb1516ecc1538506d",
+          "sha256": "8e0b024551705034583a21671ff5977b00dde24f50444febaae46dce7aba96ab"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/conclusion.schema.json",
+          "path": "src/contract/schemas/entities/conclusion.schema.json",
+          "blob": "4fb5012ed3cba6f3b6448afd7955cd6ed9b7cc4b",
+          "sha256": "ff24ad20fd50a4a35c13db02f9d83e5d58bbc11ca2878ed0d420017276986273"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/contradiction.schema.json",
+          "path": "src/contract/schemas/entities/contradiction.schema.json",
+          "blob": "3e09114e99b7e04964aa5cad558d0d09fb04c21a",
+          "sha256": "e7242d4570b3801ba67e9a26b81c117402e80b65791403d3949aaa6d8797130f"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/corrective-action.schema.json",
+          "path": "src/contract/schemas/entities/corrective-action.schema.json",
+          "blob": "48ccbd5abbf4baee6de32d46d01d9ff0e55b9f6e",
+          "sha256": "8c6f5422e9d5bd32e2b9ba9784523a95eec45e7c2a1f85b3322ef6503f91c81c"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/criterion.schema.json",
+          "path": "src/contract/schemas/entities/criterion.schema.json",
+          "blob": "5b2ba7b40b2d8891fbde356c6357ca01f3503e54",
+          "sha256": "7aa63050d1a52341928112afc460410128033dd6b9e08d1c5958121a1eca663b"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/evidence.schema.json",
+          "path": "src/contract/schemas/entities/evidence.schema.json",
+          "blob": "b5be2235a42307cc627bcb1a654e7c537691598b",
+          "sha256": "243a19376157e97c3696bf0f99d23fcd6d9cd134347ef95107b8ebf0cabad78b"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/finding.schema.json",
+          "path": "src/contract/schemas/entities/finding.schema.json",
+          "blob": "3f929ed925b10960a5fbe918caa3905db9329eb0",
+          "sha256": "23b9c2d53bed6824b1a6399db98da7ad70241171ed4d163bb825b4deb512434c"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/hypothesis-change.schema.json",
+          "path": "src/contract/schemas/entities/hypothesis-change.schema.json",
+          "blob": "e58da2cfd2e3dcb1c8d2be432fa01c0c9f7eee45",
+          "sha256": "a48371cbc6ceb5484e1f0e0777b23efbf847682b8af5a2d8a3594d9c11768030"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/hypothesis.schema.json",
+          "path": "src/contract/schemas/entities/hypothesis.schema.json",
+          "blob": "84e6d294cda994bf05e227eb16d200c4bf055204",
+          "sha256": "b8c8f8a5ccad2a0bc64f4e75739f14793e3092f25d3a3b318e45c12c7f30f004"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/negative-knowledge.schema.json",
+          "path": "src/contract/schemas/entities/negative-knowledge.schema.json",
+          "blob": "fed575fa56f9e45f676d86fa5731efd03aac604c",
+          "sha256": "1b8b99ccedc192afd23dc117dd2a899fb7c324589949ca7019e01780a9c87b25"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/observation.schema.json",
+          "path": "src/contract/schemas/entities/observation.schema.json",
+          "blob": "78ce81f345a7f5fde5350e1c4a5d17d7b036fcad",
+          "sha256": "aaa697a9d18da7ba653e3e17132e3dffdd25159fa632b8af205d67dccee47054"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/prediction.schema.json",
+          "path": "src/contract/schemas/entities/prediction.schema.json",
+          "blob": "1838b6e3aa8d1f2c5fcb485d99a0cd81d21c9d11",
+          "sha256": "2e5a85c1860921e74df94b7c8ad830aca835d2637de0d9c4cc48195e68b29f4e"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/proposal.schema.json",
+          "path": "src/contract/schemas/entities/proposal.schema.json",
+          "blob": "ff41c19dfb7e00d3261fb7a229f120ca24315468",
+          "sha256": "a38987dcbe7edbacb6764c22f143d714f15158428414e325daf0687221831579"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/relationship.schema.json",
+          "path": "src/contract/schemas/entities/relationship.schema.json",
+          "blob": "df12dd82c0e46a4fba25157920fefad8e0f536b9",
+          "sha256": "cbd822c064e94ad3d15994d2c830ead2746aad44cb3c7b94a7eb296d10f60174"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/unknown.schema.json",
+          "path": "src/contract/schemas/entities/unknown.schema.json",
+          "blob": "058cfdb90eaab54c58a9577928ab7d8c8ee49043",
+          "sha256": "8a90578eab8cc22e58f018856aa0d026b102331d7791955ebb17e24c45af3247"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/entities/verification.schema.json",
+          "path": "src/contract/schemas/entities/verification.schema.json",
+          "blob": "cfc55e98c54c3573a88cfd7afd80a9193af76357",
+          "sha256": "f5319468067c611b02ef14935aab6f36ac36afc7d644a180e7e800ac71323290"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/event-envelope.schema.json",
+          "path": "src/contract/schemas/event-envelope.schema.json",
+          "blob": "7f158677f806c900bde90469b7017fc85da7be95",
+          "sha256": "d5027fbbbcfbee821fac2ee6147480664997e2adbda79ed8f4f6a2a0a02af31d"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/golden-scenarios.schema.json",
+          "path": "src/contract/schemas/golden-scenarios.schema.json",
+          "blob": "b81a25dae9d2ac3b79397274611d3f03db99d353",
+          "sha256": "d1764bb11fc904053ed5e2018f8ca6be3b5da831d77516cb68c037bdbfc66da3"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/investigation-manifest.schema.json",
+          "path": "src/contract/schemas/investigation-manifest.schema.json",
+          "blob": "c1600fd64c0824f12b02055e2bc8cc9b29c526de",
+          "sha256": "54aa4cb0e6aac1d372dbc9b1b0a290bff7746a2cae9c4a5d338a68e1ad52f58c"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/negative-fixture.schema.json",
+          "path": "src/contract/schemas/negative-fixture.schema.json",
+          "blob": "e33b18877d9964d5ce9b421b3f2723bf23ff4158",
+          "sha256": "cfe502ed7c2ee73b1da5391db92a697be4c465ce7036a7b02995583712b49e89"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ActionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/ActionRecorded.schema.json",
+          "blob": "99ffbadf57aec8a0e012bf0fe2caa184e12a8e60",
+          "sha256": "9eb1da75216b45d9f368ea1f848621896116c725cb13be46674ea01725f180bb"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ActionTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/ActionTransitioned.schema.json",
+          "blob": "bdee1ab9d019d774f612a19d675e02185c744a92",
+          "sha256": "4a3d4ac2fd5e17ebeb2184325e391969d3c541f3233ef50941809f756c1ec959"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/AssumptionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/AssumptionRecorded.schema.json",
+          "blob": "b4bed359e480650f654e62009fd266841c497c9f",
+          "sha256": "c0abcc419db68c70863d7c7f05315a45158a7e404bd8aec6e50c775934bbcc69"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/AssumptionTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/AssumptionTransitioned.schema.json",
+          "blob": "ee29b8f550166d3c5197735c5cf9e4d1aece05e8",
+          "sha256": "594fa0c46104acd43c52e951fa5be3c2ed2a1d0224976be3dd3b2696c3f52032"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CausalAssertionConfirmed.schema.json",
+          "path": "src/contract/schemas/payloads/CausalAssertionConfirmed.schema.json",
+          "blob": "90cba36a9707b71efba9604bdec3a789419deead",
+          "sha256": "0593f1772157135acdb2d049521d5737acd2934e61aa2ad8a22b05a211ac2676"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CausalAssertionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/CausalAssertionRecorded.schema.json",
+          "blob": "8619d8a87def2ac5a84da979b35fdfb202a66abb",
+          "sha256": "a5ed4ec07d6fd8de56a89109e5dd7569349d591d1763c4e00663911767edb1e8"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CausalAssertionReopened.schema.json",
+          "path": "src/contract/schemas/payloads/CausalAssertionReopened.schema.json",
+          "blob": "e3dd946e2436b3ef76901753a59060cb3e506a28",
+          "sha256": "54ddceee107ddff40ad431c992e95fcb37eadb1dfc3a36fe25229b70d2764131"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ConclusionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/ConclusionRecorded.schema.json",
+          "blob": "680743f9d7c41e4c4e1bfec6be848b32b4c3a2f0",
+          "sha256": "6dbbe1c7872bd854c3968edb3d117fadbb1572fb7bc95194e6eb25fe4ff0d55a"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ContradictionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/ContradictionRecorded.schema.json",
+          "blob": "bb67619f9d3759d311e2d90173110de580484695",
+          "sha256": "6d9c19561e20d073c8a6547378bd621ab1e58a472450a08b352e3c3106743fc3"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ContradictionTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/ContradictionTransitioned.schema.json",
+          "blob": "c8fd501b1f44d64c58d574efc2fe25d4d559863f",
+          "sha256": "257ac57a451def5e818abf8e0570288bf46591dbfe3d713ccf7880470d0b1e83"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CorrectiveActionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/CorrectiveActionRecorded.schema.json",
+          "blob": "e0a998ba4ec881b362008159d25d2f406e242822",
+          "sha256": "5cc3d20e9da1d77440c04adc284489e3dc0aacfabc10774d65d0b1adfc25aea9"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CorrectiveActionTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/CorrectiveActionTransitioned.schema.json",
+          "blob": "43eb5f01dc416dd4a54b135697409a534189ba5b",
+          "sha256": "a62b47b0a4ef82461c9a812d20759017b8dd9ed46a710ca52b5abd7b992a1c87"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/CriterionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/CriterionRecorded.schema.json",
+          "blob": "739ca31e0005034d1a649a68bc9b67fc42fa512b",
+          "sha256": "2f7316b35d9e95277a4c5cff53d4fd9222a1e55c163fd3fee62f85afa88ae657"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/EvidenceAdmitted.schema.json",
+          "path": "src/contract/schemas/payloads/EvidenceAdmitted.schema.json",
+          "blob": "409bd56f136c69344defb548f0f2fe1352c68c22",
+          "sha256": "07300078077e147ee2bfc63659f256a4f6f694fa584e5cc7e848489d4a2170ba"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/EvidenceRelated.schema.json",
+          "path": "src/contract/schemas/payloads/EvidenceRelated.schema.json",
+          "blob": "4d43eb5f33c646c4e6dcd05404593d570529df2c",
+          "sha256": "a4fd1335e00855b74bd40c201424d3b1f87f7876b7946e37d44eec62ce705f03"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/EvidenceSuperseded.schema.json",
+          "path": "src/contract/schemas/payloads/EvidenceSuperseded.schema.json",
+          "blob": "27dc3cea5bb2b8c76d8dabc29c3db27dea29547f",
+          "sha256": "b723c8f6207703633f1ed65b8f47febcc22a28de828cf662134175679cf4de89"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/EvidenceVerificationAssessed.schema.json",
+          "path": "src/contract/schemas/payloads/EvidenceVerificationAssessed.schema.json",
+          "blob": "9b2c6449833517057c293dd819db0b197e7b8bc2",
+          "sha256": "400cbf3fbe233912e4f4b3a7690f2625e9593740385e703b61a752334354a568"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/FindingRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/FindingRecorded.schema.json",
+          "blob": "3dc927cc45fc57fff825dbb7fd4a42074344a677",
+          "sha256": "84d423b791e4df737b79ad8433cf2b175963598dab8c6b7e03b863301e4a4e87"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/HypothesisRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/HypothesisRecorded.schema.json",
+          "blob": "fb5f614330fd35dc17eb229c1d60ad7b29544a26",
+          "sha256": "49ecea8fed1bda3265f4c3eee29bcaac72a32c1678098e17f5d1db635c6cb362"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/HypothesisTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/HypothesisTransitioned.schema.json",
+          "blob": "5d4e09ba61adfb1f70c12aa2a7d4e085cab24efd",
+          "sha256": "07a95b9c38c3aac0f52d8025fbf83a933005529ca3ac715f2db357fe6adf982e"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/InvestigationStarted.schema.json",
+          "path": "src/contract/schemas/payloads/InvestigationStarted.schema.json",
+          "blob": "fd807668bbadef0d664b850166f5d935f12d7f8a",
+          "sha256": "7cea82ce2b1e1d00145b89e264f97dc55ddbc16ad160b725960b6c04d043e090"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/LifecycleChanged.schema.json",
+          "path": "src/contract/schemas/payloads/LifecycleChanged.schema.json",
+          "blob": "fae3693d027bc6595c965aebd0360db79ac461ef",
+          "sha256": "9c50d42710d6941edb032b93185ab78a085ecbe644bdb3020ccf1e9d51f0d118"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/NegativeKnowledgeEstablished.schema.json",
+          "path": "src/contract/schemas/payloads/NegativeKnowledgeEstablished.schema.json",
+          "blob": "0ff7b641e5ea96ee782950c86b7495b6d7486676",
+          "sha256": "aefd6ef64af74168fb037f93bcb69a951a30227ccc30ed37de020ba74286f426"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ObservationRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/ObservationRecorded.schema.json",
+          "blob": "2d6bfd1cb0b4db818f606f07ae2ec492125568e2",
+          "sha256": "4672537f66adb3c10d05a5b6943ad6e7e74985b6fcc7155ea46a08fbe856ace1"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/PredictionRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/PredictionRecorded.schema.json",
+          "blob": "2c5e06049f09577aa841a0e2ea2de7f479e2e140",
+          "sha256": "434fa08dcb0326a94e77471fa86fc210544515546e539be7e3cfe5e6affbf5b9"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ProposalRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/ProposalRecorded.schema.json",
+          "blob": "9b4d366c387d6c47cce2cd42bd271c13059e95e6",
+          "sha256": "7a656d3064a477e70ca30a32013f56c4ec2263db4a8bf487f7de5bfd3a668578"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ProposalWasAccepted.schema.json",
+          "path": "src/contract/schemas/payloads/ProposalWasAccepted.schema.json",
+          "blob": "78402229e3be3666ce19918019fb7bcf55dc29b4",
+          "sha256": "9b5b8902be2910546b879035c89d9acbbde5085e891502fb75f41e84e12f512b"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/ProposalWasRejected.schema.json",
+          "path": "src/contract/schemas/payloads/ProposalWasRejected.schema.json",
+          "blob": "8e00405382c58235863529c43a559f87833c15df",
+          "sha256": "2fe62c79365d7d19cc4e7257354c4b05c20eceee9e402e1fbb56b983065a6194"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/UnknownIdentified.schema.json",
+          "path": "src/contract/schemas/payloads/UnknownIdentified.schema.json",
+          "blob": "a3fb5d69f8f1b1c5e27371681bc09e4da7442f2a",
+          "sha256": "0508de1c9c3bda485896147f8e7ab428e118883c0a84c616c6fb4b77ec140f01"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/UnknownTransitioned.schema.json",
+          "path": "src/contract/schemas/payloads/UnknownTransitioned.schema.json",
+          "blob": "00ecedd214479d62afc0053dcc539591f1199f21",
+          "sha256": "e37a3bcd7fb2b393c7145db503d1b98f6c9f876f346a37f773fa2d1d18f60cf5"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/payloads/VerificationRecorded.schema.json",
+          "path": "src/contract/schemas/payloads/VerificationRecorded.schema.json",
+          "blob": "f481297dc2ca4f1269a01900925ebfdfe2200a2d",
+          "sha256": "6b2ea3f8a450755dd076d3f26b71653f2f683c03842b1f6613ebacee854f835e"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/root-manifest.schema.json",
+          "path": "src/contract/schemas/root-manifest.schema.json",
+          "blob": "cfb33395bd3ff6c775b0d230522372ae0fb5336a",
+          "sha256": "d620fa115ccd311db10d616eb7c33b1440be4bd216126b8e1646883c68ce74f7"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/schema-bundle.schema.json",
+          "path": "src/contract/schemas/schema-bundle.schema.json",
+          "blob": "c46c5b47d57bb059923b543e05c3ea650c18fa08",
+          "sha256": "2bb69110571d2c6873ab5707c099702b3439cdddd500c9424d4ec6e6c13dcb2a"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/snapshot.schema.json",
+          "path": "src/contract/schemas/snapshot.schema.json",
+          "blob": "f8c62704375a340d0f3f5b89b89ee98897fdcdcd",
+          "sha256": "244567c0ff5f66e0e9f06456ec9aefd9178fe0bde18c77b786e618e265b419b0"
+        },
+        {
+          "upstream": "contract/v1.0.0/schemas/state.schema.json",
+          "path": "src/contract/schemas/state.schema.json",
+          "blob": "2f218cac7898631aeb96fbbe7261bb6a8811e230",
+          "sha256": "097a590e029706e8f268329c957b123691a77e16a5c6d47f0dcbb865175227a5"
+        }
+      ],
+      "commit": "c947c7e354be80766573a782546c8186336774cc"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/snapshot.schema.json",
+  "title": "Causa v1 snapshot envelope",
+  "description": "Derived, never authoritative. generatedAt equals occurredAt of event aggregateVersion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "investigationId",
+    "aggregateVersion",
+    "projectionVersion",
+    "semanticVersion",
+    "generatedAt",
+    "state"
+  ],
+  "properties": {
+    "formatVersion": {
+      "$ref": "common.schema.json#/$defs/formatVersion"
+    },
+    "investigationId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "aggregateVersion": {
+      "$ref": "common.schema.json#/$defs/aggregateVersion"
+    },
+    "projectionVersion": {
+      "const": 1
+    },
+    "semanticVersion": {
+      "$ref": "common.schema.json#/$defs/semanticVersion"
+    },
+    "generatedAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "state": {
+      "$ref": "state.schema.json"
+    }
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/negative-fixture.schema.json",
+  "title": "Causa v1 negative fixture",
+  "description": "A deliberately invalid input and the error a conforming reader must report. File bytes are base64 so invalid encodings are representable.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formatVersion",
+        "name",
+        "description",
+        "expectedErrorCode",
+        "expectedDomainCode",
+        "kind",
+        "directoryId",
+        "files"
+      ],
+      "properties": {
+        "formatVersion": {
+          "$ref": "common.schema.json#/$defs/formatVersion"
+        },
+        "name": {
+          "$ref": "common.schema.json#/$defs/slug"
+        },
+        "description": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "expectedErrorCode": {
+          "$ref": "common.schema.json#/$defs/errorCode"
+        },
+        "expectedDomainCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "const": "investigation"
+        },
+        "directoryId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "base64"
+            ],
+            "properties": {
+              "base64": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+              }
+            }
+          },
+          "description": "Directory entries by file name; any names, so missing and extra files are representable (CONTRACT §3.3)."
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formatVersion",
+        "name",
+        "description",
+        "expectedErrorCode",
+        "expectedDomainCode",
+        "kind",
+        "baseScenarioKey",
+        "expectedAggregateVersion",
+        "appendedEvents"
+      ],
+      "properties": {
+        "formatVersion": {
+          "$ref": "common.schema.json#/$defs/formatVersion"
+        },
+        "name": {
+          "$ref": "common.schema.json#/$defs/slug"
+        },
+        "description": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "expectedErrorCode": {
+          "$ref": "common.schema.json#/$defs/errorCode"
+        },
+        "expectedDomainCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "const": "append"
+        },
+        "baseScenarioKey": {
+          "$ref": "common.schema.json#/$defs/slug"
+        },
+        "expectedAggregateVersion": {
+          "$ref": "common.schema.json#/$defs/versionOrZero"
+        },
+        "appendedEvents": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "base64"
+          ],
+          "properties": {
+            "base64": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formatVersion",
+        "name",
+        "description",
+        "expectedErrorCode",
+        "expectedDomainCode",
+        "kind",
+        "baseScenarioKey",
+        "files"
+      ],
+      "properties": {
+        "formatVersion": {
+          "$ref": "common.schema.json#/$defs/formatVersion"
+        },
+        "name": {
+          "$ref": "common.schema.json#/$defs/slug"
+        },
+        "description": {
+          "$ref": "common.schema.json#/$defs/text"
+        },
+        "expectedErrorCode": {
+          "$ref": "common.schema.json#/$defs/errorCode"
+        },
+        "expectedDomainCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z]+(\\.[A-Z_]+)+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "const": "successor"
+        },
+        "baseScenarioKey": {
+          "$ref": "common.schema.json#/$defs/slug"
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "base64"
+            ],
+            "properties": {
+              "base64": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+              }
+            }
+          },
+          "description": "Directory entries by file name; any names, so missing and extra files are representable (CONTRACT §3.3)."
+        }
+      }
+    }
+  ]
+}

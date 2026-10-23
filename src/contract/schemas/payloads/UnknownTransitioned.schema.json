@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/UnknownTransitioned.schema.json",
+  "title": "UnknownTransitioned payload",
+  "description": "Unknown state change with its basis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unknownId",
+    "state",
+    "basis"
+  ],
+  "properties": {
+    "unknownId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/unknownTarget"
+    },
+    "basis": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

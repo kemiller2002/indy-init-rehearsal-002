@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/CriterionRecorded.schema.json",
+  "title": "CriterionRecorded payload",
+  "description": "A verification success criterion for a corrective action (R7.3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "criterionId",
+    "correctiveActionId",
+    "expectedOutcome",
+    "method"
+  ],
+  "properties": {
+    "criterionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "correctiveActionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "expectedOutcome": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "method": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

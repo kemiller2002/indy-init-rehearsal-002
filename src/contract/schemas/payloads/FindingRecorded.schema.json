@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/FindingRecorded.schema.json",
+  "title": "FindingRecorded payload",
+  "description": "The actual result of an action exactly as entered (R4.4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "findingId",
+    "actionId",
+    "originalResult",
+    "interpretation"
+  ],
+  "properties": {
+    "findingId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "actionId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "originalResult": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "interpretation": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

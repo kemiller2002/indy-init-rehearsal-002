@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/CausalAssertionReopened.schema.json",
+  "title": "CausalAssertionReopened payload",
+  "description": "Reopens a confirmed cause.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "causeId",
+    "reason"
+  ],
+  "properties": {
+    "causeId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "reason": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

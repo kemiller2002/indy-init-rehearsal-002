@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/EvidenceRelated.schema.json",
+  "title": "EvidenceRelated payload",
+  "description": "Relates evidence to a hypothesis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "relationshipId",
+    "evidenceId",
+    "hypothesisId",
+    "kind",
+    "rationale"
+  ],
+  "properties": {
+    "relationshipId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "evidenceId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "hypothesisId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/relationshipKind"
+    },
+    "rationale": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/HypothesisRecorded.schema.json",
+  "title": "HypothesisRecorded payload",
+  "description": "A new hypothesis in state 'proposed'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hypothesisId",
+    "statement",
+    "mechanism"
+  ],
+  "properties": {
+    "hypothesisId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "mechanism": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    }
+  }
+}

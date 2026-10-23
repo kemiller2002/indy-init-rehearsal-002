@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/proposal.schema.json",
+  "title": "proposal projection entity",
+  "description": "Proposal projection; decision is the rejection reason when rejected.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "kind",
+    "text",
+    "rationale",
+    "state",
+    "decision",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/proposalKind"
+    },
+    "text": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "rationale": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/proposalState"
+    },
+    "decision": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

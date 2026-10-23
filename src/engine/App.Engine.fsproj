@@ -11,6 +11,10 @@
   <ItemGroup>
     <Compile Include="Operational.fs" />
     <Compile Include="Routes.fs" />
-    <Compile Include="Domain.fs" />
+    <Compile Include="Schemas.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../contract/Causa.Contract.fsproj" />
+    <ProjectReference Include="../domain/Causa.Domain.fsproj" />
   </ItemGroup>
 </Project>

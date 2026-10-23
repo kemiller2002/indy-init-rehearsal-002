@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/negative-knowledge.schema.json",
+  "title": "negative-knowledge projection entity",
+  "description": "Negative knowledge projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "statement",
+    "scope",
+    "basisEvidenceIds",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "scope": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "basisEvidenceIds": {
+      "$ref": "../common.schema.json#/$defs/nonEmptyUuidList"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

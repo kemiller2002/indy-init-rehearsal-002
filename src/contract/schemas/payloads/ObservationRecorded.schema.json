@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/ObservationRecorded.schema.json",
+  "title": "ObservationRecorded payload",
+  "description": "An observation, preserved verbatim (R1.2).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observationId",
+    "original",
+    "observedAt"
+  ],
+  "properties": {
+    "observationId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "original": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "observedAt": {
+      "$ref": "../common.schema.json#/$defs/nullableTimestamp"
+    }
+  }
+}

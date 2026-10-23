@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/hypothesis.schema.json",
+  "title": "hypothesis projection entity",
+  "description": "Hypothesis projection with its full change history.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "statement",
+    "mechanism",
+    "state",
+    "history",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "mechanism": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/hypothesisState"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "hypothesis-change.schema.json"
+      }
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/payloads/InvestigationStarted.schema.json",
+  "title": "InvestigationStarted payload",
+  "description": "Starts the investigation and records its initial observation verbatim. Always aggregateVersion 1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "observationId",
+    "original"
+  ],
+  "properties": {
+    "title": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "observationId": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "original": {
+      "$ref": "../common.schema.json#/$defs/text"
+    }
+  }
+}

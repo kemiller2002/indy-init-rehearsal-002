@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The Causa domain engine: byte-identical vendor copy of kemiller2002/indy-init-rehearsal-001@55f49f61
+       src/engine/{Primitives,Model,Commands,Decide,Codec}.fs (Codec.fs carries CaseNames, which the contract uses) (src/VENDOR.json, tools/vendor/vendor.py verify).
+       The semantic oracle of the Causa storage contract v1.0.0; never edited here. -->
+  <PropertyGroup>
+    <AssemblyName>Causa.Domain</AssemblyName>
+    <OtherFlags>$(OtherFlags) --nowarn:3370</OtherFlags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Primitives.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="Commands.fs" />
+    <Compile Include="Decide.fs" />
+    <Compile Include="Codec.fs" />
+  </ItemGroup>
+</Project>

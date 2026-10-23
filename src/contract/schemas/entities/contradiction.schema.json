@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/entities/contradiction.schema.json",
+  "title": "contradiction projection entity",
+  "description": "Contradiction projection; basis is the latest transition basis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "statement",
+    "evidenceIds",
+    "materiality",
+    "state",
+    "basis",
+    "provenance"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "statement": {
+      "$ref": "../common.schema.json#/$defs/text"
+    },
+    "evidenceIds": {
+      "$ref": "../common.schema.json#/$defs/uuidList"
+    },
+    "materiality": {
+      "$ref": "../common.schema.json#/$defs/materiality"
+    },
+    "state": {
+      "$ref": "../common.schema.json#/$defs/contradictionState"
+    },
+    "basis": {
+      "$ref": "../common.schema.json#/$defs/nullableText"
+    },
+    "provenance": {
+      "$ref": "../actor.schema.json#/$defs/provenance"
+    }
+  }
+}

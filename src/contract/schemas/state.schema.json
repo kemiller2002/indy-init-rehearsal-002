@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/causa-data/contract/v1.0.0/schemas/state.schema.json",
+  "title": "Causa v1 projected investigation state",
+  "description": "Deterministic projection of replayed events. Also the shape of golden expected projections.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "investigationId",
+    "title",
+    "lifecycle",
+    "version",
+    "createdAt",
+    "observations",
+    "hypotheses",
+    "evidence",
+    "relationships",
+    "unknowns",
+    "assumptions",
+    "contradictions",
+    "predictions",
+    "actions",
+    "findings",
+    "negativeKnowledge",
+    "causes",
+    "correctiveActions",
+    "criteria",
+    "verifications",
+    "conclusions",
+    "proposals"
+  ],
+  "properties": {
+    "investigationId": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "title": {
+      "$ref": "common.schema.json#/$defs/text"
+    },
+    "lifecycle": {
+      "$ref": "common.schema.json#/$defs/lifecycle"
+    },
+    "version": {
+      "$ref": "common.schema.json#/$defs/aggregateVersion"
+    },
+    "createdAt": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "observations": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/observation.schema.json"
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/hypothesis.schema.json"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/evidence.schema.json"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/relationship.schema.json"
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/unknown.schema.json"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/assumption.schema.json"
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/contradiction.schema.json"
+      }
+    },
+    "predictions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/prediction.schema.json"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/action.schema.json"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/finding.schema.json"
+      }
+    },
+    "negativeKnowledge": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/negative-knowledge.schema.json"
+      }
+    },
+    "causes": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/cause.schema.json"
+      }
+    },
+    "correctiveActions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/corrective-action.schema.json"
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/criterion.schema.json"
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/verification.schema.json"
+      }
+    },
+    "conclusions": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/conclusion.schema.json"
+      }
+    },
+    "proposals": {
+      "type": "array",
+      "description": "Sorted by id (ordinal UUID text).",
+      "items": {
+        "$ref": "entities/proposal.schema.json"
+      }
+    }
+  }
+}

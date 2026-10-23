@@ -152,8 +152,8 @@
         "folio"
       ],
       "command": "tests/browser (report/print, color)",
-      "result": "PENDING",
-      "evidence": "browser suite in progress"
+      "result": "PASS",
+      "evidence": "tests/browser/investigation.spec.js (Folio ef-print-document report; print media hides chrome and shows the report), 58/58 on 5388739"
     },
     {
       "id": "C12",
@@ -183,8 +183,8 @@
         "axe-core-playwright"
       ],
       "command": "tests/browser accessibility",
-      "result": "PENDING",
-      "evidence": "browser suite in progress"
+      "result": "PASS",
+      "evidence": "tests/browser/a11y.spec.js (@axe-core/playwright 4.14.0: no serious or critical violations on start, dashboard, overview, inspector, dialog), 58/58 on 5388739"
     },
     {
       "id": "C15",
@@ -261,6 +261,24 @@
       "repro": "registration invalid: environment target needs explicit logical id",
       "resolution": "non-blocking; tools installed and verified",
       "status": "OPEN (low)"
+    },
+    {
+      "id": "DEF-STACK-007",
+      "producer": "praxis 3.16.0 work checkpoint",
+      "consumer": "praxis validate",
+      "contract": "execution telemetry ordering",
+      "repro": "work begin then work checkpoint with second-precision --occurred-at in the same second: checkpoint accepted, then validate fails 'checkpoint is dated before its execution started' (execution start recorded with milliseconds); checkpoint events are content-addressed and cannot be corrected",
+      "resolution": "pass millisecond-precision real times (date -u +%Y-%m-%dT%H:%M:%S.%3NZ); state restored and transitions re-recorded (0115baf)",
+      "status": "OPEN (medium, upstream: the CLI should refuse at checkpoint time or record both with the same precision)"
+    },
+    {
+      "id": "DEF-STACK-008",
+      "producer": "GitHub-hosted ubuntu-latest runner",
+      "consumer": "Playwright 1.64.1 'install --with-deps'",
+      "contract": "CI browser provisioning",
+      "repro": "apt-get under 'playwright install --with-deps chromium' exceeded 8 minutes on 3 of 5 runs before any test ran",
+      "resolution": "install only the pinned browser build (runner image already carries Chromium's libraries), cached by Playwright version",
+      "status": "MITIGATED"
     }
   ]
 }

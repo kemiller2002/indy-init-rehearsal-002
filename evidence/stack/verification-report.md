@@ -57,14 +57,14 @@ is tagged by NuGet identity and its commit 56935c88 exists in kemiller2002/aegis
 - C09–C10, C12–C16: the Limen kernel and the .NET WebAssembly engine complete the protocol 1.4 handshake in Chromium;
   Forma's BrandCompiler accepts the Causa brand with its contrast gate; TypeScript 7 type-checks the kernel against
   Limen's declarations; Praxis intake and a Dokimos snapshot run.
-- C11, C14 (Folio print rendering, axe-core scans): see `compatibility-matrix.json` for their current result.
+- C11, C14: Folio print rendering and axe-core scans pass in the browser acceptance suite (58/58).
 
 ## Defects found during stack verification
 
 DEF-STACK-001 (Folio pinned from npm by the scaffold; fixed), DEF-STACK-002 (FSharp.Core 10.1.402 has two byte-distinct
 artifacts; mitigated), DEF-STACK-003 (Conditor overrides the environment's git auth with GH_TOKEN; worked around),
 DEF-STACK-004 (Indy-init discovery sources; replaced), DEF-STACK-005 (Conditor indy-init preset lags echelon-current;
-explicit manifest), DEF-STACK-006 (installation registration needs a target id; low). Details and reproductions are in
+explicit manifest), DEF-STACK-006 (installation registration needs a target id; low), DEF-STACK-007 (Praxis checkpoint timestamp precision; worked around), DEF-STACK-008 (runner apt timeouts under Playwright --with-deps; mitigated). Details and reproductions are in
 `compatibility-matrix.json`.
 
 ## Lock and drift

@@ -1003,6 +1003,11 @@ let ``21 reads of mutable state are never cacheable: every ref and repository re
     Assert.True(fresh.Length >= 4)
     Assert.All(fresh, fun u -> Assert.Contains("fresh=", u))
     Assert.Equal(fresh.Length, (List.distinct fresh).Length)
+    // A fresh engine (a page reload) restarts its correlation ids; its fresh URLs must still differ from the first session's.
+    // (Production seeds are random per message; the harness models the new page with a different seed range.)
+    let reloaded = { world after.Repo with Step = 4_000 } |> init |> connect run
+    let again = reloaded.Requests |> List.filter isRefOrRepo |> List.map (fun r -> r.Url)
+    Assert.Empty(Set.intersect (Set.ofList fresh) (Set.ofList again))
     // Content-addressed reads keep their stable URL: caching them is correct.
     let addressed = after.Requests |> List.filter (fun r -> r.Method = "GET" && not (isRefOrRepo r)) |> List.map (fun r -> r.Url)
     Assert.All(addressed, fun u -> Assert.DoesNotContain("fresh=", u))

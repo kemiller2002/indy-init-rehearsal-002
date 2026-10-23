@@ -22,12 +22,13 @@ module Shell =
 
     /// The Authorization header is the only place the credential appears; Limen never surfaces request headers in
     /// diagnostics, and the kernel does not interpret them (EXT-DATA-004).
-    let private http (token: string) (correlation: string) (request: ApiRequest) : EffectRequest =
+    let private http (token: string) (correlation: string) (nonce: string) (request: ApiRequest) : EffectRequest =
         EffectRequest.Http
             { CorrelationId = CorrelationId correlation
               Method = httpMethod request.Method
-              // The correlation id is unique per request, so a fresh read can never be answered from a cache.
-              Url = GitHub.apiBase + request.Path + (if request.Fresh then (if request.Path.Contains '?' then "&" else "?") + "fresh=" + correlation else "")
+              // The nonce is random per request (correlation ids restart with every page load, and GitHub's shared
+              // cache honours s-maxage=60 per URL), so a fresh read can never be answered from any cache (DC-005).
+              Url = GitHub.apiBase + request.Path + (if request.Fresh then (if request.Path.Contains '?' then "&" else "?") + "fresh=" + nonce else "")
               Headers =
                 Some(
                     Map.ofList
@@ -59,7 +60,8 @@ module Shell =
             |> List.fold
                 (fun (a: App, effects) (op, request) ->
                     let id = "gh-" + string (a.Counter + 1)
-                    { a with Counter = a.Counter + 1; Inflight = a.Inflight |> Map.add id (op, generation) }, effects @ [ http t id request ])
+                    let nonce = (Ids.derive a.Context.Seed (1_000_000 + a.Counter)).ToString("N")
+                    { a with Counter = a.Counter + 1; Inflight = a.Inflight |> Map.add id (op, generation) }, effects @ [ http t id nonce request ])
                 (app, [])
 
     let private emit ops app = emitGen 0 ops app

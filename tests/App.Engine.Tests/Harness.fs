@@ -175,7 +175,8 @@ let requestsSince (n: int) (w: World) = w.Requests |> List.skip n
 let shape (r: Request) =
     let route = r.Route |> Option.defaultValue r.Url
     let kind =
-        if route = "" then "repo"
+        if r.Url.EndsWith "/graphql" then "graphql"
+        elif route = "" then "repo"
         elif route.StartsWith "/git/ref/" || route.StartsWith "/git/refs/" then "ref"
         elif route.StartsWith "/git/commits" then "commit"
         elif route.StartsWith "/git/trees" then "tree"
@@ -183,6 +184,9 @@ let shape (r: Request) =
         else route
     r.Method + " " + kind
 
-let isPatch (r: Request) = r.Method = "PATCH"
-let isPostBlob (r: Request) = r.Method = "POST" && r.Route = Some "/git/blobs"
+/// The one publication request: GraphQL createCommitOnBranch (guarded by expectedHeadOid).
+let isSave (r: Request) = r.Method = "POST" && r.Url.EndsWith "/graphql"
+// The REST write sequence (blobs, tree, commit, PATCH) is gone; earlier tests name the publication by these.
+let isPatch = isSave
+let isPostBlob = isSave
 let isGetBlob (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/git/blobs/"))

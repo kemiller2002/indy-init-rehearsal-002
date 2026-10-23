@@ -1,5 +1,5 @@
-// MOCKED: a writable workspace. Commands open a dialog, a submit publishes one atomic commit to the fake (PATCH of the
-// branch ref) and the sync status reports progress. UI behavior only — never evidence of live persistence.
+// MOCKED: a writable workspace. Commands open a dialog, a submit publishes one atomic commit to the fake (GraphQL
+// createCommitOnBranch, guarded by expectedHeadOid) and the sync status reports progress. UI behavior only — never evidence of live persistence.
 import { test, expect, boot, connect, openInvestigation, seededWorkspace, WORKSPACE_TARGET } from "./support/app.js";
 import { fixtureInvestigations } from "./support/causa-data.js";
 import { installFakeGitHub } from "./support/fake-github.js";
@@ -7,7 +7,7 @@ import { installFakeGitHub } from "./support/fake-github.js";
 const syncLabel = (page) => page.locator('.causa-masthead [data-text="syncLabel"]');
 
 test.describe("MOCKED: writable workspace", () => {
-  test("MOCKED: New investigation — dialog, focus in the first field, submit PATCHes the branch, sync goes Saving → Synchronized", async ({ page }) => {
+  test("MOCKED: New investigation — dialog, focus in the first field, submit commits to the branch, sync goes Saving → Synchronized", async ({ page }) => {
     const fake = await installFakeGitHub(page, { files: {}, push: true, writeLatencyMs: 300 });
     await boot(page);
     await connect(page, WORKSPACE_TARGET, { expectCards: 0 });
@@ -36,12 +36,13 @@ test.describe("MOCKED: writable workspace", () => {
     await expect(page.locator('.causa-masthead [aria-busy="true"]')).toHaveCount(0);
     await expect(page.locator(".causa-notice")).toContainText(/Saved to GitHub and verified by an independent read-back \(commit [0-9a-f]{7}\)\./);
 
-    const patches = fake.log.filter((r) => r.method === "PATCH");
-    expect(patches).toHaveLength(1);
-    expect(patches[0].path).toBe("/repos/causa-test/causa-data/git/refs/heads/main");
-    expect(patches[0].body.force).toBe(false);
+    const writes = fake.log.filter((r) => r.method !== "GET");
+    expect(writes).toHaveLength(1);
+    expect(writes[0].path).toBe("/graphql");
+    expect(writes[0].body.variables.input.expectedHeadOid).toBe(head);
+    expect(writes[0].body.variables.input.branch).toEqual({ repositoryNameWithOwner: "causa-test/causa-data", branchName: "main" });
     expect(fake.head()).not.toBe(head);
-    expect(fake.head()).toBe(patches[0].body.sha);
+    expect(fake.state().commits[fake.head()].parents).toEqual([head]);
     const tree = fake.state().trees[fake.state().commits[fake.head()].tree];
     expect(Object.keys(tree).filter((p) => p.startsWith("workspaces/demo/r002-test/investigations/")).map((p) => p.split("/").pop()).sort())
       .toEqual(["events.ndjson", "manifest.json", "snapshot.json"]);

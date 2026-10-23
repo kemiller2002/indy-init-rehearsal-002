@@ -169,10 +169,62 @@ let private repoJson (repo: Repo) =
            default_branch = repo.Branch
            permissions = {| admin = false; push = repo.CanPush; pull = true |} |}
 
+let private prop (name: string) (e: JsonElement) =
+    match e.ValueKind with
+    | JsonValueKind.Object ->
+        match e.TryGetProperty name with
+        | true, v -> Some v
+        | _ -> None
+    | _ -> None
+
+let private graphqlError (kind: string) (text: string) =
+    json {| data = {| createCommitOnBranch = null |}; errors = [| {| ``type`` = kind; message = text |} |] |}
+
+/// GitHub's GraphQL createCommitOnBranch: one atomic commit on the branch, applied only while the branch still names
+/// expectedHeadOid (otherwise a STALE_DATA error in a 200 answer, as GitHub reports it).
+let private commitOnBranch (req: Request) (repo: Repo) : int64 * string * Repo =
+    let unchanged status body = status, body, repo
+    let input = parseBody req.Body |> Option.bind (prop "variables") |> Option.bind (prop "input")
+    let text name (e: JsonElement option) = e |> Option.bind (str name)
+    match input with
+    | None -> unchanged 200L (graphqlError "INVALID" "Variable $input was not provided")
+    | Some i ->
+        let branch = prop "branch" i
+        let expected = str "expectedHeadOid" i
+        let headline = text "headline" (prop "message" i)
+        let body = text "body" (prop "message" i) |> Option.defaultValue ""
+        let additions =
+            prop "fileChanges" i
+            |> Option.bind (arr "additions")
+            |> Option.defaultValue []
+            |> List.map (fun a -> str "path" a, str "contents" a)
+        if text "repositoryNameWithOwner" branch <> Some(repo.Owner + "/" + repo.Name) || text "branchName" branch <> Some repo.Branch then
+            unchanged 200L (graphqlError "NOT_FOUND" "Could not resolve to a Ref")
+        elif not repo.CanPush then unchanged 200L (graphqlError "FORBIDDEN" "Resource not accessible by personal access token")
+        elif expected <> Some repo.Head then
+            unchanged 200L (graphqlError "STALE_DATA" (sprintf "Expected branch to point to \"%s\" but it did not. Pull and try again." (expected |> Option.defaultValue "")))
+        elif headline.IsNone || additions.IsEmpty || additions |> List.exists (fun (p, c) -> p.IsNone || c.IsNone) then
+            unchanged 200L (graphqlError "INVALID" "Invalid commit input")
+        else
+            let withBlobs, files =
+                additions
+                |> List.fold
+                    (fun (r: Repo, m: Map<string, string>) (p, c) ->
+                        let id, r' = addBlob (Convert.FromBase64String(Option.get c)) r
+                        r', m |> Map.add (Option.get p) id)
+                    (repo, repo.Trees[repo.Commits[repo.Head].Tree])
+            let tree, withTree = addTree files withBlobs
+            let message = Option.get headline + (if body = "" then "" else "\n\n" + body)
+            let commit, withCommit = addCommit { Tree = tree; Parents = [ repo.Head ]; Message = message } withTree
+            200L, json {| data = {| createCommitOnBranch = {| commit = {| oid = commit |} |} |} |}, { withCommit with Head = commit }
+
 /// Answer one request. Returns status, JSON body and the repository after the request.
 let handle (req: Request) (repo: Repo) : int64 * string * Repo =
     let unchanged status body = status, body, repo
     match req.Route with
+    | None when req.Url = "https://api.github.com/graphql" && req.Method = "POST" ->
+        if req.Authorization <> Some("Bearer " + repo.Token) then unchanged 401L (message "Bad credentials")
+        else commitOnBranch req repo
     | None -> unchanged 404L (message "Not Found")
     | Some _ when req.Authorization <> Some("Bearer " + repo.Token) -> unchanged 401L (message "Bad credentials")
     | Some route ->

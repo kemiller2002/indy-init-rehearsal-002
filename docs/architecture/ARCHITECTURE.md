@@ -23,11 +23,13 @@ one flat projection with Forma 0.9.0 (Causa brand) and Folio 0.4.0.
   come from `Decide.probe` and the domain's `Transitions` tables (`Capabilities.judge`).
 - **C — replay:** every read goes through `Store.validate` (path, encoding, canonical JSON, schemas, hashes,
   sequence, event ids, correlation, `History.validate`, snapshot). Invalid data fails closed and is never shown.
-- **D — persistence:** `GitHub.fs` describes REST requests as data; `Shell.fs` sequences them as Limen Http effects:
-  blobs → tree (base = the decision's base tree) → commit (parent = the decision's base commit) → non-forced ref
-  update → independent read-back (ref, commit, tree, byte-equal blobs, re-validation). Non-fast-forward → reload and
-  rebase only if this investigation is unchanged, else conflict (pending change preserved). Unknown outcome →
-  reconcile by ancestry (compare API). Success is reported only after read-back.
+- **D — persistence:** `GitHub.fs` describes requests as data; `Shell.fs` sequences them as Limen Http effects.
+  Reads use REST; the one write is GraphQL `createCommitOnBranch` with `expectedHeadOid` = the decision's base
+  commit, which GitHub applies atomically and only while the branch still names that commit (compare-and-swap; DC-005).
+  Then an independent read-back (commit, tree, byte-equal blobs, re-validation). Refused because the branch moved →
+  reload and rebase only if this investigation is unchanged, else conflict (pending change preserved). Unknown outcome
+  → read the ref: still the base → resend (bounded; the guard makes it safe); otherwise recognise the change in that
+  head's tree or treat it as moved. Success is reported only after read-back.
 - **E — report:** the Report tab renders the same projection inside Folio `ef-print-*` elements; it never upgrades
   a hypothesis to a cause.
 

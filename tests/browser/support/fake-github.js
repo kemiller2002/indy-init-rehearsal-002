@@ -1,5 +1,5 @@
 // MOCKED GitHub: a small in-memory git object store behind page.route("https://api.github.com/**").
-// It answers exactly the REST endpoints src/engine/GitHub.fs uses, with the JSON fields it reads, and computes real
+// It answers exactly the REST reads and the GraphQL createCommitOnBranch write src/engine/GitHub.fs uses, with the JSON fields it reads, and computes real
 // git blob ids so the engine's read-back verification behaves as it would against GitHub. Tests that use it are
 // labelled "MOCKED:" — they prove UI behavior only, never live persistence.
 //
@@ -88,46 +88,46 @@ export const answer = (config, state, request) => {
     return same(json(200, { status }));
   }
 
-  // ---- writes
-  if (method === "POST" && path === "/git/blobs") {
-    if (!config.push) return same(json(403, { message: "Resource not accessible by personal access token" }));
-    const bytes = Buffer.from(body.content, body.encoding === "base64" ? "base64" : "utf8");
-    const sha = gitBlobSha(bytes);
-    return { state: { ...state, blobs: { ...state.blobs, [sha]: bytes } }, response: json(201, { sha, url: `blob/${sha}` }) };
-  }
-  if (method === "POST" && path === "/git/trees") {
-    const base = body.base_tree ? state.trees[body.base_tree] : {};
-    if (base === undefined) return same(json(422, { message: "Invalid tree info" }));
-    const tree = { ...base, ...Object.fromEntries(body.tree.map((e) => [e.path, e.sha])) };
-    const sha = treeSha(tree);
-    return { state: { ...state, trees: { ...state.trees, [sha]: tree } }, response: json(201, { sha }) };
-  }
-  if (method === "POST" && path === "/git/commits") {
-    if (state.trees[body.tree] === undefined) return same(json(422, { message: "Tree SHA does not exist" }));
-    const sha = commitSha(body.tree, body.parents, body.message);
-    return {
-      state: { ...state, commits: { ...state.commits, [sha]: { tree: body.tree, parents: body.parents, message: body.message } } },
-      response: json(201, { sha, tree: { sha: body.tree } }),
-    };
-  }
-  if (method === "PATCH" && (m = path.match(/^\/git\/refs\/heads\/(.+)$/))) {
-    const branch = decodeURIComponent(m[1]);
-    const current = state.refs[branch];
-    if (current === undefined) return same(notFound());
-    if (state.commits[body.sha] === undefined) return same(json(422, { message: "Object does not exist" }));
-    if (!body.force && !reachable(state.commits, current, body.sha)) return same(json(422, { message: "Update is not a fast forward" }));
-    return {
-      state: { ...state, refs: { ...state.refs, [branch]: body.sha } },
-      response: json(200, { ref: `refs/heads/${branch}`, object: { sha: body.sha, type: "commit" } }),
-    };
-  }
   return same(notFound());
+};
+
+const graphqlError = (type, message) => json(200, { data: { createCommitOnBranch: null }, errors: [{ type, path: ["createCommitOnBranch"], message }] });
+
+/**
+ * The one write: GraphQL createCommitOnBranch. GitHub applies it atomically and only while the branch still names
+ * expectedHeadOid; otherwise it answers 200 with a STALE_DATA error and changes nothing.
+ */
+export const answerGraphql = (config, state, body) => {
+  const same = (response) => ({ state, response });
+  const input = body?.variables?.input;
+  if (input === undefined) return same(graphqlError("INVALID", "Variable $input was not provided"));
+  const branch = input.branch?.branchName;
+  const current = state.refs[branch];
+  if (input.branch?.repositoryNameWithOwner !== `${config.owner}/${config.repo}` || current === undefined)
+    return same(graphqlError("NOT_FOUND", "Could not resolve to a Ref"));
+  if (!config.push) return same(graphqlError("FORBIDDEN", "Resource not accessible by personal access token"));
+  if (input.expectedHeadOid !== current)
+    return same(graphqlError("STALE_DATA", `Expected branch to point to "${input.expectedHeadOid}" but it did not. Pull and try again.`));
+  const additions = (input.fileChanges?.additions ?? []).map((a) => [a.path, Buffer.from(a.contents, "base64")]);
+  const tree = { ...state.trees[state.commits[current].tree], ...Object.fromEntries(additions.map(([p, bytes]) => [p, gitBlobSha(bytes)])) };
+  const tsha = treeSha(tree);
+  const message = [input.message?.headline, input.message?.body].filter(Boolean).join("\n\n");
+  const csha = commitSha(tsha, [current], message);
+  return {
+    state: {
+      blobs: { ...state.blobs, ...Object.fromEntries(additions.map(([, bytes]) => [gitBlobSha(bytes), bytes])) },
+      trees: { ...state.trees, [tsha]: tree },
+      commits: { ...state.commits, [csha]: { tree: tsha, parents: [current], message } },
+      refs: { ...state.refs, [branch]: csha },
+    },
+    response: json(200, { data: { createCommitOnBranch: { commit: { oid: csha } } } }),
+  };
 };
 
 const cors = {
   "access-control-allow-origin": "*",
   "access-control-allow-headers": "authorization, accept, content-type, x-github-api-version",
-  "access-control-allow-methods": "GET, POST, PATCH, OPTIONS",
+  "access-control-allow-methods": "GET, POST, OPTIONS",
   "access-control-expose-headers": "etag, link",
 };
 
@@ -155,9 +155,12 @@ export const installFakeGitHub = async (page, options) => {
     const isWrite = method !== "GET";
     await sleep(isWrite ? config.writeLatencyMs : config.latencyMs);
     const inRepo = url.pathname === prefix || url.pathname.startsWith(prefix + "/");
-    const result = inRepo
-      ? answer(config, current, { method, path: url.pathname.slice(prefix.length), query: url.search, body })
-      : { state: current, response: notFound() };
+    const result =
+      method === "POST" && url.pathname === "/graphql"
+        ? answerGraphql(config, current, body)
+        : inRepo
+          ? answer(config, current, { method, path: url.pathname.slice(prefix.length), query: url.search, body })
+          : { state: current, response: notFound() };
     current = result.state;
     return route.fulfill({ status: result.response.status, headers: { ...cors, "content-type": "application/json; charset=utf-8" }, body: result.response.body });
   });

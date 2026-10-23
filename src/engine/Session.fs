@@ -27,14 +27,16 @@ type Write =
       Description: string
       /// Investigation file name → blob SHA at the commit the decision was based on (empty for a new investigation).
       BaseEntries: Map<string, string>
+      /// The commit the decision was made against. Every publication is guarded by it: GitHub applies the change only
+      /// while the branch still names this commit (createCommitOnBranch expectedHeadOid; DC-001, DC-005).
       BaseCommit: string
-      /// The tree of BaseCommit. Every publication is built on, and parented by, the exact commit whose state the
-      /// decision was made against, so any intervening change forces the non-fast-forward path (defect class DC-001).
-      BaseTree: string
       /// True once the write was rebased or found applied under a moved branch: the catalog must be re-read.
       Moved: bool
-      Blobs: Map<string, string>
+      /// The commit GitHub created, once it answered.
       Commit: string option
+      /// An earlier send of this command may have been applied (its answer was lost or ambiguous). While set, no
+      /// failure is reported as "not written" and a moved branch is searched for the command before any conflict (DC-003).
+      MayHaveApplied: bool
       Attempts: int
       /// Unique per publication attempt sequence; answers carrying another generation are ignored (DC-002).
       Generation: int
@@ -43,15 +45,14 @@ type Write =
       NewHead: Head option }
 
 type WriteStage =
-    | CreatingBlobs
-    | CreatingTree
-    | CreatingCommit
-    | UpdatingRef
+    /// The guarded publication has been sent; from here no failure means "not written" (DC-003).
+    | Committing
     | ReloadingRef
     | ReloadingCommit
     | ReloadingTree
+    /// Searching the head's events for this command's correlation id (a save that may have been applied).
+    | Recognising
     | Reconciling
-    | VerifyingRef
     | VerifyingCommit
     | VerifyingTree
     | VerifyingBlobs
@@ -95,6 +96,9 @@ type Live =
       Sync: Sync
       Refreshing: bool
       LastVerified: (string * DateTimeOffset) option
+      /// The newest commit this session has confirmed is on the branch (an adopted reload or a verified save). A
+      /// reload never moves the view behind it without confirmation (DC-005).
+      Known: string
       /// Investigation directories beyond the display limit (shown, never silently dropped).
       Truncated: int
       /// A held command to re-decide once the investigation has been reloaded (conflict recovery).
@@ -113,18 +117,18 @@ type Op =
     | OpCommit of commit: string
     | OpTree of head: Head
     | OpBlob of investigation: string * file: string * sha: string
-    | OpWriteBlob of file: string
-    | OpWriteTree
-    | OpWriteCommit
-    | OpWriteRef
+    /// The one guarded publication request (createCommitOnBranch with expectedHeadOid).
+    | OpCommitOnBranch
     | OpReloadRef
     | OpReloadCommit of commit: string
     | OpReloadTree of head: Head
+    /// The investigation's events.ndjson at a moved head: does it contain this command (CONTRACT §5.4)?
+    | OpRecognise of head: Head
     | OpReconcileRef
-    | OpReconcileCompare of ref: string
-    /// A reload's ref read differed from the catalog's read point: is it newer, or a lagging replica (DC-005)?
+    /// A reload's ref read differed from the newest commit known to be on the branch: newer, or older (DC-005)?
     | OpRefreshCompare of ref: string
-    | OpVerifyRef
+    /// The reload's first ref read was older than the newest known commit: the one re-read that decides.
+    | OpRefreshReread of first: string
     | OpVerifyCommit of commit: string
     | OpVerifyTree of head: Head
     | OpVerifyBlob of file: string
@@ -232,12 +236,18 @@ module Session =
         | "events.ndjson" -> files.Events
         | _ -> files.Snapshot
 
-    let blobRequests (live: Live) (w: Write) =
-        fileNames |> List.map (fun f -> OpWriteBlob f, GitHub.createBlob live.Target (filesBytes w.Files f))
+    /// The guarded publication of the write's three files on top of exactly `w.BaseCommit`.
+    let commitRequest (live: Live) (w: Write) =
+        let headline = "causa: " + w.Description + " (" + w.InvestigationId + " v" + string w.Loaded.State.Version + ")"
+        let files = paths live.Target w.InvestigationId |> List.map (fun (f, p) -> p, filesBytes w.Files f)
+        OpCommitOnBranch, GitHub.commitOnBranch live.Target w.BaseCommit headline ("Command " + Ids.text w.Envelope.CommandId) files
 
-    let treeRequest (live: Live) (w: Write) =
-        let entries = paths live.Target w.InvestigationId |> List.map (fun (f, p) -> p, w.Blobs[f])
-        OpWriteTree, GitHub.createTree live.Target w.BaseTree entries
+    /// The blob SHAs the write's files have on GitHub: how a publication is recognised on a branch.
+    let expectedShas (w: Write) =
+        fileNames |> List.map (fun f -> f, GitHub.blobSha (filesBytes w.Files f)) |> Map.ofList
 
-    let commitMessage (w: Write) =
-        "causa: " + w.Description + " (" + w.InvestigationId + " v" + string w.Loaded.State.Version + ")\n\nCommand " + Ids.text w.Envelope.CommandId
+    /// A correlation id names exactly one command group (CONTRACT §5.4), so events carrying this command's id mean the
+    /// command was applied, whatever was written after it.
+    let containsCommand (w: Write) (events: byte[]) =
+        let marker = "\"correlationId\":\"" + Ids.text w.Envelope.CommandId + "\""
+        Text.Encoding.UTF8.GetString(events).Contains(marker, StringComparison.Ordinal)

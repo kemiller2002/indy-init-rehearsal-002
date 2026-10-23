@@ -98,16 +98,30 @@ const start = async () => {
   // never settles. So a rejection while starting arms a short grace period (re-armed by each further rejection):
   // a retry that succeeds lets the start finish; otherwise the start ends with the recoverable failure long before
   // the timeout (DC-006).
+  // The grace period expires only when nothing is still downloading: on a slow connection the loader's retry may
+  // still be under way 10 s after a failed attempt (review 4, B1). Downloads are counted while starting only.
+  const browserFetch = globalThis.fetch;
+  let downloading = 0;
+  globalThis.fetch = (/** @type {Parameters<typeof fetch>} */ ...args) => {
+    downloading += 1;
+    return browserFetch(...args).finally(() => {
+      downloading -= 1;
+    });
+  };
   /** @type {ReturnType<typeof setTimeout> | undefined} */
   let grace;
   /** @type {(event: PromiseRejectionEvent) => void} */
   let onRejection = () => {};
   const loaderFailure = new Promise((_, reject) => {
+    const expire = () => {
+      grace = downloading > 0 ? setTimeout(expire, LOADER_GRACE_MS) : undefined;
+      if (grace === undefined) reject(new Error("loader"));
+    };
     onRejection = (event) => {
       event.preventDefault();
       console.warn("Causa: a download failed while starting; waiting for the loader to retry.", event.reason);
       clearTimeout(grace);
-      grace = setTimeout(() => reject(new Error("loader")), LOADER_GRACE_MS);
+      grace = setTimeout(expire, LOADER_GRACE_MS);
     };
   });
   window.addEventListener("unhandledrejection", onRejection);
@@ -124,6 +138,7 @@ const start = async () => {
     clearTimeout(timer);
     clearTimeout(grace);
     window.removeEventListener("unhandledrejection", onRejection);
+    globalThis.fetch = browserFetch;
   }
   if (kernel.status !== "running") {
     fail("The application engine did not accept this page (version mismatch). Reload to get a consistent version.");

@@ -1,0 +1,69 @@
+{
+  "run": "r002-live-40036025752",
+  "owner": "kemiller2002",
+  "repo": "causa-data",
+  "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
+  "baseUrl": "local dist/site",
+  "checks": [
+    {
+      "id": "L1-empty-first-launch",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L2-denied-without-authorization",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L3-authorized-read-and-replay",
+      "outcome": "PASS",
+      "verified": 5
+    },
+    {
+      "id": "L4-new-investigation-github-write-read-back",
+      "outcome": "PASS",
+      "commit": "6f401a483b877d67802b74f8e33e28e66163f5a2",
+      "investigationId": "f35888da-bdbc-4e26-b916-2d7d8acff623"
+    },
+    {
+      "id": "L4b-reload-requires-reauthorization-and-reloads",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L5-concurrent-write-conflict-protection",
+      "outcome": "PASS",
+      "headAfterB": "8750ee4bcb1c68d3e81ef6517a6964efeb27d647"
+    },
+    {
+      "id": "L5b-conflict-recovery-reapply",
+      "outcome": "PASS",
+      "finalCommit": "a11385afecbc4da1fca41001595c50b0337dd7c9",
+      "versions": 3
+    },
+    {
+      "id": "L6-malformed-data-refusal",
+      "outcome": "PASS",
+      "code": "CAUSA.MANIFEST_MISMATCH"
+    }
+  ],
+  "timings": {
+    "fixturesLoadMs": 4224,
+    "createWriteVerifyMs": 2646
+  },
+  "diagnostics": {
+    "writtenCommit": "6f401a483b877d67802b74f8e33e28e66163f5a2",
+    "refReads": [
+      {
+        "at": "2026-10-23T22:51:06.634Z",
+        "url": "/repos/kemiller2002/causa-data/git/ref/heads/claude/causa-rehearsal-002-kickoff-i2ihli?fresh=8312f4906a274aacaff8c7763baf6411",
+        "status": 200,
+        "sha": "6f401a483b877d67802b74f8e33e28e66163f5a2",
+        "fromCache": false,
+        "age": null,
+        "cacheControl": "private, max-age=60, s-maxage=60",
+        "etag": "W/\"007fcdbf7851c182c2174f4f872798a4ad554d8651b2eb70ff1f4d99d4f3a935\"",
+        "requestId": "A3C0:81747:3E51D1:42CD7D:6ADBE4DA",
+        "nodeHeadAtAnswer": "6f401a483b877d67802b74f8e33e28e66163f5a2"
+      }
+    ]
+  }
+}

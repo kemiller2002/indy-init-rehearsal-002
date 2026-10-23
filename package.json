@@ -9,10 +9,11 @@
   "dependencies": {
     "@echelon-foundry/design-system": "0.9.0",
     "@echelon-foundry/limen": "0.9.0",
-    "@echelon-foundry/print-components": "0.4.0"
+    "@echelon-foundry/print-components": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/echelon-foundry-print-components-0.4.0.tgz"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
-    "typescript": "5.9.3"
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "typescript": "7.0.2"
   }
 }

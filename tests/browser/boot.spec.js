@@ -18,7 +18,7 @@ const delayDotnet = async (page, ms) => {
 test.describe("WASM-LOAD: loading shell and handoff", () => {
   test("static shell is shown while dotnet.js is delayed, then hands off to the ready app", async ({ page }) => {
     const dotnet = await delayDotnet(page, 3000);
-    await page.goto("/index.html");
+    await page.goto("./");
 
     const shell = page.locator("#causa-boot");
     const status = shell.getByRole("status");
@@ -55,7 +55,7 @@ test.describe("WASM-LOAD: failure and retry", () => {
 
   test("an aborted dotnet.js shows a recoverable failure; Retry (Enter) reloads to ready", async ({ page }) => {
     await page.route(DOTNET, (route) => route.abort("failed"));
-    await page.goto("/index.html");
+    await page.goto("./");
 
     await expect(page.locator("html")).toHaveAttribute("data-boot", "failed", { timeout: 60_000 });
     const alert = page.locator("#causa-boot").getByRole("alert");
@@ -88,7 +88,7 @@ test.describe("WASM-LOAD: reduced motion", () => {
 
   test("the boot indicator does not animate when reduced motion is requested", async ({ page }) => {
     await delayDotnet(page, 2000);
-    await page.goto("/index.html");
+    await page.goto("./");
     const bar = page.locator("#causa-boot .causa-boot__indicator span");
     await expect(page.locator("#causa-boot")).toBeVisible();
     expect(await bar.evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
@@ -96,11 +96,11 @@ test.describe("WASM-LOAD: reduced motion", () => {
     await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 60_000 });
   });
 
-  test("control: without the preference the indicator animates", async ({ page, browser }) => {
+  test("control: without the preference the indicator animates", async ({ page, browser, baseURL }) => {
     const context = await browser.newContext({ reducedMotion: "no-preference" });
     const other = await context.newPage();
     await other.route(DOTNET, async (route) => { await sleep(1500); await route.continue(); });
-    await other.goto(new URL("/index.html", test.info().project.use.baseURL).href);
+    await other.goto(new URL("./", baseURL).href);
     expect(await other.locator("#causa-boot .causa-boot__indicator span").evaluate((el) => getComputedStyle(el).animationName)).toBe("causa-indeterminate");
     await context.close();
     await boot(page);

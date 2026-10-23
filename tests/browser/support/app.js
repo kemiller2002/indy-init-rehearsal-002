@@ -55,7 +55,7 @@ export const test = base.extend({
 
 /** Load the app (optionally at a hash route) and wait for the engine handoff. */
 export const boot = async (page, hash = "") => {
-  await page.goto(`/index.html${hash}`);
+  await page.goto(`./${hash}`);
   await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 60_000 });
 };
 

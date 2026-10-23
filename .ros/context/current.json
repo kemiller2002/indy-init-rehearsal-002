@@ -4,7 +4,7 @@
   "repository": "indy-init-rehearsal-002",
   "actor": "ros-bootstrap",
   "startedAt": "2026-10-23T12:22:57.777Z",
-  "updatedAt": "2026-10-23T12:22:57.777Z",
+  "updatedAt": "2026-10-23T13:50:21.000Z",
   "baselineDirtyPaths": [],
   "workItems": [
     {
@@ -20,6 +20,17 @@
       ],
       "updatedAt": "2026-10-23T12:22:57.777Z",
       "completedAt": "2026-10-23T12:22:57.777Z"
+    },
+    {
+      "id": "R002-STACK",
+      "type": "task",
+      "state": "active",
+      "semanticState": "active",
+      "evidence": [],
+      "updatedAt": "2026-10-23T13:50:21.000Z",
+      "telemetryExecutionIds": [
+        "EXE-20261023T135022272Z-00da006d"
+      ]
     }
   ]
 }

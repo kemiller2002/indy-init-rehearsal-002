@@ -1,0 +1,510 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/24.21.0/x64/bin/node",
+      "/home/runner/work/causa-data/causa-data/app/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "playwright.live.config.js"
+    ],
+    "configFile": "/home/runner/work/causa-data/causa-data/app/playwright.live.config.js",
+    "rootDir": "/home/runner/work/causa-data/causa-data/app/tests/live",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/kemiller2002/causa-data/commit/7226dc73770eb85e6d5102531397329183773544",
+        "commitHash": "7226dc73770eb85e6d5102531397329183773544",
+        "buildHref": "https://github.com/kemiller2002/causa-data/actions/runs/40038654015"
+      },
+      "gitCommit": {
+        "shortHash": "8d53d70",
+        "hash": "8d53d704455a0f90510b092d0676e831f5eb9bdc",
+        "subject": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded",
+        "body": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded\n\nWhile MayHaveApplied is set, a conflict says the change is not on the\nbranch now (it may have been saved and then removed), and discard no\nlonger says \"nothing was written\". Test 27 fails on 43690a0.\nAdds closure-review-7.md and closure-review-8.md (F1-F5, F7 closed;\nDC-005 and DC-002 closed). Engine 69, conformance 94, browser 61.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_014PHFZbN1CGzFjnLxJXkV6F\n",
+        "author": {
+          "name": "Causa R002 agent",
+          "email": "kemiller2002@gmail.com",
+          "time": 1792797328000
+        },
+        "committer": {
+          "name": "Causa R002 agent",
+          "email": "kemiller2002@gmail.com",
+          "time": 1792797328000
+        },
+        "branch": "HEAD"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/causa-data/causa-data/app/test-results/live",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/kemiller2002/causa-data/commit/7226dc73770eb85e6d5102531397329183773544",
+            "commitHash": "7226dc73770eb85e6d5102531397329183773544",
+            "buildHref": "https://github.com/kemiller2002/causa-data/actions/runs/40038654015"
+          },
+          "gitCommit": {
+            "shortHash": "8d53d70",
+            "hash": "8d53d704455a0f90510b092d0676e831f5eb9bdc",
+            "subject": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded",
+            "body": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded\n\nWhile MayHaveApplied is set, a conflict says the change is not on the\nbranch now (it may have been saved and then removed), and discard no\nlonger says \"nothing was written\". Test 27 fails on 43690a0.\nAdds closure-review-7.md and closure-review-8.md (F1-F5, F7 closed;\nDC-005 and DC-002 closed). Engine 69, conformance 94, browser 61.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_014PHFZbN1CGzFjnLxJXkV6F\n",
+            "author": {
+              "name": "Causa R002 agent",
+              "email": "kemiller2002@gmail.com",
+              "time": 1792797328000
+            },
+            "committer": {
+              "name": "Causa R002 agent",
+              "email": "kemiller2002@gmail.com",
+              "time": 1792797328000
+            },
+            "branch": "HEAD"
+          },
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/runner/work/causa-data/causa-data/app/tests/live",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/runner/work/causa-data/causa-data/app/test-results/live",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/kemiller2002/causa-data/commit/7226dc73770eb85e6d5102531397329183773544",
+            "commitHash": "7226dc73770eb85e6d5102531397329183773544",
+            "buildHref": "https://github.com/kemiller2002/causa-data/actions/runs/40038654015"
+          },
+          "gitCommit": {
+            "shortHash": "8d53d70",
+            "hash": "8d53d704455a0f90510b092d0676e831f5eb9bdc",
+            "subject": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded",
+            "body": "Close review 8 N1: a landed-then-removed save is never \"not written\"; reviews 7 and 8 recorded\n\nWhile MayHaveApplied is set, a conflict says the change is not on the\nbranch now (it may have been saved and then removed), and discard no\nlonger says \"nothing was written\". Test 27 fails on 43690a0.\nAdds closure-review-7.md and closure-review-8.md (F1-F5, F7 closed;\nDC-005 and DC-002 closed). Engine 69, conformance 94, browser 61.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_014PHFZbN1CGzFjnLxJXkV6F\n",
+            "author": {
+              "name": "Causa R002 agent",
+              "email": "kemiller2002@gmail.com",
+              "time": 1792797328000
+            },
+            "committer": {
+              "name": "Causa R002 agent",
+              "email": "kemiller2002@gmail.com",
+              "time": 1792797328000
+            },
+            "branch": "HEAD"
+          },
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "/home/runner/work/causa-data/causa-data/app/tests/live",
+        "snapshotDir": "/home/runner/work/causa-data/causa-data/app/tests/live",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 240000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4322",
+          "trace": "off",
+          "screenshot": "only-on-failure",
+          "launchOptions": {},
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/live-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node scripts/serve.mjs dist/site 4322",
+      "url": "http://127.0.0.1:4322/index.html",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "live-acceptance.spec.js",
+      "file": "live-acceptance.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "L1 a fresh launch has zero investigations and a Connect action",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 689,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:16:47.771Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-4cebc22310a12286ca9e",
+          "file": "live-acceptance.spec.js",
+          "line": 69,
+          "column": 1
+        },
+        {
+          "title": "L2 an invalid credential is denied by GitHub and nothing is shown",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1056,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:16:48.643Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-d5a8a14ae7efffc02bd7",
+          "file": "live-acceptance.spec.js",
+          "line": 76,
+          "column": 1
+        },
+        {
+          "title": "L3 the frozen fixtures load, validate and replay; writing is not offered",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3472,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:16:49.710Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-8e22a19f0923808a89da",
+          "file": "live-acceptance.spec.js",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "L4 create a new investigation: atomic commit, independent read-back, reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7550,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:16:53.194Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-32e9a2bd21a902c43c23",
+          "file": "live-acceptance.spec.js",
+          "line": 96,
+          "column": 1
+        },
+        {
+          "title": "L5 concurrent writers: the stale writer gets a conflict, never an overwrite, and can re-apply",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14640,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:17:00.750Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-27ce2dc4f84f9c0fdfad",
+          "file": "live-acceptance.spec.js",
+          "line": 149,
+          "column": 1
+        },
+        {
+          "title": "L6 malformed data placed in the repository is refused with a contract code",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [
+                {
+                  "type": "serial",
+                  "location": {
+                    "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                    "line": 0,
+                    "column": 0
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5167,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-23T23:17:15.397Z",
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "/home/runner/work/causa-data/causa-data/app/tests/live/live-acceptance.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "96a6c7867d10204c45f8-5aa1ae7ce28ffd22d8c1",
+          "file": "live-acceptance.spec.js",
+          "line": 186,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-23T23:16:47.314Z",
+    "duration": 33325.435,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

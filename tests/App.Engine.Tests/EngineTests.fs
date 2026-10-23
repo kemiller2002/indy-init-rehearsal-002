@@ -825,6 +825,32 @@ let ``17b a repository answer without a role (installation token) still offers w
     Assert.True((live after).LastVerified.IsSome)
 
 [<Fact>]
+let ``17c a reported read-only role does not gate writing: an installation token reported push false still saves (DC-004)`` () =
+    let run = "r17c"
+    // What GitHub answered the Actions GITHUB_TOKEN in the live run: a role of push=false, yet the token can write.
+    let w0 =
+        world (workspaceRepo run)
+        |> withRule (fun r -> r.Method = "GET" && r.Route = Some "")
+            (Respond(200L, sprintf """{"full_name":"%s/%s","private":true,"permissions":{"admin":false,"push":false,"pull":true}}""" owner repoName))
+        |> init
+        |> connect run
+    Assert.True(flag "canCreate" w0)
+    let after = w0 |> createInvestigation "Installation" "role says read-only"
+    Assert.Equal(Idle, sync after)
+    Assert.True((live after).LastVerified.IsSome)
+
+[<Fact>]
+let ``17d when GitHub does refuse the write, the change is held and renewable, never lost`` () =
+    let run = "r17d"
+    let repo = { workspaceRepo run with CanPush = false }
+    let held = connected run repo |> createInvestigation "Refused" "really read-only"
+    match sync held with
+    | Held(_, WriteDenied _) -> ()
+    | other -> failwithf "expected WriteDenied, got %A" other
+    Assert.True(flag "canRenew" held)
+    Assert.True(flag "canDiscard" held)
+
+[<Fact>]
 let ``18 a refused write can be retried with a renewed credential without losing the change (F9)`` () =
     let run = "r18"
     let w0 = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(401L, """{"message":"Bad credentials"}"""))

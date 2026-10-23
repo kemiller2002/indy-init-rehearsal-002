@@ -170,7 +170,7 @@
                     <p data-text="syncDetail"></p>
                     <div class="causa-actions">
                       <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
-                      <template data-if="canRenew"><div class="ef-field causa-renew"><label class="ef-field__label" for="renew-token">New access token</label><input id="renew-token" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></template>
+                      <template data-if="canRenew"><div class="causa-renew"><div class="ef-field"><label class="ef-field__label" for="renew-token">New access token</label><input id="renew-token" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></div></template>
                       <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
                       <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
                       <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>
@@ -270,7 +270,7 @@
                     <p data-text="syncDetail"></p>
                     <div class="causa-actions">
                       <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
-                      <template data-if="canRenew"><div class="ef-field causa-renew"><label class="ef-field__label" for="renew-token-inv">New access token</label><input id="renew-token-inv" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></template>
+                      <template data-if="canRenew"><div class="causa-renew"><div class="ef-field"><label class="ef-field__label" for="renew-token-inv">New access token</label><input id="renew-token-inv" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></div></template>
                       <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
                       <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
                       <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>

@@ -72,12 +72,23 @@ test.describe("MOCKED: writable workspace", () => {
     expect(rows.filter((r) => !r.disabled && r.reason.trim() !== "")).toEqual([]);
     expect(rows.some((r) => !r.disabled)).toBe(true);
   });
+});
 
-  test("MOCKED: a read-only credential (push false) disables New investigation with its reason", async ({ page }) => {
+test.describe("MOCKED: advisory repository role (DC-004)", () => {
+  // GitHub's refusal of the write is the expected outcome here; the browser logs each 403 response.
+  test.use({ allowedConsoleErrors: /status of 403/ });
+
+  test("MOCKED: a reported read-only role is advisory: saving is offered, GitHub's refusal is held with the change kept (DC-004)", async ({ page }) => {
     await installFakeGitHub(page, { files: {}, push: false });
     await boot(page);
     await connect(page, WORKSPACE_TARGET, { expectCards: 0 });
-    await expect(page.getByRole("button", { name: "New investigation" })).toBeDisabled();
-    await expect(page.locator("#create-reason")).toHaveText("This credential's user has read-only access to the repository.");
+    await expect(page.locator(".causa-masthead")).toContainText("write may be refused");
+    await page.getByRole("button", { name: "New investigation" }).click();
+    await page.locator("#dlg-textA").fill("Refused by GitHub");
+    await page.locator("#dlg-textB").fill("The role said read-only and GitHub agreed.");
+    await page.locator('form[data-event="cmd.submit"] button[type="submit"]').click();
+    await expect(page.getByRole("heading", { name: "Write refused" }).first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByRole("button", { name: "Use new token and retry" }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Discard my change" }).first()).toBeVisible();
   });
 });

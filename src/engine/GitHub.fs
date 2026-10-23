@@ -19,9 +19,10 @@ type Target =
       Branch: string
       Root: DataRoot }
 
-/// Repository facts read on connect. `CanPush` is the repository role GitHub reports for the credential's user
-/// (`None` when GitHub reports no role, as for GitHub App installation tokens). It is advisory either way: the
-/// credential may be narrower than the role, so a refused write is handled as WriteDenied at write time (DC-004).
+/// Repository facts read on connect. `CanPush` is the repository role GitHub reports for the credential's *user*.
+/// It is advisory and never gates writing (DC-004): a fine-grained token may be narrower than the role, and a GitHub
+/// App installation token (the Actions GITHUB_TOKEN) is reported with `push: false` although it can write. GitHub's
+/// answer to the write itself decides; a refusal is held as WriteDenied with the change preserved.
 type Access =
     { CanPush: bool option
       IsPrivate: bool

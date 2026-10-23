@@ -61,7 +61,7 @@ module View =
         | _ when not (Target.writable l.Target) -> "Connected · read-only"
         | Some true -> "Connected · read & write"
         | None -> "Connected · write not reported"
-        | Some false -> "Connected · read-only"
+        | Some false -> "Connected · write may be refused"
 
     let private connection (app: App) =
         let state, label, detail, tone =
@@ -235,7 +235,8 @@ module View =
               | Some l when l.Access.CanPush = Some true -> "Read and write (repository role); writes go to " + Target.rootLabel l.Target
               | Some l when l.Access.CanPush = None ->
                   "GitHub did not report a repository role for this credential; saving is offered and GitHub decides. Writes go to " + Target.rootLabel l.Target
-              | Some _ -> "Read-only: the credential's user cannot push"
+              | Some l ->
+                  "GitHub reports a read-only role for this credential's user. Saving is still offered because tokens can differ from the role (an Actions token reports read-only but can write); if GitHub refuses, your change is kept and you can use another token. Writes go to " + Target.rootLabel l.Target
               | None -> ""
           )
           "headLabel", t (match live with Some l -> short l.Head.Commit | None -> "")

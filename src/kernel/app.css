@@ -339,3 +339,5 @@
   .causa-panel { border: 0; padding: 0; background: #fff; }
   body, html { background: #fff; color: #000; }
 }
+
+.causa-renew { display: flex; flex-wrap: wrap; align-items: end; gap: var(--causa-space-2, 0.5rem); }

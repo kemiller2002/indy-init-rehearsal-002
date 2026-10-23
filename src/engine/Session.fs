@@ -158,7 +158,6 @@ module Session =
 
     let writeAllowed (live: Live) : Result<unit, string> =
         if not (Target.writable live.Target) then Error "The frozen v1.0.0 fixtures are read-only. Connect to a workspaces/demo/<run> namespace to write."
-        elif live.Access.CanPush = Some false then Error "This credential's user has read-only access to the repository."
         else
             match live.Sync with
             | InFlight _ -> Error "A change is being saved to GitHub."

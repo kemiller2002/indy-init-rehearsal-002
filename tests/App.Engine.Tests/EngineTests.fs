@@ -1501,3 +1501,13 @@ let ``28c R10-2 an outcome-unknown save never says "Nothing was sent"`` () =
     | Held(_, Unknown _) -> ()
     | other -> failwithf "expected Held Unknown, got %A" other
     Assert.DoesNotContain("Nothing was sent", text "syncDetail" held)
+
+// Eleventh independent closure review (evidence/quality/closure-review-11.md, T2: probe R11P1 kept).
+[<Fact>]
+let ``28d T2 a re-applied save that may have landed never quotes "Nothing was sent" on a network failure`` () =
+    let _, _, held = landedThenReverted "r28d"
+    let after = held |> withRule isSave NetworkDown |> fire "sync.reapply"
+    match sync after with
+    | Held(w, Unknown _) -> Assert.True(w.MayHaveApplied)
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.DoesNotContain("Nothing was sent", text "syncDetail" after)

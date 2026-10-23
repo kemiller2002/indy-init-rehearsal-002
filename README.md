@@ -1,4 +1,30 @@
-# Indy Init Rehearsal 002
+# Causa — Rehearsal 002
+
+Causa is an evidence-bounded root-cause investigator. Its F# domain engine runs in the browser as WebAssembly behind
+the Limen boundary, with Forma (design system) and Folio (print) from the verified Echelon stack. **The application
+contains no investigations**: you connect a GitHub repository you choose, and Causa reads, validates and replays its
+Causa v1.0.0 records, and writes new ones with optimistic concurrency and an independent read-back.
+
+## Quick start
+
+```bash
+make run        # checks the toolchain, restores, builds the engine and WASM site, serves http://127.0.0.1:8080/
+make test       # conformance (frozen causa-data v1.0.0), engine flow and browser tests
+make validate   # stack lock, vendored-source identity, zero demonstration data, kernel type-check
+make package    # dist/causa-site.tar.gz
+make deploy     # explains the GitHub Actions → GitHub Pages deployment
+```
+
+Requires .NET SDK 10.0.402 (`global.json`), Node.js 24 and Python 3; `make doctor` says exactly what is missing.
+To use the app, open it, choose **Connect data repository**, and enter owner, repository, branch, workspace
+(`fixtures` for the frozen read-only set, or a run id such as `team-2026-10`) and a short-lived, fine-grained token
+limited to that repository. The token stays in memory only.
+
+- Architecture: [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md)
+- Stack verification and lock: [evidence/stack/verification-report.md](evidence/stack/verification-report.md)
+- Requirements (pinned from Indy-init): [docs/requirements/](docs/requirements/)
+
+## Repository operating system
 
 This repository is a greenfield pilot running Praxis 3.16.0, Echelon Foundry's
 repository operating system. An older installation may also have `./ros`, a

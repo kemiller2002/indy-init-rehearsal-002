@@ -95,6 +95,9 @@ type Live =
       Sync: Sync
       Refreshing: bool
       LastVerified: (string * DateTimeOffset) option
+      /// The newest commit this session has confirmed is on the branch (an adopted reload or a verified save). A
+      /// reload never moves the view behind it without confirmation (DC-005).
+      Known: string
       /// Investigation directories beyond the display limit (shown, never silently dropped).
       Truncated: int
       /// A held command to re-decide once the investigation has been reloaded (conflict recovery).
@@ -116,6 +119,8 @@ type Op =
     | OpWriteBlob of file: string
     | OpWriteTree
     | OpWriteCommit
+    /// Right before the ref update: does the branch still name the commit this change was built on (DC-005)?
+    | OpCheckBase
     | OpWriteRef
     | OpReloadRef
     | OpReloadCommit of commit: string

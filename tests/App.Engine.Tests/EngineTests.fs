@@ -294,7 +294,7 @@ let ``7 creating an investigation publishes exactly three files, verifies by rea
     let after = pump submitted
     let sequence = requestsSince n after |> List.map shape
     Assert.Equal<string list>(
-        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "PATCH ref"
+        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "GET ref"; "PATCH ref"
           "GET ref"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ],
         sequence)
     let id = newId before after
@@ -446,7 +446,7 @@ let ``11 an unknown PATCH outcome that did apply is reconciled by reading the re
     let after = w0 |> createInvestigation "Unknown" "the response was lost"
     let sequence = requestsSince n after |> List.map shape
     Assert.Equal<string list>(
-        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "PATCH ref"
+        [ "POST blob"; "POST blob"; "POST blob"; "POST tree"; "POST commit"; "GET ref"; "PATCH ref"
           "GET ref"; "GET commit"; "GET tree"; "GET blob"; "GET blob"; "GET blob" ],
         sequence)
     Assert.Equal(Idle, sync after)
@@ -1049,10 +1049,11 @@ let ``22b C after an accepted PATCH, a branch diverged elsewhere is outcome-unkn
     let before = w0.Repo.Head
     // Right after our PATCH someone force-moves the branch to another line of history (parent: the old head).
     let diverge (repo: Repo) = commitFiles "someone else's line" [ "README.md", Some(Encoding.UTF8.GetBytes "other\n") ] { repo with Head = before }
+    // The first ref read is the pre-update base check; the second is the read after the accepted update.
+    let afterPatch () = let n = ref 0 in fun (r: Request) -> isGetRef r && (n.Value <- n.Value + 1; n.Value = 2)
     let forced =
         w0
-        |> withRule isPatch (Concurrent id)
-        |> withRule isGetRef (Concurrent diverge)
+        |> withRule (afterPatch ()) (Concurrent diverge)
         |> createInvestigation "Forced" "diverged after patch"
     match sync forced with
     | Held(_, Unknown _) -> ()
@@ -1065,8 +1066,7 @@ let ``22b C after an accepted PATCH, a branch diverged elsewhere is outcome-unkn
     let fresh = connected runS (workspaceRepo runS)
     let stale =
         fresh
-        |> withRule isPatch (Concurrent id)
-        |> withRule isGetRef (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" fresh.Repo.Head))
+        |> withRule (afterPatch ()) (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" fresh.Repo.Head))
         |> createInvestigation "Stale" "replica lag"
     Assert.Equal(Idle, sync stale)
     Assert.True((live stale).LastVerified.IsSome)
@@ -1160,8 +1160,9 @@ let ``24b Q2b the reload after a rebased save never adopts the rebase's intermed
         |> withRule isPatch (Concurrent(fun repo -> let moved = otherWriterAppends prefix openIds[1] "other" repo in mid.Value <- moved.Head; moved))
         |> openCommand "new-investigation" |> send "cmd.textA" "Rebased" |> send "cmd.textB" "auto reload"
         |> deliver (event "cmd.submit" None None)
-    // Hold back the third ref read (rebase reload, verify, then the automatic reload) and answer it with mid.
-    let paused, held = submitted |> pumpHolding (fun r -> isGetRef r && (seen.Value <- seen.Value + 1; seen.Value = 3)) []
+    // Hold back the fifth ref read (base check, reload after the refused update, base check after the rebase, verify,
+    // then the automatic reload) and answer it with mid.
+    let paused, held = submitted |> pumpHolding (fun r -> isGetRef r && (seen.Value <- seen.Value + 1; seen.Value = 5)) []
     Assert.Equal(1, held.Length)
     let after = { paused with Rules = [] } |> withRule isGetRef (Respond(200L, refBody mid.Value)) |> answer held[0] |> pump
     Assert.Equal(after.Repo.Head, (live after).Head.Commit)
@@ -1193,3 +1194,53 @@ let ``24d Q4 a compare GitHub cannot answer adopts the ref instead of failing ev
         |> fire "refresh"
     Assert.Equal(moved.Repo.Head, (live after).Head.Commit)
     Assert.False((live after).Refreshing)
+
+// ---------------------------------------------------------------------------------------------------------------
+// Fifth independent closure review (evidence/quality/closure-review-5.md, R1, R2, R4)
+// ---------------------------------------------------------------------------------------------------------------
+
+[<Fact>]
+let ``25 R1 the anchor follows every confirmed head, so a stale read after other writers cannot roll the view back`` () =
+    let run = "r25"
+    let prefix = Fixtures.workspacePrefix run
+    let saved = connected run (workspaceRepo run) |> createInvestigation "Mine" "then others write"
+    let h1Repo = saved.Repo |> otherWriterAppends prefix openIds[0] "first other"
+    let h1 = h1Repo.Head
+    let h2Repo = h1Repo |> otherWriterAppends prefix openIds[1] "second other"
+    let shown = { saved with Repo = h2Repo } |> fire "refresh"
+    Assert.Equal(h2Repo.Head, (live shown).Head.Commit)
+    let stale = shown |> withRule isGetRef (Respond(200L, refBody h1)) |> fire "refresh"
+    Assert.Equal(h2Repo.Head, (live stale).Head.Commit)
+
+[<Fact>]
+let ``25b R2 a compare that fails for another reason keeps the state instead of adopting an older ref`` () =
+    let run = "r25b"
+    let w0 = connected run (workspaceRepo run)
+    let h0 = w0.Repo.Head
+    let saved = w0 |> createInvestigation "Saved" "then a failing compare"
+    let headBefore = (live saved).Head.Commit
+    let after =
+        saved
+        |> withRule isGetRef (Respond(200L, refBody h0))
+        |> withRule isCompare (Respond(500L, """{"message":"Server Error"}"""))
+        |> fire "refresh"
+    Assert.Equal(headBefore, (live after).Head.Commit)
+    Assert.False((live after).Refreshing)
+
+[<Fact>]
+let ``25c R4 after a real reset, a save built on a stale view never re-publishes the removed commit`` () =
+    let run = "r25c"
+    let w0 = connected run (workspaceRepo run)
+    let h0 = w0.Repo.Head
+    let saved = w0 |> createInvestigation "First" "later removed by a reset"
+    let c1 = saved.Repo.Head
+    // Someone resets the branch to h0; a lagging replica keeps answering c1, so the view still shows c1.
+    let reset = { saved with Repo = { saved.Repo with Head = h0 } }
+    let stale = reset |> withRule isGetRef (Respond(200L, refBody c1)) |> fire "refresh"
+    Assert.Equal(c1, (live stale).Head.Commit)
+    // The next save is built on c1 in the view; the base check sees h0, so it rebases onto h0 (or holds a conflict).
+    let second = { stale with Rules = [] } |> openCommand "new-investigation" |> send "cmd.textA" "Second" |> send "cmd.textB" "after reset" |> fire "cmd.submit"
+    let head = headCommit second.Repo
+    Assert.True(head.Parents |> List.forall (fun p -> p <> c1))
+    Assert.True(second.Repo.Head = h0 || head.Parents = [ h0 ])
+    patchBodiesNeverForce second

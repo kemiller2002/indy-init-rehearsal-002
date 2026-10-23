@@ -283,7 +283,7 @@ module Shell =
                     let catalog, reads, truncated = Session.catalogOf target entries
                     let live =
                         { Target = target; Token = t; Access = a; Head = head; Catalog = catalog; Sync = Idle; Refreshing = false
-                          LastVerified = None; Reapply = None; Truncated = truncated }
+                          LastVerified = None; Reapply = None; Truncated = truncated; Known = head.Commit }
                     { app with Connection = Connected live } |> emit reads
                 | Ok _, None -> refuse (Malformed "connection sequence")
             | _ -> app, []
@@ -300,11 +300,12 @@ module Shell =
         let adopt commit = app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
         match op, result with
         // No common history (GitHub answers 404/422): the branch was replaced; show what GitHub holds (review 4, Q4).
-        | OpRefreshCompare commit, Error(ProviderFailure.NotFound | ProviderFailure.Rejected _) -> adopt commit
+        // Only "no common history" adopts; any other failure (500, 503, 409 ...) keeps the state and reports (review 5, R2).
+        | OpRefreshCompare commit, Error(ProviderFailure.NotFound | ProviderFailure.Rejected(422L, _)) -> adopt commit
         | _, Error f -> stop f
         | OpRef, Ok body ->
-            // The newest commit this session knows is on the branch: its own last verified save, or the read point.
-            let anchor = live.LastVerified |> Option.map fst |> Option.defaultValue live.Head.Commit
+            // The newest commit this session has confirmed is on the branch (adopted reloads and verified saves).
+            let anchor = live.Known
             match GitHub.parseRef body with
             | Error f -> stop f
             | Ok commit when commit = anchor -> adopt commit
@@ -335,7 +336,7 @@ module Shell =
             | Error f -> stop f
             | Ok entries ->
                 let catalog, reads, truncated = Session.catalogOf live.Target entries
-                let next = { live with Head = head; Catalog = catalog; Refreshing = false; Truncated = truncated }
+                let next = { live with Head = head; Catalog = catalog; Refreshing = false; Truncated = truncated; Known = head.Commit }
                 match next.Reapply with
                 | Some w when not w.IsNew && not (catalog |> List.exists (fun e -> e.Id = w.InvestigationId)) ->
                     { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "The investigation is no longer in this workspace; your change was not re-applied.") } } |> emit reads
@@ -398,7 +399,18 @@ module Shell =
         | OpWriteCommit, Ok body ->
             match GitHub.parseCreatedSha body with
             | Error f -> fail f
-            | Ok commit -> continueWith UpdatingRef { w with Commit = Some commit } [ OpWriteRef, GitHub.updateRef live.Target commit ]
+            // Never publish on a base GitHub no longer names: a non-forced update would still fast-forward from an
+            // older (reset) head and re-publish what was removed. Check the branch first (DC-005, review 5).
+            | Ok commit -> continueWith CreatingCommit { w with Commit = Some commit } [ OpCheckBase, GitHub.getRef live.Target ]
+        | OpCheckBase, Ok body ->
+            match GitHub.parseRef body, w.Commit with
+            | Ok sha, Some commit when sha = w.BaseCommit -> continueWith UpdatingRef w [ OpWriteRef, GitHub.updateRef live.Target commit ]
+            | Ok _, Some _ when w.Attempts >= Session.maxRebases -> hold live w (Conflict "The branch kept moving while saving.") app
+            // The branch names another commit: decide on what GitHub holds (rebase if this investigation is unchanged,
+            // otherwise a visible conflict), exactly as after a refused update.
+            | Ok sha, Some _ -> continueWith ReloadingCommit w [ OpReloadCommit sha, GitHub.getCommit live.Target sha ]
+            | Error f, _ -> fail f
+            | Ok _, None -> fail (Malformed "write sequence")
         | OpWriteRef, Ok _ -> continueWith VerifyingRef w [ OpVerifyRef, GitHub.getRef live.Target ]
         | OpWriteRef, Error NotFastForward ->
             if w.Attempts >= Session.maxRebases then hold live w (Conflict "The branch kept moving while saving.") app
@@ -516,7 +528,8 @@ module Shell =
                                             Head = (if consistent then head else live.Head)
                                             Catalog = catalog
                                             Sync = Idle
-                                            LastVerified = Some(head.Commit, app.Context.Now) } }
+                                            LastVerified = Some(head.Commit, app.Context.Now)
+                                            Known = head.Commit } }
                             |> App.notice Positive ("Saved to GitHub and verified by an independent read-back (commit " + head.Commit.Substring(0, 7) + ").")
                         // Other investigations may have changed on the branch meanwhile: re-read before the next decision.
                         if consistent then saved, [] else refresh saved

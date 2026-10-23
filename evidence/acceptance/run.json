@@ -1,13 +1,280 @@
 {
   "run_id": "causa-rehearsal-002",
-  "source_commit_sha": "3eb799553f89b1447c920b1e581b884df0b12d09",
-  "source_tree_sha": "8bd21cb5ddc07b828f880409b02b5cba47be82ba",
+  "source_commit_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
   "deployed_commit_sha": null,
   "deployed_url": "https://kevinmmiller.us/indy-init-rehearsal-002/",
   "contract_version": "causa-storage-v1.0.0",
   "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
-  "gates": [],
-  "defect_classes": [],
-  "metrics": {},
-  "unresolved_decisions": []
+  "gates": [
+    {
+      "id": "G0",
+      "name": "Scope",
+      "scope": "requirements pinned (Indy-init@b5d9d79), owners, priorities",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "conditor.json",
+        "docs/requirements",
+        "evidence/acceptance/trace.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": "2026-10-23T12:26:32Z"
+    },
+    {
+      "id": "G1",
+      "name": "Dependencies",
+      "scope": "echelon-current 1.25.0 stack verified as a set and frozen",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "evidence/stack/verification-report.md",
+        "evidence/stack/stack-lock.json",
+        "evidence/stack/compatibility-matrix.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": "2026-10-23T13:15:00Z",
+      "note": "lock checked on every CI run (tools/stack/check_lock.py)"
+    },
+    {
+      "id": "G2",
+      "name": "Interfaces",
+      "scope": "engine/kernel view contract; producer and consumer tests",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "docs/architecture/VIEW-CONTRACT.md",
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/browser"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G3",
+      "name": "Domain",
+      "scope": "F# domain decisions, illegal transitions and forged histories",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/Causa.Conformance.Tests",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G4",
+      "name": "Frozen data",
+      "scope": "5 golden scenarios, 90 negative fixtures, identities of causa-storage-v1.0.0",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/Causa.Conformance.Tests",
+        "evidence/stack/logs/causa-data-gate.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G5",
+      "name": "UI",
+      "scope": "P0 screens, loading, keyboard, accessibility, responsive, color",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/browser"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null,
+      "note": "59 browser tests on the candidate in CI"
+    },
+    {
+      "id": "G6",
+      "name": "Persistence",
+      "scope": "real GitHub provider: read, write, read-back, reload, conflict, refusal",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+      ],
+      "started_at": "2026-10-23T16:25:36Z",
+      "completed_at": "2026-10-23T16:27:44Z",
+      "note": "causa-data run 39986660673 on 645f3ca; its tree 250b154 equals the candidate's"
+    },
+    {
+      "id": "G7",
+      "name": "Defect class",
+      "scope": "independent review and SHA-bound closure of DC-001..DC-006",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "BLOCKED",
+      "evidence_paths": [
+        "docs/decisions",
+        "evidence/quality/closure-review-DC-002-004.md",
+        "evidence/quality/closure-review-2.md",
+        "evidence/quality/closure-review-3.md"
+      ],
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "G8",
+      "name": "Candidate",
+      "scope": "full CI on the candidate: build, conformance, engine, browser, foundations, Praxis",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "PASS",
+      "evidence_paths": [
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/afc3703006b4b4839322d673e954f8ad9bb415c9/checks"
+      ],
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "G9",
+      "name": "Deployment",
+      "scope": "served build-info.json names the candidate; deployed acceptance on it",
+      "verified_sha": "afc3703006b4b4839322d673e954f8ad9bb415c9",
+      "status": "BLOCKED",
+      "evidence_paths": [
+        "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/afc3703006b4b4839322d673e954f8ad9bb415c9/checks"
+      ],
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "defect_classes": [
+    {
+      "id": "DC-001",
+      "severity": "critical",
+      "violated_invariant": "a publication is parented by the state it was decided on (CONTRACT 9.4.2)",
+      "original_repro": "tests 9d, 10b, 11d",
+      "variants": [
+        "rebase over another writer",
+        "retry after reload",
+        "unknown outcome after branch moved"
+      ],
+      "fix_sha": "5675d7c",
+      "reviewer_evidence": "engine test owner (independent); closure-review-DC-002-004",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-002",
+      "severity": "high",
+      "violated_invariant": "a provider answer applies only to the question that asked it; events only in legal states",
+      "original_repro": "security review F1",
+      "variants": [
+        "P2",
+        "P3",
+        "P5",
+        "A (second review)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3",
+      "status": "OPEN"
+    },
+    {
+      "id": "DC-003",
+      "severity": "medium",
+      "violated_invariant": "after the ref update is sent, no failure is reported as not written",
+      "original_repro": "security review F2",
+      "variants": [
+        "P1 (crash)",
+        "D (stale commit re-sent)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (CLOSED, residual D)",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-004",
+      "severity": "high",
+      "violated_invariant": "an absent or advisory provider field never gates or grants",
+      "original_repro": "live run 39964244367 L4",
+      "variants": [
+        "permissions absent",
+        "permissions.push=false on an Actions token",
+        "B (actions offered during reload)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "live runs; closure-review-2 (CLOSED)",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-005",
+      "severity": "high",
+      "violated_invariant": "reads of mutable state are never answered from a cache",
+      "original_repro": "live run 39977289458 L4b",
+      "variants": [
+        "browser cache",
+        "nonce repeated across page loads (shared cache)",
+        "C (post-PATCH ref read unjudged)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "live runs 39980845597 (diagnostics), 39982330584 and 39986660673 PASS; closure-review-2 (CLOSED)",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-006",
+      "severity": "medium",
+      "violated_invariant": "a failed framework download ends the start promptly with recovery (WASM-LOAD-005)",
+      "original_repro": "deployed acceptance run 39983316689",
+      "variants": [
+        "CDN 503 + integrity failure on one .wasm"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "closure-review-3",
+      "status": "OPEN"
+    }
+  ],
+  "metrics": {
+    "first_green_elapsed_seconds": 6255,
+    "first_candidate_elapsed_seconds": 10994,
+    "accepted_elapsed_seconds": null,
+    "candidate_count": 4,
+    "repeated_defect_class_count": 4,
+    "token_count": null,
+    "ci_queue_seconds": null,
+    "ci_test_seconds": null,
+    "verified_requirement_count": null,
+    "milestones": {
+      "start": "2026-10-23T12:14:13Z",
+      "first_build": "2026-10-23T12:26:32Z",
+      "first_functional_screen": "2026-10-23T12:58:34Z",
+      "first_external_data_load": "2026-10-23T12:59:36Z",
+      "first_green_ci": "2026-10-23T13:58:28Z",
+      "first_verified_remote_write": {
+        "run": 39975799085,
+        "commit": "33dcddee2dc1a54db9de4001608e470a1b67f920",
+        "not_before": "2026-10-23T15:10:31Z",
+        "not_after": "2026-10-23T15:11:41Z"
+      },
+      "first_candidate_on_main": "2026-10-23T15:17:27Z",
+      "accepted": null
+    },
+    "unavailable": {
+      "token_count": "the runtime does not expose token usage to the session",
+      "ci_queue_seconds": "not aggregated across runs; per-run timings are in GitHub Actions",
+      "ci_test_seconds": "not aggregated across runs; per-run timings are in GitHub Actions"
+    }
+  },
+  "unresolved_decisions": [
+    {
+      "id": "UD-1",
+      "owner": "repository owner",
+      "impact": "main was created from the session by the owner; branch protection not applied",
+      "disposition": ".github/branch-protection.json is prepared; applying it needs repository admin rights"
+    },
+    {
+      "id": "UD-2",
+      "owner": "repository owner",
+      "impact": "P1 features (causal graph, search, comparison, export, first-run guidance) not built",
+      "disposition": "deferred; listed NOT_RUN in the ledger"
+    },
+    {
+      "id": "UD-3",
+      "owner": "Praxis maintainers",
+      "impact": "DEF-STACK-007: checkpoint accepts second-precision times that validate rejects",
+      "disposition": "worked around with millisecond times; upstream fix needed"
+    }
+  ]
 }

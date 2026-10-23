@@ -1390,3 +1390,54 @@ let ``27 N1 a landed save whose investigation was then deleted is never called "
     let discarded = { held with Rules = [] } |> fire "sync.discard"
     Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
     Assert.Equal(1, discarded.Requests |> List.filter isSave |> List.length)
+
+// ---------------------------------------------------------------------------------------------------------------
+// Ninth independent closure review (evidence/quality/closure-review-9.md: R9P1 kept as 27b, N2 as 27c)
+// ---------------------------------------------------------------------------------------------------------------
+
+[<Fact>]
+let ``27b N1 a landed save reverted and then changed by another writer keeps "may have been saved" through discard`` () =
+    let run = "r27b"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let baseFiles = filesAt (workspaceRepo run) prefix target
+    let revertThenAppend (repo: Repo) =
+        let reverted = commitFiles "revert" [ for KeyValue(n, b) in baseFiles -> prefix + target + "/" + n, Some b ] repo
+        otherWriterAppends prefix target "other, after revert" reverted
+    let held =
+        connected run (workspaceRepo run) |> withRule isSave (UnknownAfter true) |> withRule isGetRef (Concurrent revertThenAppend)
+        |> observe target "landed, then reverted"
+    match sync held with
+    | Held(w, Conflict detail) ->
+        Assert.True(w.MayHaveApplied)
+        Assert.Contains("may have been saved", detail)
+        Assert.DoesNotContain("not written", detail)
+    | other -> failwithf "expected Held Conflict, got %A" other
+    Assert.Equal(0, observations held.Repo prefix target |> count "landed, then reverted")
+    let discarded = { held with Rules = [] } |> fire "sync.discard"
+    Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
+
+[<Fact>]
+let ``27c N2 re-applying a landed new investigation whose directory was then altered never says "not written"`` () =
+    let run = "r27c"
+    let prefix = Fixtures.workspacePrefix run
+    let w0 = connected run (workspaceRepo run)
+    let ids (repo: Repo) =
+        headFiles repo |> Map.toList |> List.map fst |> List.filter (fun p -> p.StartsWith prefix)
+        |> List.map (fun p -> p.Substring(prefix.Length).Split('/')[0]) |> Set.ofList
+    let before = ids w0.Repo
+    let strip (repo: Repo) =
+        let fresh = Set.difference (ids repo) before |> Set.toList
+        commitFiles "strip events" [ for id in fresh -> prefix + id + "/events.ndjson", None ] repo
+    let held = w0 |> withRule isSave (UnknownAfter true) |> withRule isGetRef (Concurrent strip) |> createInvestigation "New" "landed, events stripped"
+    match sync held with
+    | Held(w, Conflict detail) -> Assert.True(w.MayHaveApplied); Assert.DoesNotContain("not written", detail)
+    | other -> failwithf "expected Held Conflict, got %A" other
+    let reapplied = { held with Rules = [] } |> fire "sync.reapply"
+    match sync reapplied with
+    | Held(w, Conflict detail) -> Assert.True(w.MayHaveApplied); Assert.DoesNotContain("not written", detail)
+    | other -> failwithf "expected Held Conflict after re-apply, got %A" other
+    Assert.DoesNotContain("not saved", text "noticeText" reapplied)
+    let discarded = reapplied |> fire "sync.discard"
+    Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
+    Assert.Equal(1, discarded.Requests |> List.filter isSave |> List.length)

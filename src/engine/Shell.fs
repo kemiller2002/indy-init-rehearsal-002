@@ -227,7 +227,9 @@ module Shell =
                 | Ok set -> Store.append set loaded loaded.State.Version events |> Result.mapError (fun e -> e.Detail + " (" + e.Code + ")")
         match result with
         | Error reason ->
-            { app with Connection = Connected cleared } |> App.notice Critical ("Your pending change could not be re-applied to the latest version and was not saved: " + reason), []
+            // "Not saved" only when no earlier send may have landed (review 9, N2).
+            let outcome = if w.MayHaveApplied then " (it may have been saved earlier, then changed or removed)" else " and was not saved"
+            { app with Connection = Connected cleared } |> App.notice Critical ("Your pending change could not be re-applied to the latest version" + outcome + ": " + reason), []
         | Ok(files, newLoaded) ->
             let rewritten =
                 { w with Envelope = envelope; Files = files; Loaded = newLoaded; BaseEntries = Session.baseEntries live w.InvestigationId
@@ -341,7 +343,10 @@ module Shell =
                     { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "The investigation is no longer in this workspace; your change was not re-applied.") } } |> emit reads
                 | Some w when w.IsNew ->
                     // A new investigation's conflict means its directory now exists: nothing to re-apply onto.
-                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "An investigation with this identifier now exists; your new investigation was not written.") } } |> emit reads
+                    let text =
+                        if w.MayHaveApplied then "An investigation with this identifier now exists and differs from yours (yours may have been saved, then changed); it was not re-applied."
+                        else "An investigation with this identifier now exists; your new investigation was not written."
+                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict text) } } |> emit reads
                 | Some w ->
                     match Session.entry next w.InvestigationId with
                     // Refused at listing time (path, size, duplicate): no blob read will ever end the re-apply (review P2).

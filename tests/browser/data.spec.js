@@ -176,6 +176,8 @@ test.describe("MOCKED: EXT-DATA refused access", () => {
     await expect(page.locator(".causa-card")).toHaveCount(0);
     await expect(page.locator("form.causa-form")).toBeVisible();
     await expect(page.locator("#cn-token")).toHaveValue(""); // the refused credential is not kept in the form
-    expect(fake.log.map((r) => r.path)).toEqual(["/repos/causa-test/causa-data"]);
+    // One request only; the repository read carries the engine's cache-defeating parameter (DC-005).
+    expect(fake.log.map((r) => r.path.replace(/[?&]fresh=[^&]*$/, ""))).toEqual(["/repos/causa-test/causa-data"]);
+    expect(fake.log[0].path).toMatch(/[?&]fresh=/);
   });
 });

@@ -266,7 +266,9 @@ let handle (req: Request) (repo: Repo) : int64 * string * Repo =
         | _ -> unchanged 404L (message "Not Found")
 
 /// Interpret an engine Http URL against this repository.
-let routeOf (repo: Repo) (url: string) : string option =
+let routeOf (repo: Repo) (url0: string) : string option =
+    // The engine's cache-defeating parameter is not part of the route.
+    let url = Text.RegularExpressions.Regex.Replace(url0, @"[?&]fresh=[^&]*$", "")
     let prefix = "https://api.github.com/repos/" + repo.Owner + "/" + repo.Name
     if url = prefix then Some ""
     elif url.StartsWith(prefix + "/", StringComparison.Ordinal) then Some(url.Substring prefix.Length)

@@ -26,7 +26,8 @@ module Shell =
         EffectRequest.Http
             { CorrelationId = CorrelationId correlation
               Method = httpMethod request.Method
-              Url = GitHub.apiBase + request.Path
+              // The correlation id is unique per request, so a fresh read can never be answered from a cache.
+              Url = GitHub.apiBase + request.Path + (if request.Fresh then (if request.Path.Contains '?' then "&" else "?") + "fresh=" + correlation else "")
               Headers =
                 Some(
                     Map.ofList

@@ -120,8 +120,12 @@ test("L4 create a new investigation: atomic commit, independent read-back, reloa
   // Reload: the credential is gone (memory only), nothing was stored in browser storage, data reloads from GitHub.
   const stored = await page.evaluate(() => JSON.stringify({ ...localStorage }) + JSON.stringify({ ...sessionStorage }));
   expect(stored.includes(token)).toBe(false);
+  // Creating navigated to the new investigation; reload the deep link: it must ask for authorization again (nothing
+  // remembered) and show the cannot-be-shown state, then the dashboard reconnects and reloads the data from GitHub.
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 120_000 });
+  await expect(page.locator(".causa-masthead")).toContainText("Not connected");
+  await page.goto("./#/");
   await expect(page.getByRole("heading", { name: "Connect data repository" })).toBeVisible();
   await connect(page, { root: run });
   await expect(page.locator('.causa-card[data-status="valid"]')).toHaveCount(1, { timeout: 120_000 });

@@ -1,0 +1,32 @@
+{
+  "run": "r002-live-39975799085",
+  "owner": "kemiller2002",
+  "repo": "causa-data",
+  "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
+  "baseUrl": "local dist/site",
+  "checks": [
+    {
+      "id": "L1-empty-first-launch",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L2-denied-without-authorization",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L3-authorized-read-and-replay",
+      "outcome": "PASS",
+      "verified": 5
+    },
+    {
+      "id": "L4-new-investigation-github-write-read-back",
+      "outcome": "PASS",
+      "commit": "33dcddee2dc1a54db9de4001608e470a1b67f920",
+      "investigationId": "18896404-e2fc-4dff-bde7-339b111f16a1"
+    }
+  ],
+  "timings": {
+    "fixturesLoadMs": 3560,
+    "createWriteVerifyMs": 4052
+  }
+}

@@ -122,6 +122,9 @@ jobs:
         with:
           node-version: "24"
       - run: npm ci --no-audit --no-fund
+      # The MOCKED browser tests read the frozen dataset to serve it from a fake GitHub (test-only, never deployed).
+      - name: Fetch the frozen causa-data v1.0.0 dataset (test-only) and verify its identities
+        run: tools/data/fetch-causa-data.sh
       - name: The served build is exactly this commit
         shell: bash
         env:

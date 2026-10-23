@@ -1372,3 +1372,21 @@ let ``26f F5 after the resend bound, the user's reconcile gets a fresh bound and
     let after = { held with Rules = [] } |> fire "sync.reconcile"
     Assert.Equal(Idle, sync after)
     Assert.Equal<string list>([ w0.Repo.Head ], (headCommit after.Repo).Parents)
+
+[<Fact>]
+let ``27 N1 a landed save whose investigation was then deleted is never called "not written"`` () =
+    let run = "r27"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let remove = commitFiles "delete it" (Store.fileNames |> List.map (fun f -> prefix + target + "/" + f, None))
+    let held =
+        connected run (workspaceRepo run) |> withRule isSave (UnknownAfter true) |> withRule isGetRef (Concurrent remove)
+        |> observe target "landed, then deleted"
+    match sync held with
+    | Held(_, Conflict detail) ->
+        Assert.DoesNotContain("not written", detail)
+        Assert.Contains("may have been saved", detail)
+    | other -> failwithf "expected Held Conflict, got %A" other
+    let discarded = { held with Rules = [] } |> fire "sync.discard"
+    Assert.DoesNotContain("nothing was written", text "noticeText" discarded)
+    Assert.Equal(1, discarded.Requests |> List.filter isSave |> List.length)

@@ -442,6 +442,10 @@ module Shell =
                     // The investigation changed since the base, and an earlier send may have landed: look for this
                     // command in its history before calling it a conflict (review 7, F2).
                     continueWith Recognising w [ OpRecognise head, GitHub.getBlob live.Target now["events.ndjson"] ]
+                elif w.MayHaveApplied then
+                    // The investigation is gone or unreadable here and an earlier send may have landed: say only what is
+                    // known (review 8, N1).
+                    hold live w (Conflict "Someone else changed this investigation on GitHub, and your change is not on the branch now (it may have been saved and then removed).") app
                 else
                     hold live w (Conflict "Someone else changed this investigation on GitHub after you loaded it. Your change was not written.") app
         | OpRecognise head, Ok body ->
@@ -456,7 +460,7 @@ module Shell =
                     |> App.notice Neutral ("Your change was saved to GitHub (found in the history at commit " + head.Commit.Substring(0, 7) + "). The investigation has changed since; the workspace is being reloaded."))
             | Ok _ ->
                 // Not in the history of what the branch names now. Whether or not it landed earlier, it is not there.
-                hold live { w with MayHaveApplied = false } (Conflict "Someone else changed this investigation on GitHub, and your change is not on the branch.") app
+                hold live w (Conflict "Someone else changed this investigation on GitHub, and your change is not on the branch now (it may have been saved and then removed).") app
         | OpVerifyCommit commit, Ok body ->
             match GitHub.parseCommitTree body with
             | Error f -> fail f
@@ -606,10 +610,11 @@ module Shell =
         | "sync.discard" ->
             match App.live app with
             // Only a held change can be discarded; a write in flight cannot be called "not written" (DC-002).
-            | Some({ Sync = Held(_, hold) } as live) ->
+            | Some({ Sync = Held(w, hold) } as live) ->
                 let text =
                     match hold with
                     | Unknown _ -> "Your pending change was discarded from this tab. It may already be on GitHub; the workspace is being reloaded."
+                    | _ when w.MayHaveApplied -> "Your pending change was discarded from this tab. It is not on the branch now; the workspace is being reloaded."
                     | _ -> "Your pending change was discarded; nothing was written."
                 withEffects (refresh ({ app with Connection = Connected { live with Sync = Idle; Reapply = None } } |> App.notice Neutral text))
             | _ -> plain app

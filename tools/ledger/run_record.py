@@ -36,7 +36,8 @@ def defect(did, severity, invariant, repro, variants, fix, review, status):
 
 
 def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
-    live = "evidence/acceptance/live-run-39990408889/live-acceptance.json"
+    live = "evidence/acceptance/live-run-40038654015/live-acceptance.json"
+    reviews = ["evidence/quality/closure-review-DC-002-004.md"] + [f"evidence/quality/closure-review-{n}.md" for n in range(2, 10)]
     ci = f"https://github.com/kemiller2002/indy-init-rehearsal-002/commit/{source}/checks"
     gates = [
         gate("G0", "Scope", "requirements pinned (Indy-init@b5d9d79), owners, priorities", source, "PASS",
@@ -51,14 +52,14 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
         gate("G4", "Frozen data", "5 golden scenarios, 90 negative fixtures, identities of causa-storage-v1.0.0", source, "PASS",
              ["tests/Causa.Conformance.Tests", "evidence/stack/logs/causa-data-gate.json"], START, None),
         gate("G5", "UI", "P0 screens, loading, keyboard, accessibility, responsive, color", source, "PASS",
-             ["tests/browser"], START, None, "59 browser tests on the candidate in CI"),
+             ["tests/browser"], START, None, "61 browser tests on the candidate in CI"),
         gate("G6", "Persistence", "real GitHub provider: read, write, read-back, reload, conflict, refusal", source, "PASS",
-             [live], "2026-10-23T16:52:40Z", "2026-10-23T16:55:01Z",
-             "causa-data run 39990408889 on 63b2232; its tree 1ce2a0e equals the candidate's"),
+             [live, "evidence/acceptance/live-run-40036025752/live-acceptance.json"], "2026-10-23T23:15:44Z", "2026-10-23T23:17:25Z",
+             "causa-data run 40038654015 on 8d53d70 (L1-L6 PASS, saves through GraphQL createCommitOnBranch); the merge differs from it only by evidence files"),
         gate("G7", "Defect class", "independent review and SHA-bound closure of DC-001..DC-006", source, g7,
-             ["docs/decisions", "evidence/quality/closure-review-DC-002-004.md", "evidence/quality/closure-review-2.md",
-              "evidence/quality/closure-review-3.md"], None, None,
-             "the fixes for closure-review-3's findings (63b2232) were merged on the owner's instruction before a fourth independent review reported (UD-4)"),
+             ["docs/decisions"] + reviews, None, None,
+             "nine independent reviews; every correction merged in this candidate was independently reviewed (closure-review-9 reviews the last one)"
+             if g7 == "PASS" else "a correction in the candidate lacks an independent review (DCC-005 d)"),
         gate("G8", "Candidate", "full CI on the candidate: build, conformance, engine, browser, foundations, Praxis", source, "PASS",
              [ci], None, None),
         gate("G9", "Deployment", "served build-info.json names the candidate; deployed acceptance on it", source, g9,
@@ -70,28 +71,32 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
                "5675d7c", "engine test owner (independent); closure-review-DC-002-004", "CLOSED"),
         defect("DC-002", "high", "a provider answer applies only to the question that asked it; events only in legal states",
                "security review F1", ["P2", "P3", "P5", "A (second review)", "refused renewal swapped token (third review, low)"], "63b2232",
-               "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3 (A CLOSED; low residual fixed in 63b2232, not re-reviewed)", "CLOSED" if g7 == "PASS" else "OPEN"),
-        defect("DC-003", "medium", "after the ref update is sent, no failure is reported as not written",
-               "security review F2", ["P1 (crash)", "D (stale commit re-sent)"], "645f3ca",
-               "closure-review-DC-002-004 (OPEN), closure-review-2 (CLOSED, residual D)", "CLOSED"),
+               "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3 (A CLOSED), closure-review-7 and -8 (CLOSED)", "CLOSED" if g7 == "PASS" else "OPEN"),
+        defect("DC-003", "medium", "after a save is sent, no failure is reported as not written",
+               "security review F2", ["P1 (crash)", "D (stale commit re-sent)", "F1-F5, F7 (seventh review: applied save reported unsent or conflict)",
+                                      "N1 (eighth review: landed then deleted)"], "8d53d70",
+               "closure-review-2 (CLOSED, residual D), closure-review-7 (OPEN), closure-review-8 (CLOSED; N1 low), closure-review-9 (N1)",
+               "CLOSED" if g7 == "PASS" else "OPEN"),
         defect("DC-004", "high", "an absent or advisory provider field never gates or grants", "live run 39964244367 L4",
                ["permissions absent", "permissions.push=false on an Actions token", "B (actions offered during reload)"], "645f3ca",
                "live runs; closure-review-2 (CLOSED)", "CLOSED"),
         defect("DC-005", "high", "reads of mutable state are never answered from a cache", "live run 39977289458 L4b",
                ["browser cache", "nonce repeated across page loads (shared cache)", "C (post-PATCH ref read unjudged)",
-                "reload answered by a lagging replica (third review, medium)"], "63b2232",
-               "live runs 39980845597 (diagnostics), 39982330584, 39986660673, 39990408889 PASS; closure-review-2 (CLOSED); closure-review-3 (OPEN: reload), fixed in 63b2232, not re-reviewed",
+                "reload answered by a lagging replica (third review)", "Q1-Q4 (fourth review)", "R1-R4 (fifth review)",
+                "V1, V2: REST cannot compare-and-swap (sixth review)"], "eb7e12e",
+               "live runs 39990408889, 40036025752, 40038654015 PASS; closure-review-3 to -6 (OPEN, each fixed); closure-review-7 and -8 (CLOSED: atomic GraphQL save)",
                "CLOSED" if g7 == "PASS" else "OPEN"),
         defect("DC-006", "medium", "a failed framework download ends the start promptly with recovery (WASM-LOAD-005)",
-               "deployed acceptance run 39983316689", ["CDN 503 + integrity failure on one .wasm", "first fix failed starts the loader would have recovered (third review, medium)"],
-               "63b2232", "closure-review-3 (OPEN), fixed in 63b2232, not re-reviewed", "CLOSED" if g7 == "PASS" else "OPEN"),
+               "deployed acceptance run 39983316689", ["CDN 503 + integrity failure on one .wasm", "first fix failed starts the loader would have recovered (third review)",
+               "B1: grace expired while a slow retry was downloading (fourth review)"],
+               "1670dcb", "closure-review-3 and -4 (OPEN, each fixed); closure-review-5 (CLOSED; low: wrong message after a fast persistent failure)", "CLOSED" if g7 == "PASS" else "OPEN"),
     ]
     metrics = {
         "first_green_elapsed_seconds": elapsed("2026-10-23T13:58:28Z"),
         "first_candidate_elapsed_seconds": elapsed("2026-10-23T15:17:27Z"),
         "accepted_elapsed_seconds": elapsed(accepted_at),
-        "candidate_count": 5,
-        "repeated_defect_class_count": 4,
+        "candidate_count": 6,
+        "repeated_defect_class_count": 5,
         "token_count": None,
         "ci_queue_seconds": None,
         "ci_test_seconds": ci_seconds,
@@ -112,7 +117,7 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
         {"id": "UD-2", "owner": "repository owner", "impact": "P1 features (causal graph, search, comparison, export, first-run guidance) not built",
          "disposition": "deferred; listed NOT_RUN in the ledger"},
         {"id": "UD-4", "owner": "repository owner", "impact": "63b2232 merged to main before the fourth independent closure review reported",
-         "disposition": "owner instruction 'Assume all reviewed please merge'; G7 stays BLOCKED in this ledger until that review is recorded"},
+         "disposition": "resolved: reviews 4-9 are recorded and their findings were fixed in the candidate before it was merged"},
         {"id": "UD-3", "owner": "Praxis maintainers", "impact": "DEF-STACK-007: checkpoint accepts second-precision times that validate rejects",
          "disposition": "worked around with millisecond times; upstream fix needed"},
     ]

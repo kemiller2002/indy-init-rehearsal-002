@@ -1,0 +1,18 @@
+{
+  "name": "causa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@echelon-foundry/design-system": "0.9.0",
+    "@echelon-foundry/limen": "0.9.0",
+    "@echelon-foundry/print-components": "0.4.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "typescript": "5.9.3"
+  }
+}

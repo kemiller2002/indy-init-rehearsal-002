@@ -1,0 +1,210 @@
+{
+  "$schema": "../schemas/conditor.schema.json",
+  "schemaVersion": 1,
+  "name": "causa-rehearsal-002",
+  "components": [
+    {
+      "id": "praxis",
+      "version": "3.16.0"
+    },
+    {
+      "id": "ordo",
+      "version": "1.17.0"
+    },
+    {
+      "id": "percepta",
+      "version": "0.1.0"
+    },
+    {
+      "id": "aegis",
+      "version": "1.0.0"
+    },
+    {
+      "id": "limen",
+      "version": "0.9.0"
+    },
+    {
+      "id": "forma",
+      "version": "0.9.0"
+    },
+    {
+      "id": "folio",
+      "version": "0.4.0"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "rehearsal-dependency-lock",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/REHEARSAL-DEPENDENCY-LOCK.md"
+      },
+      "targetPath": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md"
+    },
+    {
+      "id": "rehearsal-external-data-boundary",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md"
+      },
+      "targetPath": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md"
+    },
+    {
+      "id": "causa-ui-experience-requirements",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md"
+      },
+      "targetPath": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md"
+    },
+    {
+      "id": "wasm-loading-experience-requirements",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md"
+      },
+      "targetPath": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md"
+    },
+    {
+      "id": "agent-decision-reduction-profile",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/AGENT-DECISION-REDUCTION-PROFILE.md"
+      },
+      "targetPath": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md"
+    },
+    {
+      "id": "rehearsal-agent-interface-freeze",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/REHEARSAL-AGENT-INTERFACE-FREEZE.md"
+      },
+      "targetPath": "docs/requirements/REHEARSAL-AGENT-INTERFACE-FREEZE.md"
+    },
+    {
+      "id": "rehearsal-acceptance-ledger",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/REHEARSAL-ACCEPTANCE-LEDGER.md"
+      },
+      "targetPath": "docs/requirements/REHEARSAL-ACCEPTANCE-LEDGER.md"
+    },
+    {
+      "id": "rehearsal-interface-manifest-r001",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/REHEARSAL-INTERFACE-MANIFEST-R001.md"
+      },
+      "targetPath": "docs/requirements/REHEARSAL-INTERFACE-MANIFEST-R001.md"
+    },
+    {
+      "id": "defect-class-closure-and-release-gates",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md"
+      },
+      "targetPath": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md"
+    },
+    {
+      "id": "screen-contracts",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/SCREEN-CONTRACTS.md"
+      },
+      "targetPath": "docs/requirements/SCREEN-CONTRACTS.md"
+    },
+    {
+      "id": "state-transition-tables",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/STATE-TRANSITION-TABLES.md"
+      },
+      "targetPath": "docs/requirements/STATE-TRANSITION-TABLES.md"
+    },
+    {
+      "id": "command-event-catalog",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/COMMAND-EVENT-CATALOG.md"
+      },
+      "targetPath": "docs/requirements/COMMAND-EVENT-CATALOG.md"
+    },
+    {
+      "id": "product-requirements",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/PRODUCT-REQUIREMENTS.md"
+      },
+      "targetPath": "docs/requirements/PRODUCT-REQUIREMENTS.md"
+    },
+    {
+      "id": "causa-storage-release-v1-0-0",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/CAUSA-STORAGE-RELEASE-v1.0.0.md"
+      },
+      "targetPath": "docs/requirements/CAUSA-STORAGE-RELEASE-v1.0.0.md"
+    },
+    {
+      "id": "security-threat-model",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/SECURITY-THREAT-MODEL.md"
+      },
+      "targetPath": "docs/requirements/SECURITY-THREAT-MODEL.md"
+    },
+    {
+      "id": "design-decision-boundaries",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/DESIGN-DECISION-BOUNDARIES.md"
+      },
+      "targetPath": "docs/requirements/DESIGN-DECISION-BOUNDARIES.md"
+    },
+    {
+      "id": "kickoff-execution-packet",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/KICKOFF-EXECUTION-PACKET.md"
+      },
+      "targetPath": "docs/requirements/KICKOFF-EXECUTION-PACKET.md"
+    },
+    {
+      "id": "hackathon-boundaries",
+      "source": {
+        "repository": "kemiller2002/Indy-init",
+        "commit": "b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8",
+        "path": "docs/HACKATHON-BOUNDARIES.md"
+      },
+      "targetPath": "docs/requirements/HACKATHON-BOUNDARIES.md"
+    }
+  ],
+  "execution": {
+    "enabled": true,
+    "mission": "Build Causa Rehearsal 002 from the pinned R002 requirements: external GitHub-backed investigation data (zero bundled demonstration records), F# domain authority, Limen/Forma/Folio UI, verified current Echelon stack, exact-SHA deployed acceptance.",
+    "contractPath": "docs/requirements/REHEARSAL-ACCEPTANCE-LEDGER.md",
+    "launcher": "claude",
+    "permissionMode": "auto"
+  },
+  "scaffold": {
+    "kind": "fsharp-limen-web",
+    "name": "causa"
+  }
+}

@@ -1,0 +1,14 @@
+name: Echelon foundations
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  foundations:
+    uses: kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c
+    with:
+      praxis_ref: aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c

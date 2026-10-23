@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "repository": "indy-init-rehearsal-002",
+  "nextSeq": 1,
+  "items": [
+    {
+      "id": "COND-MISSION-001",
+      "title": "Build causa-rehearsal-002 from the Conditor execution contract",
+      "description": "Build Causa Rehearsal 002 from the pinned R002 requirements: external GitHub-backed investigation data (zero bundled demonstration records), F# domain authority, Limen/Forma/Folio UI, verified current Echelon stack, exact-SHA deployed acceptance.",
+      "tags": [
+        "conditor",
+        "mission"
+      ],
+      "priority": "high",
+      "status": "ready",
+      "attachments": [],
+      "createdAt": "2026-10-23T12:24:05.4211645+00:00",
+      "updatedAt": "2026-10-23T12:24:05.9317334+00:00",
+      "createdBy": "conditor",
+      "createdByActor": {
+        "kind": "agent",
+        "id": "conditor",
+        "provider": "anthropic",
+        "model": "unknown",
+        "runtime": "claude-code"
+      },
+      "source": "conditor",
+      "sourceReference": "docs/requirements/REHEARSAL-ACCEPTANCE-LEDGER.md"
+    }
+  ]
+}

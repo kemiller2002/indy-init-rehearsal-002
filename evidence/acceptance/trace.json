@@ -232,32 +232,42 @@
       "tests/live/live-acceptance.spec.js"
     ],
     "evidence_paths": [
-      "docs/decisions/DC-003.md"
+      "docs/decisions/DC-003.md",
+      "evidence/acceptance/live-run-39986660673/live-acceptance.json"
     ],
     "status": "PASS",
     "reason": ""
   },
   "EXT-DATA-005": {
     "owner": "engine",
-    "implementation_paths": [],
+    "implementation_paths": [
+      "src/engine/GitHub.fs",
+      "src/engine/Session.fs"
+    ],
     "tests": [
       "tests/App.Engine.Tests/EngineTests.fs",
       "tests/live/live-acceptance.spec.js"
     ],
-    "evidence_paths": [],
-    "status": "BLOCKED",
-    "reason": "Mocked provider tests pass; awaiting the live real-GitHub run on the candidate SHA."
+    "evidence_paths": [
+      "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+    ],
+    "status": "PASS",
+    "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
   },
   "EXT-DATA-006": {
     "owner": "engine",
-    "implementation_paths": [],
+    "implementation_paths": [
+      "src/engine/Shell.fs"
+    ],
     "tests": [
       "tests/App.Engine.Tests/EngineTests.fs",
       "tests/live/live-acceptance.spec.js"
     ],
-    "evidence_paths": [],
-    "status": "BLOCKED",
-    "reason": "Mocked: atomic commit, force:false, read-back verified; live run pending."
+    "evidence_paths": [
+      "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+    ],
+    "status": "PASS",
+    "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
   },
   "EXT-DATA-007": {
     "owner": "engine",
@@ -599,14 +609,19 @@
   },
   "ADRP-005": {
     "owner": "engine",
-    "implementation_paths": [],
+    "implementation_paths": [
+      "src/engine/Session.fs",
+      "src/engine/Shell.fs"
+    ],
     "tests": [
       "tests/App.Engine.Tests/EngineTests.fs",
       "tests/live/live-acceptance.spec.js"
     ],
-    "evidence_paths": [],
-    "status": "BLOCKED",
-    "reason": "Live persistence run pending."
+    "evidence_paths": [
+      "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+    ],
+    "status": "PASS",
+    "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
   },
   "ADRP-006": {
     "owner": "lead",

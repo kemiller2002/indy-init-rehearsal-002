@@ -1090,3 +1090,39 @@ let ``22c D a rebased publication never re-sends its pre-rebase commit`` () =
     let shas = patchedShas after
     Assert.Equal(shas.Length, (List.distinct shas).Length)
     patchBodiesNeverForce after
+
+// ---------------------------------------------------------------------------------------------------------------
+// Third independent closure review (evidence/quality/closure-review-3.md)
+// ---------------------------------------------------------------------------------------------------------------
+
+[<Fact>]
+let ``23 a reload answered by a lagging replica never moves the view back past a verified save (DC-005)`` () =
+    let run = "r23"
+    let w0 = connected run (workspaceRepo run)
+    let oldHead = w0.Repo.Head
+    let saved = w0 |> createInvestigation "Saved" "then a stale reload"
+    let count = (live saved).Catalog.Length
+    let newHead = (live saved).Head.Commit
+    Assert.Equal(saved.Repo.Head, newHead)
+    let reloaded =
+        saved
+        |> withRule isGetRef (Respond(200L, sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" oldHead))
+        |> fire "refresh"
+    Assert.Equal(newHead, (live reloaded).Head.Commit)
+    Assert.Equal(count, (live reloaded).Catalog.Length)
+    Assert.False((live reloaded).Refreshing)
+    // A genuinely newer head is still adopted.
+    let prefix = Fixtures.workspacePrefix run
+    let moved = { reloaded with Rules = []; Repo = reloaded.Repo |> otherWriterAppends prefix openIds[0] "someone else" }
+    let fresh = moved |> fire "refresh"
+    Assert.Equal(moved.Repo.Head, (live fresh).Head.Commit)
+
+[<Fact>]
+let ``23b a renewal refused during a reload changes nothing and keeps the typed token in the form`` () =
+    let run = "r23b"
+    let denied = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(401L, """{"message":"Bad credentials"}""")) |> createInvestigation "Renew" "during refresh"
+    let reloading, _ = { denied with Rules = [] } |> deliver (event "refresh" None None) |> pumpHolding isGetCommit []
+    let before = (live reloading).Token
+    let refused = reloading |> send "connect.token" (token + "-new") |> fire "auth.renew"
+    Assert.Equal(before, (live refused).Token)
+    Assert.Equal(Some(token + "-new"), refused.App.ConnectForm |> Map.tryFind "token")

@@ -86,18 +86,19 @@ test.describe("WASM-LOAD: failure and retry", () => {
 test.describe("WASM-LOAD: a framework file fails mid-boot", () => {
   // What the deployed site met right after a Pages deploy: one framework file answered 503, its body failed the
   // integrity check, and the .NET loader rejected. The user must still get the recoverable failure, not a dead page.
-  test.use({ allowedConsoleErrors: /Failed to load resource|integrity|SRI|Fetch API cannot load/i });
+  // The loader logs its own final "download ... failed" after its retries: expected here.
+  test.use({ allowedConsoleErrors: /Failed to load resource|integrity|SRI|Fetch API cannot load|mono_download_assets/i });
 
   test("a 503 on one framework .wasm shows the recoverable failure; Retry reloads to ready", async ({ page }) => {
     let failed = false;
     const one = /\/wasm\/_framework\/System\.ComponentModel\.EventBasedAsync\.[^/]*\.wasm$/;
     await page.route(one, (route) => {
-      failed = true;
+      failed = true; // every attempt, including the loader's own retries
       return route.fulfill({ status: 503, contentType: "text/html", body: "<h1>503 Service Unavailable</h1>" });
     });
     await page.goto("./");
-    // Well before the 90 s start timeout: the failure is reported as soon as the loader rejects.
-    await expect(page.locator("html")).toHaveAttribute("data-boot", "failed", { timeout: 30_000 });
+    // Well before the 90 s start timeout: after the loader's own retries and a short grace period.
+    await expect(page.locator("html")).toHaveAttribute("data-boot", "failed", { timeout: 45_000 });
     expect(failed).toBe(true);
     await expect(page.locator("#causa-boot").getByRole("alert")).toContainText("could not be downloaded");
     await expect(page.getByRole("button", { name: "Retry" })).toBeFocused();
@@ -106,6 +107,26 @@ test.describe("WASM-LOAD: a framework file fails mid-boot", () => {
     await page.getByRole("button", { name: "Retry" }).click();
     await reloaded;
     await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 90_000 });
+  });
+});
+
+test.describe("WASM-LOAD: a framework file fails once", () => {
+  // A temporary failure (the CDN mid-propagation) must not fail the start: the loader retries on its own.
+  test.use({ allowedConsoleErrors: /Failed to load resource|integrity|SRI|Fetch API cannot load/i });
+
+  test("a single 503 on one framework .wasm is retried by the loader and the start reaches ready", async ({ page }) => {
+    let attempts = 0;
+    const one = /\/wasm\/_framework\/System\.ComponentModel\.EventBasedAsync\.[^/]*\.wasm$/;
+    await page.route(one, (route) => {
+      attempts += 1;
+      return attempts === 1
+        ? route.fulfill({ status: 503, contentType: "text/html", body: "<h1>503 Service Unavailable</h1>" })
+        : route.continue();
+    });
+    await page.goto("./");
+    await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 60_000 });
+    expect(attempts).toBeGreaterThanOrEqual(2);
+    await expect(page.getByRole("button", { name: "Retry" })).toBeHidden();
   });
 });
 

@@ -1,0 +1,69 @@
+{
+  "run": "r002-live-39986660673",
+  "owner": "kemiller2002",
+  "repo": "causa-data",
+  "branch": "claude/causa-rehearsal-002-kickoff-i2ihli",
+  "baseUrl": "local dist/site",
+  "checks": [
+    {
+      "id": "L1-empty-first-launch",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L2-denied-without-authorization",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L3-authorized-read-and-replay",
+      "outcome": "PASS",
+      "verified": 5
+    },
+    {
+      "id": "L4-new-investigation-github-write-read-back",
+      "outcome": "PASS",
+      "commit": "b2a037f251bfff28e0bd7737d27e4c2ac3d053b6",
+      "investigationId": "6cad63d0-f771-4820-b007-2e148f32c1d0"
+    },
+    {
+      "id": "L4b-reload-requires-reauthorization-and-reloads",
+      "outcome": "PASS"
+    },
+    {
+      "id": "L5-concurrent-write-conflict-protection",
+      "outcome": "PASS",
+      "headAfterB": "34b93e489dcb6d18c55272324e77de9fc8b94e50"
+    },
+    {
+      "id": "L5b-conflict-recovery-reapply",
+      "outcome": "PASS",
+      "finalCommit": "9b6d9f956e621f85f6a90791f0ab9c0d50c56d80",
+      "versions": 3
+    },
+    {
+      "id": "L6-malformed-data-refusal",
+      "outcome": "PASS",
+      "code": "CAUSA.MANIFEST_MISMATCH"
+    }
+  ],
+  "timings": {
+    "fixturesLoadMs": 3387,
+    "createWriteVerifyMs": 3599
+  },
+  "diagnostics": {
+    "writtenCommit": "b2a037f251bfff28e0bd7737d27e4c2ac3d053b6",
+    "refReads": [
+      {
+        "at": "2026-10-23T16:27:11.169Z",
+        "url": "/repos/kemiller2002/causa-data/git/ref/heads/claude/causa-rehearsal-002-kickoff-i2ihli?fresh=0fcb60ba4ac34adb853e0e6b6f4dad8a",
+        "status": 200,
+        "sha": "b2a037f251bfff28e0bd7737d27e4c2ac3d053b6",
+        "fromCache": false,
+        "age": null,
+        "cacheControl": "private, max-age=60, s-maxage=60",
+        "etag": "W/\"feacec4b6ffae65ae8868fb23b8b85b2b7461a39a48997f1ed5552aca53bc14a\"",
+        "requestId": "DC52:26E4CC:151B792:44D88A6:6ADB8ADE",
+        "nodeHeadAtAnswer": "b2a037f251bfff28e0bd7737d27e4c2ac3d053b6"
+      }
+    ]
+  }
+}

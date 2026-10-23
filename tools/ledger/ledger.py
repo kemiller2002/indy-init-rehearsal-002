@@ -87,7 +87,7 @@ def generate():
         "requirements": requirements,
         "defect_classes": run["defect_classes"],
         "gates": gates,
-        "metrics": run["metrics"],
+        "metrics": {**run["metrics"], "verified_requirement_count": sum(1 for r in requirements if r["status"] == "PASS")},
         "unresolved_decisions": run["unresolved_decisions"],
         "summary": {s: sum(1 for r in requirements if r["status"] == s) for s in sorted(STATUSES)},
         "accepted": accepted,

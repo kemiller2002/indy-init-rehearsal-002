@@ -409,7 +409,7 @@ module View =
               "tabs", items []; "invActions", items []; "observations", items []; "hypotheses", items []; "evidence", items []
               "relationships", items []; "unknowns", items []; "assumptions", items []; "contradictions", items []; "predictions", items []
               "actions", items []; "findings", items []; "negativeKnowledge", items []; "causes", items []; "corrections", items []
-              "criteria", items []; "verifications", items []; "conclusions", items []; "proposals", items []; "timeline", items []
+              "criteria", items []; "verifications", items []; "conclusions", items []; "proposals", items []; "timeline", items []; "chronology", items []
               "timelineFilter", t app.TimelineFilter; "timelineCount", n 0L
               "hasSelection", b false; "selKind", t ""; "selTitle", t ""; "selBody", t ""; "selMeta", items []; "selActions", items []; "selLinks", items []
               "selCloseHref", t "#/"; "selUrl", t ""; "hasSelUrl", b false
@@ -447,13 +447,13 @@ module View =
                     values inv.Relationships |> List.filter (fun r -> r.Hypothesis = h.Id && r.Kind = kind) |> List.length
                 let current = values inv.Conclusions |> List.sortByDescending (fun c -> c.Sequence) |> List.tryHead
                 let filter = app.TimelineFilter
-                let timeline =
-                    loaded.Events
-                    |> List.filter (fun ev -> filter = "all" || eventCategory ev = filter)
-                    |> List.map (fun ev ->
+                let eventRow (ev: IndyInitRootCauseInvestigator.Engine.Event) =
                         [ "id", pt (string ev.Sequence); "seq", pn ev.Sequence; "type", pt (CaseNames.eventType ev.Body); "category", pt (eventCategory ev)
                           "actor", pt (actorLabel ev.Actor); "at", pt (time ev.At); "summary", pt (eventSummary inv ev)
-                          "isAgent", pb (match ev.Actor.Kind with Agent _ -> true | _ -> false) ])
+                          "isAgent", pb (match ev.Actor.Kind with Agent _ -> true | _ -> false) ]
+                let timeline = loaded.Events |> List.filter (fun ev -> filter = "all" || eventCategory ev = filter) |> List.map eventRow
+                // The report's chronology is the complete history, never the Timeline tab's on-screen filter.
+                let chronology = loaded.Events |> List.map eventRow
                 let selection = selected |> Option.bind (fun g -> findEntity inv g |> Option.map (fun x -> g, x))
                 let selActions =
                     match selection with
@@ -543,6 +543,7 @@ module View =
                   "conclusions", items (values inv.Conclusions |> List.sortBy (fun c -> c.Sequence) |> List.map (fun c -> row c.Id.Value Causes [ "statement", pt c.Statement.Value; "strength", pt (Labels.conclusion c.Strength); "residual", pt (Labels.optText c.ResidualUncertainty); "version", pn c.Sequence; "isCurrent", pb (Some c = current) ]))
                   "proposals", items (values inv.Proposals |> byProv (fun p -> p.Provenance) |> List.map (fun p -> row p.Id.Value Questions [ "text", pt p.Text.Value; "kind", pt (Labels.proposalKind p.Kind); "state", pt (Labels.proposalState p.State); "actor", pt (actorLabel p.Provenance.Actor) ]))
                   "timeline", items timeline
+                  "chronology", items chronology
                   "timelineFilter", t filter
                   "timelineCount", n (int64 timeline.Length)
                   "hasSelection", b selection.IsSome

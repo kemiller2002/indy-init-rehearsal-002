@@ -8,7 +8,7 @@
 import { test as base, expect } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { fixtureRepoFiles } from "./causa-data.js";
+import { fixtureRepoFiles, investigationFiles } from "./causa-data.js";
 import { installFakeGitHub } from "./fake-github.js";
 
 export { expect };
@@ -25,21 +25,31 @@ export const test = base.extend({
   allowedConsoleErrors: [null, { option: true }],
 
   diagnostics: [
-    async ({ page, allowedConsoleErrors }, use, testInfo) => {
+    async ({ page, context, allowedConsoleErrors }, use, testInfo) => {
       const consoleErrors = [];
       const pageErrors = [];
       const cspFromConsole = [];
-      await page.addInitScript(cspProbe);
-      page.on("console", (msg) => {
-        if (msg.type() !== "error") return;
-        const text = msg.text();
-        if (/Content Security Policy/i.test(text)) cspFromConsole.push(text);
-        else if (!(allowedConsoleErrors instanceof RegExp && allowedConsoleErrors.test(text))) consoleErrors.push(text);
-      });
-      page.on("pageerror", (err) => pageErrors.push(String(err?.stack ?? err)));
+      const pages = new Set();
+      // Every page of the test's context is watched, including extra pages a test opens (a cold deep link, etc.).
+      await context.addInitScript(cspProbe);
+      const watch = (p) => {
+        if (pages.has(p)) return;
+        pages.add(p);
+        p.on("console", (msg) => {
+          if (msg.type() !== "error") return;
+          const text = msg.text();
+          if (/Content Security Policy/i.test(text)) cspFromConsole.push(text);
+          else if (!(allowedConsoleErrors instanceof RegExp && allowedConsoleErrors.test(text))) consoleErrors.push(text);
+        });
+        p.on("pageerror", (err) => pageErrors.push(String(err?.stack ?? err)));
+      };
+      watch(page);
+      context.on("page", watch);
       const collector = { consoleErrors, pageErrors, cspFromConsole };
       await use(collector);
-      const cspEvents = await page.evaluate(() => window.__causaCsp ?? []).catch(() => []);
+      const cspEvents = (
+        await Promise.all([...pages].filter((p) => !p.isClosed()).map((p) => p.evaluate(() => window.__causaCsp ?? []).catch(() => [])))
+      ).flat();
       const report = { consoleErrors, pageErrors, cspViolations: [...cspFromConsole, ...cspEvents] };
       if (report.consoleErrors.length + report.pageErrors.length + report.cspViolations.length > 0)
         await testInfo.attach("browser-diagnostics.json", { body: JSON.stringify(report, null, 2), contentType: "application/json" });
@@ -61,6 +71,19 @@ export const boot = async (page, hash = "") => {
 
 export const FIXTURE_TARGET = { owner: "causa-test", repo: "causa-data", branch: "main", root: "fixtures", token: "github_pat_test_only_not_a_real_token" };
 export const WORKSPACE_TARGET = { ...FIXTURE_TARGET, root: "r002-test" };
+
+/** One fixture investigation placed in the writable test workspace (valid: its directory name is its own id). */
+export const seededWorkspace = (id, root = WORKSPACE_TARGET.root) =>
+  Object.fromEntries(Object.entries(investigationFiles(id)).map(([name, bytes]) => [`workspaces/demo/${root}/investigations/${id}/${name}`, bytes]));
+
+/** Fake (writable workspace, optionally seeded) + boot + connect. Returns the fake. */
+export const openWorkspace = async (page, { seed = [], ...fakeOptions } = {}) => {
+  const files = Object.assign({}, ...seed.map((id) => seededWorkspace(id)));
+  const fake = await installFakeGitHub(page, { files, push: true, ...fakeOptions });
+  await boot(page);
+  await connect(page, WORKSPACE_TARGET, { expectCards: seed.length });
+  return fake;
+};
 
 /** Fill the connect form (only the fields given) without submitting. */
 export const fillConnect = async (page, fields) => {

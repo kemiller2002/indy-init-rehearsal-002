@@ -70,9 +70,10 @@ test.describe("EXT-DATA-003: explicit selection", () => {
       await submitConnect(page);
       const notice = page.locator(".causa-notice");
       await expect(notice).toBeVisible();
-      await expect(notice).toHaveAttribute("role", "status");
       await expect(notice).toHaveAttribute("data-tone", "critical");
       await expect(notice).toContainText(message);
+      // Critical news is announced by the permanently mounted assertive region (F8), not by the inserted notice.
+      await expect(page.locator('[role="alert"][data-text="liveAlert"]')).toContainText(message);
       await expect(page.locator("form.causa-form")).toBeVisible();
       await expect(page.locator(".causa-repo")).toHaveCount(0);
       expect(seen).toEqual([]);

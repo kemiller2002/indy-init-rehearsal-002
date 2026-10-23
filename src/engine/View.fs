@@ -119,6 +119,7 @@ module View =
                         match stage with
                         | Committing -> "Publishing one atomic commit (only if the branch is unchanged)"
                         | ReloadingRef | ReloadingCommit | ReloadingTree -> "The branch moved; checking whether this investigation changed"
+                        | Recognising -> "Looking for this change in the investigation's history on GitHub"
                         | Reconciling -> "Confirming whether GitHub received the update"
                         | VerifyingCommit | VerifyingTree | VerifyingBlobs -> "Verifying by reading the commit back"
                     "syncing", "Saving to GitHub…", w.Description + ": " + step + ". Shown locally; not yet confirmed.", Attention, true

@@ -1276,3 +1276,99 @@ let ``25c R4 after a real reset, a save built on a stale view never re-publishes
     Assert.True(head.Parents |> List.forall (fun p -> p <> c1))
     Assert.True(second.Repo.Head = h0 || head.Parents = [ h0 ])
     patchBodiesNeverForce second
+
+// ---------------------------------------------------------------------------------------------------------------
+// Seventh independent closure review (evidence/quality/closure-review-7.md, F1-F5, F7)
+// ---------------------------------------------------------------------------------------------------------------
+
+let private count (text: string) (items: string list) = items |> List.filter (fun t -> t = text) |> List.length
+
+[<Fact>]
+let ``26 F1 a failure while reconciling a save that may have landed is outcome-unknown, never "not sent"`` () =
+    let run = "r26"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    // The save lands, its answer is lost; reconcile reads our commit on the ref, then reading that commit fails.
+    let held =
+        connected run (workspaceRepo run) |> withRule isSave (UnknownAfter true) |> withRule isGetCommit NetworkDown
+        |> observe target "landed, answer lost"
+    match sync held with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.NotEqual<string>("queued", text "syncState" held)
+    let after = { held with Rules = [] } |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync after)
+    Assert.Equal(1, observations after.Repo prefix target |> count "landed, answer lost")
+
+[<Fact>]
+let ``26b F2 a save that landed before another writer changed the investigation is recognised by its command id`` () =
+    let run = "r26b"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let after =
+        connected run (workspaceRepo run)
+        |> withRule isSave (UnknownAfter true)
+        |> withRule isGetRef (Concurrent(otherWriterAppends prefix target "the other writer, after mine"))
+        |> observe target "mine, landed first"
+    Assert.Equal(Idle, sync after)
+    Assert.Contains("was saved to GitHub", text "noticeText" after)
+    let notes = observations after.Repo prefix target
+    Assert.Equal(1, notes |> count "mine, landed first")
+    Assert.Equal(1, notes |> count "the other writer, after mine")
+    Assert.Equal(1, after.Requests |> List.filter isSave |> List.length)
+    // The catalog was re-read and shows both observations.
+    Assert.False((live after).Refreshing)
+
+[<Fact>]
+let ``26c F4 repeated stale reads after a landed save end outcome-unknown, not "kept moving"; reconciling then confirms it`` () =
+    let run = "r26c"
+    let prefix = Fixtures.workspacePrefix run
+    let target = openIds[0]
+    let w0 = connected run (workspaceRepo run)
+    let stale = sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" w0.Repo.Head
+    let held =
+        w0 |> withRule isSave (UnknownAfter true)
+        |> withRule isGetRef (Respond(200L, stale)) |> withRule isGetRef (Respond(200L, stale)) |> withRule isGetRef (Respond(200L, stale))
+        |> observe target "landed, then stale reads"
+    match sync held with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    let after = { held with Rules = [] } |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync after)
+    Assert.Equal(1, observations after.Repo prefix target |> count "landed, then stale reads")
+
+[<Fact>]
+let ``26d F3 an untyped GraphQL error answering the save is reconciled as unknown, never "save failed"`` () =
+    let run = "r26d"
+    let w0 = connected run (workspaceRepo run)
+    let timeout = """{"data":null,"errors":[{"message":"Something went wrong while executing your query. This may be the result of a timeout, or it could be a GitHub bug."}]}"""
+    let after = w0 |> withRule isSave (Respond(200L, timeout)) |> createInvestigation "Untyped" "graphql timeout"
+    Assert.Equal(Idle, sync after)
+    Assert.Equal<string list>([ w0.Repo.Head ], (headCommit after.Repo).Parents)
+    Assert.Equal(2, after.Requests |> List.filter isSave |> List.length)
+
+[<Fact>]
+let ``26e F3 F7 save answers: only stated refusals refuse; a named commit is applied whatever else is reported`` () =
+    let oid = String.replicate 40 "a"
+    let parse = GitHub.parseCommitOnBranch
+    let err (t: string) = sprintf """{"data":{"createCommitOnBranch":null},"errors":[{"type":"%s","message":"m"}]}""" t
+    Assert.Equal(Ok oid, parse (sprintf """{"data":{"createCommitOnBranch":{"commit":{"oid":"%s"}}},"errors":[{"type":"SOMETHING","message":"x"}]}""" oid))
+    Assert.Equal(Error NotFastForward, parse (err "STALE_DATA"))
+    Assert.Equal(Error(Forbidden false), parse (err "FORBIDDEN"))
+    Assert.Equal(Error(Forbidden true), parse (err "RATE_LIMITED"))
+    Assert.Equal(Error NotFound, parse (err "NOT_FOUND"))
+    Assert.Equal(Error(ProviderFailure.Rejected(200L, "m")), parse (err "UNPROCESSABLE"))
+    Assert.Equal(Error ProviderFailure.OutcomeUnknown, parse (err "INTERNAL"))
+    Assert.Equal(Error ProviderFailure.OutcomeUnknown, parse """{"errors":[{"message":"Something went wrong"}]}""")
+
+[<Fact>]
+let ``26f F5 after the resend bound, the user's reconcile gets a fresh bound and can still publish`` () =
+    let run = "r26f"
+    let w0 = connected run (workspaceRepo run)
+    let held = [ 1 .. 4 ] |> List.fold (fun w _ -> w |> withRule isSave (UnknownAfter false)) w0 |> createInvestigation "Bound" "never arrived"
+    match sync held with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    let after = { held with Rules = [] } |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync after)
+    Assert.Equal<string list>([ w0.Repo.Head ], (headCommit after.Repo).Parents)

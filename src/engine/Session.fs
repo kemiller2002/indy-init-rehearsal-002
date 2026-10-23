@@ -34,6 +34,9 @@ type Write =
       Moved: bool
       /// The commit GitHub created, once it answered.
       Commit: string option
+      /// An earlier send of this command may have been applied (its answer was lost or ambiguous). While set, no
+      /// failure is reported as "not written" and a moved branch is searched for the command before any conflict (DC-003).
+      MayHaveApplied: bool
       Attempts: int
       /// Unique per publication attempt sequence; answers carrying another generation are ignored (DC-002).
       Generation: int
@@ -47,6 +50,8 @@ type WriteStage =
     | ReloadingRef
     | ReloadingCommit
     | ReloadingTree
+    /// Searching the head's events for this command's correlation id (a save that may have been applied).
+    | Recognising
     | Reconciling
     | VerifyingCommit
     | VerifyingTree
@@ -117,6 +122,8 @@ type Op =
     | OpReloadRef
     | OpReloadCommit of commit: string
     | OpReloadTree of head: Head
+    /// The investigation's events.ndjson at a moved head: does it contain this command (CONTRACT §5.4)?
+    | OpRecognise of head: Head
     | OpReconcileRef
     /// A reload's ref read differed from the newest commit known to be on the branch: newer, or older (DC-005)?
     | OpRefreshCompare of ref: string
@@ -238,3 +245,9 @@ module Session =
     /// The blob SHAs the write's files have on GitHub: how a publication is recognised on a branch.
     let expectedShas (w: Write) =
         fileNames |> List.map (fun f -> f, GitHub.blobSha (filesBytes w.Files f)) |> Map.ofList
+
+    /// A correlation id names exactly one command group (CONTRACT §5.4), so events carrying this command's id mean the
+    /// command was applied, whatever was written after it.
+    let containsCommand (w: Write) (events: byte[]) =
+        let marker = "\"correlationId\":\"" + Ids.text w.Envelope.CommandId + "\""
+        Text.Encoding.UTF8.GetString(events).Contains(marker, StringComparison.Ordinal)

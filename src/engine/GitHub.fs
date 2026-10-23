@@ -239,7 +239,8 @@ module GitHub =
                 |> Option.bind (prop "commit")
                 |> Option.bind (sha "oid")
             match oid, prop "errors" root with
-            | Some c, None -> Ok c
+            // GitHub names the commit it created: the save was applied, whatever else it reports (review 7, F7).
+            | Some c, _ -> Ok c
             | _, Some errors when errors.ValueKind = JsonValueKind.Array && errors.GetArrayLength() > 0 ->
                 let first = errors[0]
                 let kind = str "type" first |> Option.defaultValue ""
@@ -248,7 +249,9 @@ module GitHub =
                 elif kind = "RATE_LIMITED" then Error(Forbidden true)
                 elif kind = "FORBIDDEN" then Error(Forbidden(text.Contains("rate limit", StringComparison.OrdinalIgnoreCase)))
                 elif kind = "NOT_FOUND" then Error NotFound
-                else Error(Rejected(200L, if text = "" then "GraphQL error" else text))
+                elif kind = "UNPROCESSABLE" then Error(Rejected(200L, if text = "" then "GraphQL error" else text))
+                // Any other error (untyped, INTERNAL, a timeout while executing) does not say nothing was applied (F3).
+                else Error ProviderFailure.OutcomeUnknown
             | _ -> Error(Malformed "commit on branch")
         with _ -> Error(Malformed "commit on branch")
 

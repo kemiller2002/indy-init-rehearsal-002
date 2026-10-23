@@ -187,6 +187,7 @@ module Shell =
                               BaseCommit = live.Head.Commit
                               Moved = false
                               Commit = None
+                              MayHaveApplied = false
                               Attempts = 0
                               Generation = 0
                               Received = Map.empty
@@ -230,7 +231,7 @@ module Shell =
         | Ok(files, newLoaded) ->
             let rewritten =
                 { w with Envelope = envelope; Files = files; Loaded = newLoaded; BaseEntries = Session.baseEntries live w.InvestigationId
-                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; Attempts = 0
+                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; MayHaveApplied = false; Attempts = 0
                          Received = Map.empty; NewHead = None }
             startWrite cleared rewritten app
 
@@ -378,10 +379,13 @@ module Shell =
         let afterSend =
             match stage with
             | Committing | Reconciling | VerifyingCommit | VerifyingTree | VerifyingBlobs -> true
-            | ReloadingRef | ReloadingCommit | ReloadingTree -> false
-        let unknown detail = hold live w (Unknown detail) app
+            | ReloadingRef | ReloadingCommit | ReloadingTree | Recognising -> false
+        // An Unknown hold always means an earlier send may have landed; the flag travels with the held write.
+        let unknown detail = hold live { w with MayHaveApplied = true } (Unknown detail) app
         let fail f =
             match stage, f with
+            // An earlier send may have landed: even a refusal of this request says nothing about that one (review 7, F1).
+            | _ when w.MayHaveApplied -> unknown ("The save may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
             // A refusal GitHub states (HTTP status or GraphQL error) means nothing was applied.
             | Committing, (Unauthorized | Forbidden _ | NotFound) -> holdFor live w f app
             | Committing, ProviderFailure.Rejected(status, _) when status < 500L -> holdFor live w f app
@@ -395,10 +399,13 @@ module Shell =
             match GitHub.parseCommitOnBranch body with
             | Ok commit -> continueWith VerifyingCommit { w with Commit = Some commit } [ OpVerifyCommit commit, GitHub.getCommit live.Target commit ]
             // The branch no longer names the base: nothing was applied. Decide on what GitHub holds now.
+            | Error NotFastForward when w.Attempts >= Session.maxRebases && w.MayHaveApplied -> unknown "GitHub did not confirm the save after several attempts."
             | Error NotFastForward when w.Attempts >= Session.maxRebases -> hold live w (Conflict "The branch kept moving while saving.") app
             | Error NotFastForward -> continueWith ReloadingRef w [ OpReloadRef, GitHub.getRef live.Target ]
+            // An answer that neither names the commit nor states a refusal: the save may have been applied (review 7, F3).
+            | Error ProviderFailure.OutcomeUnknown -> continueWith Reconciling { w with MayHaveApplied = true } [ OpReconcileRef, GitHub.getRef live.Target ]
             | Error f -> fail f
-        | OpCommitOnBranch, Error ProviderFailure.OutcomeUnknown -> continueWith Reconciling w [ OpReconcileRef, GitHub.getRef live.Target ]
+        | OpCommitOnBranch, Error ProviderFailure.OutcomeUnknown -> continueWith Reconciling { w with MayHaveApplied = true } [ OpReconcileRef, GitHub.getRef live.Target ]
         | OpReconcileRef, Ok body ->
             match GitHub.parseRef body with
             | Error f -> fail f
@@ -431,8 +438,25 @@ module Shell =
                     // The branch moved but this investigation did not: rebase onto the new head (CONTRACT §9.4.2a).
                     // The catalog's read point (live.Head) does not move: other investigations were not re-read.
                     publish { w with Attempts = w.Attempts + 1; BaseCommit = head.Commit; Moved = true; Commit = None }
+                elif w.MayHaveApplied && now.ContainsKey "events.ndjson" then
+                    // The investigation changed since the base, and an earlier send may have landed: look for this
+                    // command in its history before calling it a conflict (review 7, F2).
+                    continueWith Recognising w [ OpRecognise head, GitHub.getBlob live.Target now["events.ndjson"] ]
                 else
                     hold live w (Conflict "Someone else changed this investigation on GitHub after you loaded it. Your change was not written.") app
+        | OpRecognise head, Ok body ->
+            match GitHub.parseBlob body with
+            | Error f -> fail f
+            | Ok events when Session.containsCommand w events ->
+                // Applied, and the investigation has changed after it: the save is on the branch, but the bytes written
+                // can no longer be read back as written. Report that plainly and re-read the catalog.
+                let live' = { live with Sync = Idle; Reapply = None }
+                refresh (
+                    { app with Connection = Connected live' }
+                    |> App.notice Neutral ("Your change was saved to GitHub (found in the history at commit " + head.Commit.Substring(0, 7) + "). The investigation has changed since; the workspace is being reloaded."))
+            | Ok _ ->
+                // Not in the history of what the branch names now. Whether or not it landed earlier, it is not there.
+                hold live { w with MayHaveApplied = false } (Conflict "Someone else changed this investigation on GitHub, and your change is not on the branch.") app
         | OpVerifyCommit commit, Ok body ->
             match GitHub.parseCommitTree body with
             | Error f -> fail f
@@ -575,7 +599,8 @@ module Shell =
             match App.live app with
             | Some({ Sync = Held(w, Unknown _) } as live) when not live.Refreshing ->
                 // A fresh generation: late answers to the held attempt cannot abort the reconciliation (review P5).
-                let w' = { w with Generation = app.Counter + 1 }
+                // Each confirmation the user asks for gets its own bounded number of resends (review 7, F5).
+                let w' = { w with Generation = app.Counter + 1; Attempts = 0 }
                 withEffects ({ app with Connection = Connected { live with Sync = InFlight(w', Reconciling) } } |> emitGen w'.Generation [ OpReconcileRef, GitHub.getRef live.Target ])
             | _ -> plain app
         | "sync.discard" ->

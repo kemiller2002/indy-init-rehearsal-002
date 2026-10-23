@@ -993,3 +993,16 @@ let ``20e P5 a late error from the held attempt does not abort the reconciliatio
     | other -> failwithf "a late answer from the held attempt changed the reconciliation: %A" other
     let after = { poked with Rules = [] } |> pump
     Assert.Equal(Idle, sync after)
+
+[<Fact>]
+let ``21 reads of mutable state are never cacheable: every ref and repository read has a unique URL (DC-005)`` () =
+    let run = "r21"
+    let after = connected run (workspaceRepo run) |> createInvestigation "Fresh" "no cached ref" |> fire "refresh"
+    let isRefOrRepo (r: Request) = r.Method = "GET" && (r.Route = Some "" || r.Route |> Option.exists (fun p -> p.StartsWith "/git/ref/"))
+    let fresh = after.Requests |> List.filter isRefOrRepo |> List.map (fun r -> r.Url)
+    Assert.True(fresh.Length >= 4)
+    Assert.All(fresh, fun u -> Assert.Contains("fresh=", u))
+    Assert.Equal(fresh.Length, (List.distinct fresh).Length)
+    // Content-addressed reads keep their stable URL: caching them is correct.
+    let addressed = after.Requests |> List.filter (fun r -> r.Method = "GET" && not (isRefOrRepo r)) |> List.map (fun r -> r.Url)
+    Assert.All(addressed, fun u -> Assert.DoesNotContain("fresh=", u))

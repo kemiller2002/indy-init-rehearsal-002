@@ -36,7 +36,10 @@ type TreeEntry = { Path: string; Kind: string; Sha: string; Size: int64 option }
 type ApiRequest =
     { Method: string
       Path: string
-      Body: string option }
+      Body: string option
+      /// A read of mutable state (a branch ref, the repository). GitHub answers with `Cache-Control: max-age=60`, so
+      /// such a read must never be answered from a cache: it is sent under a unique URL (DC-005).
+      Fresh: bool }
 
 /// Why a provider step did not succeed. Unknown means the request may have reached GitHub (never success).
 type ProviderFailure =
@@ -105,7 +108,8 @@ module GitHub =
 
     let private repo (t: Target) = "/repos/" + Uri.EscapeDataString t.Owner + "/" + Uri.EscapeDataString t.Repo
     let private refPath (t: Target) = t.Branch.Split('/') |> Array.map Uri.EscapeDataString |> String.concat "/"
-    let private get path = { Method = "GET"; Path = path; Body = None }
+    let private get path = { Method = "GET"; Path = path; Body = None; Fresh = false }
+    let private getFresh path = { get path with Fresh = true }
 
     let private json (write: Utf8JsonWriter -> unit) =
         use stream = new IO.MemoryStream()
@@ -113,8 +117,8 @@ module GitHub =
          write w)
         Encoding.UTF8.GetString(stream.ToArray())
 
-    let getRepository t = get (repo t)
-    let getRef t = get (repo t + "/git/ref/heads/" + refPath t)
+    let getRepository t = getFresh (repo t)
+    let getRef t = getFresh (repo t + "/git/ref/heads/" + refPath t)
     let getCommit t (sha: string) = get (repo t + "/git/commits/" + sha)
     let getTree t (sha: string) = get (repo t + "/git/trees/" + sha + "?recursive=1")
     let getBlob t (sha: string) = get (repo t + "/git/blobs/" + sha)
@@ -123,7 +127,8 @@ module GitHub =
     let createBlob t (bytes: byte[]) =
         { Method = "POST"
           Path = repo t + "/git/blobs"
-          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("content", Convert.ToBase64String bytes); w.WriteString("encoding", "base64"); w.WriteEndObject())) }
+          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("content", Convert.ToBase64String bytes); w.WriteString("encoding", "base64"); w.WriteEndObject()))
+          Fresh = false }
 
     let createTree t (baseTree: string) (entries: (string * string) list) =
         { Method = "POST"
@@ -144,7 +149,8 @@ module GitHub =
                         w.WriteEndObject())
                     w.WriteEndArray()
                     w.WriteEndObject())
-            ) }
+            )
+          Fresh = false }
 
     let createCommit t (message: string) (tree: string) (parent: string) =
         { Method = "POST"
@@ -159,13 +165,15 @@ module GitHub =
                     w.WriteStringValue parent
                     w.WriteEndArray()
                     w.WriteEndObject())
-            ) }
+            )
+          Fresh = false }
 
     /// A non-forced ref update: GitHub refuses anything but a fast-forward (CONTRACT §9.4.2).
     let updateRef t (sha: string) =
         { Method = "PATCH"
           Path = repo t + "/git/refs/heads/" + refPath t
-          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("sha", sha); w.WriteBoolean("force", false); w.WriteEndObject())) }
+          Body = Some(json (fun w -> w.WriteStartObject(); w.WriteString("sha", sha); w.WriteBoolean("force", false); w.WriteEndObject()))
+          Fresh = false }
 
     // ------------------------------------------------------------------------------------------------------------
     // Interpreting responses

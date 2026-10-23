@@ -1,7 +1,7 @@
 {
   "run_id": "causa-rehearsal-002",
   "source_commit_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
-  "deployed_commit_sha": null,
+  "deployed_commit_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
   "deployed_url": "https://kevinmmiller.us/indy-init-rehearsal-002/",
   "contract_version": "causa-storage-v1.0.0",
   "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
@@ -134,13 +134,13 @@
       "name": "Deployment",
       "scope": "served build-info.json names the candidate; deployed acceptance on it",
       "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
-      "status": "BLOCKED",
+      "status": "PASS",
       "evidence_paths": [
         "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
         "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/5608698c63f5f7f447edb716b3fcd5536b5282d2/checks"
       ],
       "started_at": null,
-      "completed_at": null
+      "completed_at": "2026-10-23T17:11:00Z"
     }
   ],
   "defect_classes": [
@@ -233,12 +233,12 @@
   "metrics": {
     "first_green_elapsed_seconds": 6255,
     "first_candidate_elapsed_seconds": 10994,
-    "accepted_elapsed_seconds": null,
+    "accepted_elapsed_seconds": 17807,
     "candidate_count": 5,
     "repeated_defect_class_count": 4,
     "token_count": null,
     "ci_queue_seconds": null,
-    "ci_test_seconds": null,
+    "ci_test_seconds": 592,
     "verified_requirement_count": null,
     "milestones": {
       "start": "2026-10-23T12:14:13Z",
@@ -253,7 +253,7 @@
         "not_after": "2026-10-23T15:11:41Z"
       },
       "first_candidate_on_main": "2026-10-23T15:17:27Z",
-      "accepted": null
+      "accepted": "2026-10-23T17:11:00Z"
     },
     "unavailable": {
       "token_count": "the runtime does not expose token usage to the session",

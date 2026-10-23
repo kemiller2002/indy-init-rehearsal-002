@@ -11,7 +11,7 @@ taken from those files, CI runs or live-run artifacts; nothing is estimated.
 | Repository | `kemiller2002/indy-init-rehearsal-002` |
 | Accepted source | `main` @ `5608698c63f5f7f447edb716b3fcd5536b5282d2` (tree `1ce2a0e`) |
 | Deployed URL | https://kevinmmiller.us/indy-init-rehearsal-002/ (GitHub Pages; `build-info.json` names the served commit) |
-| Deployed commit | DEPLOYED_PLACEHOLDER |
+| Deployed commit | `5608698c63f5f7f447edb716b3fcd5536b5282d2` — served `build-info.json` names it; deployed acceptance passed (run 39991592706) |
 | Storage contract | `causa-storage-v1.0.0` (frozen fixtures `sha256:f650a2e5…2c2b86`) |
 | Data repository (live tests) | `kemiller2002/causa-data`, branch `claude/causa-rehearsal-002-kickoff-i2ihli`, `workspaces/demo/…` only |
 | Rehearsal 001 | read only; never modified |
@@ -37,10 +37,10 @@ Arca, Fides, Strata: not applicable. Stack defects DEF-STACK-001…008 are in `e
 | G6 Persistence | PASS | real GitHub provider, causa-data run 39990408889: L1–L6 PASS on the accepted tree |
 | G7 Defect class | **BLOCKED** | fixes for the third review's findings merged on the owner's instruction before the fourth independent review reported (UD-4) |
 | G8 Candidate | PASS | full CI on the candidate |
-| G9 Deployment | G9_PLACEHOLDER |
+| G9 Deployment | PASS | served commit = candidate; deployed acceptance run 39991592706 (17:11:00Z) |
 | G10 Measurement | partial | token usage is not exposed to the session; CI time recorded for the accepted run only |
 
-Requirements: LEDGER_SUMMARY_PLACEHOLDER. NOT_RUN: UI-002 causal graph, UI-007 search, UI-008 comparison, UI-009
+Requirements: 72 traced; 65 PASS, 6 NOT_RUN, 1 BLOCKED (DCC-005, independent proof of closure). NOT_RUN: UI-002 causal graph, UI-007 search, UI-008 comparison, UI-009
 export, UI-012 first-run guidance (all P1, deferred), ADRP-016 competition compliance (not assessed).
 
 **Accepted: no.** The predicate requires G0–G9 all PASS; G7 is BLOCKED. Nothing in this report converts that.
@@ -75,7 +75,7 @@ on the earlier code.
 | First green CI | 13:58:28 | 104.3 min |
 | First verified remote write (run 39975799085, commit 33dcdde) | 15:10:31–15:11:41 | 176.3–177.5 min |
 | First candidate on main (c4d5bbf) | 15:17:27 | 183.2 min |
-| Accepted candidate deployed and accepted on the served site | ACCEPTED_PLACEHOLDER |
+| Candidate deployed, served build verified, deployed acceptance PASS (main run 39991592706, 592 s) | 17:11:00 | 296.8 min |
 
 Candidates on main: 5. Defect classes that recurred after a claimed fix: 4 (DC-002, 003, 004, 005). Independent
 reviews: 1 security review + 3 closure reviews (a fourth pending). Live real-GitHub runs: 10 (first full PASS: run 8).
@@ -88,7 +88,7 @@ release T+261.8 min, four adversarial review rounds, recurring forged-history fa
 
 - First green CI: R002 T+104.3 min vs R001 T+88.3 min (+16.0 min). R002 spent its first hour on Phase 0 stack
   discovery and verification, which the mission made blocking.
-- Release: R002 COMPARISON_PLACEHOLDER
+- Release: R002 reached a deployed, identity-verified, live-provider-accepted build at T+296.8 min vs R001's accepted release at T+261.8 min (+35.0 min), and is **not** formally accepted (G7 BLOCKED). It took 5 candidates on main; the last two each closed findings from an independent review.
 - Review rounds: R002 4 (security + 3 closure), comparable to R001's 4. Forged histories did not recur in R002 (the
   vendored domain and the 90 negative fixtures held throughout); the recurring classes were provider-semantics
   classes (caching, advisory fields, concurrency of answers) that only the live provider exposed.

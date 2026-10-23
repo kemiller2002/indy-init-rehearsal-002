@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "id": "causa",
+  "identity": {
+    "name": "Causa",
+    "shortName": "Causa"
+  },
+  "presentation": {
+    "radius": {
+      "small": "6px",
+      "medium": "10px",
+      "pill": "999px"
+    }
+  },
+  "themes": {
+    "light": {
+      "color": {
+        "text": {"primary":"#14283f","heading":"#14283f","secondary":"#44566b","on-secondary-surface":"#36475b","inverse":"#f5f3ed"},
+        "surface": {"primary":"#f5f3ed","secondary":"#ece8dd","inverse":"#14283f","inverse-secondary":"#1f3a57"},
+        "accent": {"primary":"#066e79","secondary":"#14283f"},
+        "status": {"success":"#2f6b4a","warning":"#8a5a0f","danger":"#a8402d","info":"#1f5f8c"},
+        "border": {"subtle":"#d2cbb9","functional":"#44566b"},
+        "focus": {"ring":"#066e79","gap":"#f5f3ed"},
+        "control": {"track":"#6a7686","thumb":"#f5f3ed","active":"#066e79"}
+      }
+    },
+    "dark": {
+      "color": {
+        "text": {"primary":"#f5f3ed","heading":"#f5f3ed","secondary":"#c9d2dc","on-secondary-surface":"#f5f3ed","inverse":"#0f1e2f"},
+        "surface": {"primary":"#0f1e2f","secondary":"#1a2e45","inverse":"#f5f3ed","inverse-secondary":"#c9d2dc"},
+        "accent": {"primary":"#4fc0cc","secondary":"#e9a23b"},
+        "status": {"success":"#7fc79b","warning":"#e9a23b","danger":"#e8907f","info":"#8db8de"},
+        "border": {"subtle":"#2c4560","functional":"#c9d2dc"},
+        "focus": {"ring":"#e9a23b","gap":"#0f1e2f"},
+        "control": {"track":"#5e7086","thumb":"#f5f3ed","active":"#4fc0cc"}
+      }
+    }
+  },
+  "terms": {
+    "project": "Investigation"
+  }
+}

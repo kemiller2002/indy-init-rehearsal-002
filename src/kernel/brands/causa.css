@@ -1,0 +1,104 @@
+/* Generated from causa.brand.json. Do not edit directly. */
+@layer echelon.brand {
+  [data-ef-brand="causa"] {
+  --ef-primitive-radius-small: 6px;
+  --ef-primitive-radius-medium: 10px;
+  --ef-primitive-radius-pill: 999px;
+  --ef-color-text-primary: #14283f;
+  --ef-color-text-heading: #14283f;
+  --ef-color-text-secondary: #44566b;
+  --ef-color-text-on-secondary-surface: #36475b;
+  --ef-color-text-inverse: #f5f3ed;
+  --ef-color-surface-primary: #f5f3ed;
+  --ef-color-surface-secondary: #ece8dd;
+  --ef-color-surface-inverse: #14283f;
+  --ef-color-surface-inverse-secondary: #1f3a57;
+  --ef-color-accent-primary: #066e79;
+  --ef-color-accent-secondary: #14283f;
+  --ef-color-border-subtle: #d2cbb9;
+  --ef-color-border-functional: #44566b;
+  --ef-color-focus-ring: #066e79;
+  --ef-color-focus-gap: #f5f3ed;
+  --ef-color-control-track: #6a7686;
+  --ef-color-control-thumb: #f5f3ed;
+  --ef-color-control-active: #066e79;
+  --ef-color-status-success: #2f6b4a;
+  --ef-color-status-warning: #8a5a0f;
+  --ef-color-status-danger: #a8402d;
+  --ef-color-status-info: #1f5f8c;
+}
+  [data-ef-theme="light"] [data-ef-brand="causa"], [data-ef-brand="causa"][data-ef-theme="light"] {
+  --ef-color-text-primary: #14283f;
+  --ef-color-text-heading: #14283f;
+  --ef-color-text-secondary: #44566b;
+  --ef-color-text-on-secondary-surface: #36475b;
+  --ef-color-text-inverse: #f5f3ed;
+  --ef-color-surface-primary: #f5f3ed;
+  --ef-color-surface-secondary: #ece8dd;
+  --ef-color-surface-inverse: #14283f;
+  --ef-color-surface-inverse-secondary: #1f3a57;
+  --ef-color-accent-primary: #066e79;
+  --ef-color-accent-secondary: #14283f;
+  --ef-color-border-subtle: #d2cbb9;
+  --ef-color-border-functional: #44566b;
+  --ef-color-focus-ring: #066e79;
+  --ef-color-focus-gap: #f5f3ed;
+  --ef-color-control-track: #6a7686;
+  --ef-color-control-thumb: #f5f3ed;
+  --ef-color-control-active: #066e79;
+  --ef-color-status-success: #2f6b4a;
+  --ef-color-status-warning: #8a5a0f;
+  --ef-color-status-danger: #a8402d;
+  --ef-color-status-info: #1f5f8c;
+}
+  [data-ef-theme="dark"] [data-ef-brand="causa"], [data-ef-brand="causa"][data-ef-theme="dark"] {
+  --ef-color-text-primary: #f5f3ed;
+  --ef-color-text-heading: #f5f3ed;
+  --ef-color-text-secondary: #c9d2dc;
+  --ef-color-text-on-secondary-surface: #f5f3ed;
+  --ef-color-text-inverse: #0f1e2f;
+  --ef-color-surface-primary: #0f1e2f;
+  --ef-color-surface-secondary: #1a2e45;
+  --ef-color-surface-inverse: #f5f3ed;
+  --ef-color-surface-inverse-secondary: #c9d2dc;
+  --ef-color-accent-primary: #4fc0cc;
+  --ef-color-accent-secondary: #e9a23b;
+  --ef-color-border-subtle: #2c4560;
+  --ef-color-border-functional: #c9d2dc;
+  --ef-color-focus-ring: #e9a23b;
+  --ef-color-focus-gap: #0f1e2f;
+  --ef-color-control-track: #5e7086;
+  --ef-color-control-thumb: #f5f3ed;
+  --ef-color-control-active: #4fc0cc;
+  --ef-color-status-success: #7fc79b;
+  --ef-color-status-warning: #e9a23b;
+  --ef-color-status-danger: #e8907f;
+  --ef-color-status-info: #8db8de;
+}
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-ef-theme]) [data-ef-brand="causa"]:not([data-ef-theme]), :root[data-ef-brand="causa"]:not([data-ef-theme]) {
+  --ef-color-text-primary: #f5f3ed;
+  --ef-color-text-heading: #f5f3ed;
+  --ef-color-text-secondary: #c9d2dc;
+  --ef-color-text-on-secondary-surface: #f5f3ed;
+  --ef-color-text-inverse: #0f1e2f;
+  --ef-color-surface-primary: #0f1e2f;
+  --ef-color-surface-secondary: #1a2e45;
+  --ef-color-surface-inverse: #f5f3ed;
+  --ef-color-surface-inverse-secondary: #c9d2dc;
+  --ef-color-accent-primary: #4fc0cc;
+  --ef-color-accent-secondary: #e9a23b;
+  --ef-color-border-subtle: #2c4560;
+  --ef-color-border-functional: #c9d2dc;
+  --ef-color-focus-ring: #e9a23b;
+  --ef-color-focus-gap: #0f1e2f;
+  --ef-color-control-track: #5e7086;
+  --ef-color-control-thumb: #f5f3ed;
+  --ef-color-control-active: #4fc0cc;
+  --ef-color-status-success: #7fc79b;
+  --ef-color-status-warning: #e9a23b;
+  --ef-color-status-danger: #e8907f;
+  --ef-color-status-info: #8db8de;
+}
+  }
+}

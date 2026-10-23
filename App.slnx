@@ -3,6 +3,7 @@
     <Project Path="src/domain/Causa.Domain.fsproj" />
     <Project Path="src/contract/Causa.Contract.fsproj" />
     <Project Path="src/engine/App.Engine.fsproj" />
+    <Project Path="src/wasm/Causa.Wasm.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/App.Engine.Tests/App.Engine.Tests.fsproj" />

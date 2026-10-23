@@ -1,14 +1,679 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-ef-brand="causa">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="../../node_modules/@echelon-foundry/design-system/dist/all.css">
-  <title>Application</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Causa: an evidence-bounded root-cause investigator. Investigation data lives in a GitHub repository you connect.">
+  <meta name="causa-build-commit" content="__CAUSA_BUILD_COMMIT__">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' https://api.github.com; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title data-text="pageTitle">Causa</title>
+  <link rel="icon" href="./causa-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/forma/all.css">
+  <link rel="stylesheet" href="./brands/causa.css">
+  <link rel="stylesheet" href="./vendor/folio/print.css">
+  <link rel="stylesheet" href="./app.css">
+  <script type="module" src="./main.js"></script>
 </head>
 <body>
-  <main>
-    <ef-button><button type="button">Ready</button></ef-button>
-  </main>
+  <!-- WASM-LOAD-001..007: the loading shell is static HTML/CSS. It renders before any script or WebAssembly and
+       never depends on them; main.js only reveals the application once the engine is interactive. -->
+  <div class="causa-boot" id="causa-boot" data-boot-state="loading">
+    <div class="causa-boot__card">
+      <img class="causa-boot__mark" src="./causa-icon.svg" alt="Causa" width="72" height="72">
+      <p class="causa-boot__name" aria-hidden="true">Causa</p>
+      <div class="causa-boot__indicator" aria-hidden="true"><span></span></div>
+      <p class="causa-boot__status" id="causa-boot-status" role="status" aria-live="polite">Starting Causa…</p>
+      <div class="causa-boot__failure" id="causa-boot-failure" hidden>
+        <p role="alert" id="causa-boot-error">Causa could not start in this browser.</p>
+        <p class="causa-boot__hint">No investigation data was loaded or changed. Retry starts the application again.</p>
+        <button type="button" class="causa-button causa-button--primary" id="causa-boot-retry">Retry</button>
+      </div>
+      <noscript><p class="causa-boot__noscript">Causa needs JavaScript and WebAssembly to run.</p></noscript>
+    </div>
+  </div>
+
+  <div class="causa-app" id="causa-app" hidden>
+    <a class="causa-skip" href="#causa-main">Skip to content</a>
+
+    <header class="causa-masthead">
+      <a class="causa-brand" data-bind-href="homeHref" href="#/">
+        <img src="./causa-icon.svg" alt="" width="32" height="32">
+        <span class="causa-brand__name">Causa</span>
+        <span class="causa-brand__tag">Root-cause investigator</span>
+      </a>
+      <div class="causa-masthead__status">
+        <span class="causa-lozenge" data-bind-data-tone="connTone">
+          <span class="causa-lozenge__dot" aria-hidden="true"></span>
+          <span class="causa-visually-hidden">Data repository: </span><span data-text="connLabel"></span>
+        </span>
+        <span class="causa-lozenge" data-bind-data-tone="syncTone" data-bind-aria-busy="syncBusy">
+          <span class="causa-lozenge__dot" aria-hidden="true"></span>
+          <span class="causa-visually-hidden">Save status: </span><span data-text="syncLabel"></span>
+        </span>
+      </div>
+    </header>
+
+    <div class="causa-shell" data-bind-data-detail="hasSelection">
+      <nav class="causa-rail" aria-label="Primary">
+        <a class="causa-rail__item" data-bind-href="homeHref" href="#/" data-bind-aria-current="isHome">
+          <span class="causa-rail__glyph" aria-hidden="true">◫</span><span>Investigations</span>
+        </a>
+        <template data-if="hasInvestigation">
+          <div class="causa-rail__group">
+            <p class="causa-rail__heading" data-text="invTitle"></p>
+            <template data-each="tabs" data-key="id">
+              <a class="causa-rail__item causa-rail__item--sub" data-bind-href="href" data-bind-aria-current="current"><span data-text="label"></span></a>
+            </template>
+          </div>
+        </template>
+        <div class="causa-rail__footer">
+          <p class="causa-rail__meta"><span data-text="contractVersion"></span></p>
+          <p class="causa-rail__meta">Build <span data-text="sourceCommit"></span></p>
+        </div>
+      </nav>
+
+      <main class="causa-main" id="causa-main" tabindex="-1">
+        <template data-if="hasNotice">
+          <div class="causa-notice" data-bind-data-tone="noticeTone" role="status" aria-live="polite">
+            <p data-text="noticeText"></p>
+            <button type="button" class="causa-button causa-button--quiet" data-event="notice.dismiss">Dismiss</button>
+          </div>
+        </template>
+
+        <!-- ===================================================== Dashboard ===================================================== -->
+        <template data-if="isHome">
+          <section class="causa-page" aria-labelledby="dash-title">
+            <header class="causa-page__header">
+              <h1 id="dash-title">Investigations</h1>
+              <p class="causa-page__lede" data-text="dashSummary"></p>
+            </header>
+
+            <template data-if="isDisconnected">
+              <section class="causa-panel causa-connect" aria-labelledby="connect-title">
+                <div class="causa-empty" aria-hidden="true">
+                  <img src="./causa-icon.svg" alt="" width="56" height="56">
+                </div>
+                <h2 id="connect-title">Connect data repository</h2>
+                <p>Causa contains no investigations. Your investigations stay in a GitHub repository you choose; Causa reads them, validates every file against the Causa v1.0.0 storage contract and replays every event through its F# domain engine before showing anything.</p>
+                <template data-if="isRefused">
+                  <div class="causa-alert" data-tone="critical" role="alert">
+                    <p class="causa-alert__title" data-text="connLabel"></p>
+                    <p data-text="connDetail"></p>
+                    <p>Nothing was read or changed. Check the repository, branch, workspace and credential, then connect again.</p>
+                  </div>
+                </template>
+                <form class="causa-form" data-event="connect.submit" autocomplete="off">
+                  <div class="causa-form__grid">
+                    <div class="ef-field">
+                      <label class="ef-field__label" for="cn-owner">Owner</label>
+                      <input id="cn-owner" name="owner" type="text" spellcheck="false" autocapitalize="off" required data-event="connect.owner" data-bind-value="formOwner">
+                    </div>
+                    <div class="ef-field">
+                      <label class="ef-field__label" for="cn-repo">Repository</label>
+                      <input id="cn-repo" name="repo" type="text" spellcheck="false" autocapitalize="off" required data-event="connect.repo" data-bind-value="formRepo">
+                    </div>
+                    <div class="ef-field">
+                      <label class="ef-field__label" for="cn-branch">Branch</label>
+                      <input id="cn-branch" name="branch" type="text" spellcheck="false" autocapitalize="off" required data-event="connect.branch" data-bind-value="formBranch">
+                    </div>
+                    <div class="ef-field">
+                      <label class="ef-field__label" for="cn-root">Workspace</label>
+                      <span class="ef-field__description" id="cn-root-help">A run id such as <code>team-2026-10</code> (read and write under <code>workspaces/demo/&lt;run&gt;/</code>), or <code>fixtures</code> for the frozen, read-only v1.0.0 set.</span>
+                      <input id="cn-root" name="root" type="text" spellcheck="false" autocapitalize="off" required aria-describedby="cn-root-help" data-event="connect.root" data-bind-value="formRoot">
+                    </div>
+                  </div>
+                  <div class="ef-field">
+                    <label class="ef-field__label" for="cn-token">Access token</label>
+                    <span class="ef-field__description" id="cn-token-help">Use a short-lived, fine-grained GitHub token limited to this one repository (Contents: read; add read and write only to save). It is held in memory only: never stored, logged or put in a URL. Reloading the page forgets it.</span>
+                    <input id="cn-token" name="token" type="password" autocomplete="off" spellcheck="false" required aria-describedby="cn-token-help" data-event="connect.token">
+                  </div>
+                  <div class="causa-actions">
+                    <button type="submit" class="causa-button causa-button--primary">Connect data repository</button>
+                  </div>
+                </form>
+              </section>
+            </template>
+
+            <template data-if="isConnecting">
+              <section class="causa-panel" aria-labelledby="connecting-title" aria-busy="true">
+                <h2 id="connecting-title">Connecting…</h2>
+                <p role="status" aria-live="polite" data-text="connDetail"></p>
+                <div class="causa-boot__indicator causa-boot__indicator--inline" aria-hidden="true"><span></span></div>
+                <button type="button" class="causa-button" data-event="connect.cancel">Cancel</button>
+              </section>
+            </template>
+
+            <template data-if="isConnected">
+              <div class="causa-stack">
+                <section class="causa-panel causa-repo" aria-labelledby="repo-title">
+                  <div class="causa-repo__summary">
+                    <h2 id="repo-title" class="causa-repo__title">Data repository</h2>
+                    <p class="causa-repo__target" data-text="targetLabel"></p>
+                    <p class="causa-repo__access" data-text="accessLabel"></p>
+                    <p class="causa-repo__sync"><span data-text="syncLabel"></span> — <span data-text="syncDetail"></span></p>
+                  </div>
+                  <div class="causa-actions">
+                    <button type="button" class="causa-button causa-button--primary" data-event="cmd.new" data-bind-disabled="createDisabled" aria-describedby="create-reason">New investigation</button>
+                    <button type="button" class="causa-button" data-event="refresh" data-bind-disabled="refreshDisabled">Reload</button>
+                    <button type="button" class="causa-button causa-button--quiet" data-event="disconnect">Disconnect</button>
+                  </div>
+                  <p class="causa-reason" id="create-reason" data-text="createReason"></p>
+                </section>
+
+                <template data-if="hasHeld">
+                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-title" role="alert">
+                    <h2 id="held-title" data-text="syncLabel"></h2>
+                    <p data-text="syncDetail"></p>
+                    <div class="causa-actions">
+                      <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
+                      <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
+                      <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
+                      <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>
+                    </div>
+                  </section>
+                </template>
+
+                <template data-if="dashEmpty">
+                  <section class="causa-panel causa-empty-state" aria-labelledby="empty-title">
+                    <div class="causa-empty" aria-hidden="true">◇</div>
+                    <h2 id="empty-title">No investigations in this workspace</h2>
+                    <p>Start one with <strong>New investigation</strong>. Causa creates it from domain commands and the v1.0.0 schema; nothing is copied from a template or demonstration.</p>
+                  </section>
+                </template>
+
+                <div class="causa-toolbar">
+                  <p class="causa-toolbar__count"><span data-text="dashCount"></span> directories · <span data-text="dashValid"></span> verified · <span data-text="dashInvalid"></span> refused</p>
+                  <label class="causa-inline-field">
+                    <span>Sort by</span>
+                    <select data-event="dashboard.sort" data-bind-value="sortBy">
+                      <option value="updated">Last activity</option>
+                      <option value="title">Title</option>
+                      <option value="lifecycle">Lifecycle</option>
+                    </select>
+                  </label>
+                </div>
+
+                <ul class="causa-cards" aria-label="Investigations">
+                  <template data-each="investigations" data-key="id">
+                    <li class="causa-card" data-bind-data-status="status">
+                      <template data-if="isValid">
+                        <article class="causa-card__body">
+                          <h3 class="causa-card__title"><a data-bind-href="href" data-text="title"></a></h3>
+                          <p class="causa-card__meta">
+                            <span class="causa-lozenge" data-bind-data-tone="lifecycleTone"><span class="causa-lozenge__dot" aria-hidden="true"></span><span data-text="lifecycle"></span></span>
+                            <span>Version <span data-text="version"></span></span>
+                            <span>Last activity <span data-text="updated"></span></span>
+                          </p>
+                          <dl class="causa-counts">
+                            <div><dt>Hypotheses</dt><dd data-text="hypotheses"></dd></div>
+                            <div><dt>Evidence</dt><dd data-text="evidence"></dd></div>
+                            <div class="causa-count" data-tone="conflict" data-bind-data-active="hasContradictions"><dt>Open contradictions</dt><dd data-text="contradictions"></dd></div>
+                            <div class="causa-count" data-tone="unresolved" data-bind-data-active="hasUnknowns"><dt>Open unknowns</dt><dd data-text="unknowns"></dd></div>
+                          </dl>
+                          <p class="causa-card__next"><span class="causa-label">Next legal step</span> <span data-text="nextAction"></span></p>
+                          <p class="causa-card__status" data-text="statusText"></p>
+                        </article>
+                      </template>
+                      <template data-if="isLoading">
+                        <article class="causa-card__body" aria-busy="true">
+                          <h3 class="causa-card__title" data-text="title"></h3>
+                          <p class="causa-card__status" role="status" data-text="statusText"></p>
+                        </article>
+                      </template>
+                      <template data-if="isInvalid">
+                        <article class="causa-card__body causa-card__body--refused">
+                          <h3 class="causa-card__title" data-text="title"></h3>
+                          <p class="causa-card__status"><span class="causa-lozenge" data-tone="critical"><span class="causa-lozenge__dot" aria-hidden="true"></span><span data-text="statusText"></span></span></p>
+                          <p class="causa-code" data-text="errorCode"></p>
+                          <p class="causa-card__error" data-text="errorText"></p>
+                          <p class="causa-card__hint">The directory was not loaded. Nothing from it is shown or trusted.</p>
+                        </article>
+                      </template>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <!-- ===================================================== Investigation ===================================================== -->
+        <template data-if="isInvestigation">
+          <section class="causa-page" aria-labelledby="inv-title">
+            <template data-if="isDisconnected">
+              <section class="causa-panel" aria-labelledby="inv-disc-title">
+                <h1 id="inv-disc-title">Connect to view this investigation</h1>
+                <p>This link names an investigation, but no data repository is connected. Connect the repository that holds it; the link will then open it.</p>
+                <a class="causa-button causa-button--primary" data-bind-href="homeHref" href="#/">Go to Connect data repository</a>
+              </section>
+            </template>
+            <template data-if="invLoading">
+              <section class="causa-panel" aria-busy="true"><h1>Loading investigation…</h1><p role="status">Reading, validating and replaying its history.</p></section>
+            </template>
+            <template data-if="invMissing">
+              <section class="causa-panel" aria-labelledby="inv-missing-title">
+                <h1 id="inv-missing-title">This investigation cannot be shown</h1>
+                <p role="alert" data-text="invMissingText"></p>
+                <a class="causa-button" data-bind-href="homeHref" href="#/">Back to investigations</a>
+              </section>
+            </template>
+            <template data-if="hasInvestigation">
+              <div class="causa-stack">
+                <header class="causa-record">
+                  <p class="causa-record__kicker">Investigation</p>
+                  <h1 id="inv-title" class="causa-record__title" data-text="invTitle"></h1>
+                  <div class="causa-record__facts">
+                    <span class="causa-lozenge" data-bind-data-tone="invLifecycleTone"><span class="causa-lozenge__dot" aria-hidden="true"></span><span class="causa-visually-hidden">Lifecycle: </span><span data-text="invLifecycle"></span></span>
+                    <span>Version <span data-text="invVersion"></span> · <span data-text="invEventCount"></span> events</span>
+                    <span>Started <span data-text="invCreated"></span></span>
+                    <template data-if="invLocal"><span class="causa-lozenge" data-tone="attention"><span class="causa-lozenge__dot" aria-hidden="true"></span>Local change — not yet confirmed by GitHub</span></template>
+                  </div>
+                  <div class="causa-record__summary">
+                    <p><span class="causa-label">Next legal step</span> <span data-text="invNext"></span></p>
+                    <p class="causa-count-inline" data-tone="unresolved"><span data-text="openUnknownCount"></span> open unknowns</p>
+                    <p class="causa-count-inline" data-tone="conflict"><span data-text="openContradictionCount"></span> open contradictions</p>
+                    <template data-if="hasBlockers"><p class="causa-count-inline" data-tone="conflict"><strong><span data-text="blockingCount"></span> blocking</strong></p></template>
+                  </div>
+                  <template data-if="invReadOnly"><p class="causa-reason" data-text="invReadOnlyReason"></p></template>
+                </header>
+
+                <nav class="causa-tabs" aria-label="Investigation views">
+                  <template data-each="tabs" data-key="id">
+                    <a class="causa-tabs__tab" data-bind-href="href" data-bind-aria-current="current" data-text="label"></a>
+                  </template>
+                </nav>
+
+                <section class="causa-commands" aria-labelledby="cmd-title">
+                  <h2 id="cmd-title" class="causa-section-title">Actions the domain permits now</h2>
+                  <ul class="causa-command-list">
+                    <template data-each="invActions" data-key="id">
+                      <li class="causa-command" data-bind-data-group="group">
+                        <button type="button" class="causa-button" data-event="cmd.open" data-bind-disabled="disabled" data-text="label"></button>
+                        <template data-if="disabled"><span class="causa-command__reason" data-text="reason"></span></template>
+                      </li>
+                    </template>
+                  </ul>
+                </section>
+
+                <!-- Overview -->
+                <template data-if="isOverview">
+                  <div class="causa-grid">
+                    <section class="causa-panel" aria-labelledby="ov-conclusion">
+                      <h2 id="ov-conclusion">Current conclusion</h2>
+                      <p class="causa-conclusion" data-bind-data-present="hasConclusion" data-text="currentConclusion"></p>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="ov-observations">
+                      <h2 id="ov-observations">Observations (verbatim)</h2>
+                      <ul class="causa-list">
+                        <template data-each="observations" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected"><span class="causa-quote" data-text="text"></span></a><span class="causa-item__meta">Recorded <span data-text="recorded"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="ov-hyp">
+                      <h2 id="ov-hyp">Hypotheses</h2>
+                      <ul class="causa-list">
+                        <template data-each="hypotheses" data-key="id">
+                          <li class="causa-item" data-bind-data-tone="tone">
+                            <a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a>
+                            <span class="causa-item__meta"><span class="causa-state" data-bind-data-state="stateKey" data-text="state"></span> · supports <span data-text="supports"></span> · contradicts <span data-text="contradicts"></span></span>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel causa-panel--conflict" aria-labelledby="ov-contra">
+                      <h2 id="ov-contra"><span class="causa-tone-mark" data-tone="conflict" aria-hidden="true"></span>Contradictions</h2>
+                      <ul class="causa-list">
+                        <template data-each="contradictions" data-key="id">
+                          <li class="causa-item causa-item--conflict" data-bind-data-open="isOpen">
+                            <a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a>
+                            <span class="causa-item__meta"><span data-text="state"></span> · <span data-text="materiality"></span></span>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel causa-panel--unresolved" aria-labelledby="ov-unk">
+                      <h2 id="ov-unk"><span class="causa-tone-mark" data-tone="unresolved" aria-hidden="true"></span>Unknowns</h2>
+                      <ul class="causa-list">
+                        <template data-each="unknowns" data-key="id">
+                          <li class="causa-item causa-item--unresolved" data-bind-data-open="isOpen">
+                            <a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="question"></a>
+                            <span class="causa-item__meta"><span data-text="state"></span> · <span data-text="materiality"></span></span>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                  </div>
+                </template>
+
+                <!-- Hypotheses -->
+                <template data-if="isHypotheses">
+                  <div class="causa-stack">
+                    <section class="causa-panel" aria-labelledby="hy-list">
+                      <h2 id="hy-list">Hypotheses</h2>
+                      <ul class="causa-list causa-list--rich">
+                        <template data-each="hypotheses" data-key="id">
+                          <li class="causa-item" data-bind-data-tone="tone">
+                            <a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a>
+                            <span class="causa-item__body" data-text="mechanism"></span>
+                            <span class="causa-item__meta"><span class="causa-state" data-bind-data-state="stateKey" data-text="state"></span> · <span data-text="supports"></span> supporting · <span data-text="contradicts"></span> contradicting · <span data-text="changes"></span> state changes</span>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="hy-rel">
+                      <h2 id="hy-rel">Evidence relationships</h2>
+                      <p class="causa-help">Every relationship below is a recorded domain fact; none is inferred by the interface.</p>
+                      <ul class="causa-relations">
+                        <template data-each="relationships" data-key="id">
+                          <li class="causa-relation" data-bind-data-kind="kindKey">
+                            <a data-bind-href="evidenceHref" data-text="evidence"></a>
+                            <span class="causa-relation__kind" data-text="kind"></span>
+                            <a data-bind-href="hypothesisHref" data-text="hypothesis"></a>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="hy-pred">
+                      <h2 id="hy-pred">Predictions</h2>
+                      <ul class="causa-list">
+                        <template data-each="predictions" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a><span class="causa-item__meta"><span data-text="timing"></span> · <span data-text="strength"></span> · for <span data-text="hypothesis"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                  </div>
+                </template>
+
+                <!-- Evidence -->
+                <template data-if="isEvidence">
+                  <div class="causa-stack">
+                    <section class="causa-panel" aria-labelledby="ev-list">
+                      <h2 id="ev-list">Evidence</h2>
+                      <ul class="causa-list causa-list--rich">
+                        <template data-each="evidence" data-key="id">
+                          <li class="causa-item" data-bind-data-superseded="superseded">
+                            <a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected"><span class="causa-quote" data-text="content"></span></a>
+                            <span class="causa-item__meta"><span data-text="category"></span> · source: <span data-text="source"></span> · <span data-text="verification"></span> · admitted at version <span data-text="version"></span></span>
+                            <template data-if="superseded"><span class="causa-item__flag">Superseded — kept in history</span></template>
+                          </li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="ev-neg">
+                      <h2 id="ev-neg">Established not to be the case</h2>
+                      <ul class="causa-list">
+                        <template data-each="negativeKnowledge" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a><span class="causa-item__meta">Scope: <span data-text="scope"></span> · <span data-text="basis"></span> basis evidence</span></li>
+                        </template>
+                      </ul>
+                    </section>
+                  </div>
+                </template>
+
+                <!-- Questions & conflicts -->
+                <template data-if="isQuestions">
+                  <div class="causa-grid">
+                    <section class="causa-panel causa-panel--unresolved" aria-labelledby="q-unk">
+                      <h2 id="q-unk"><span class="causa-tone-mark" data-tone="unresolved" aria-hidden="true"></span>Unknowns</h2>
+                      <ul class="causa-list">
+                        <template data-each="unknowns" data-key="id">
+                          <li class="causa-item causa-item--unresolved" data-bind-data-open="isOpen"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="question"></a><span class="causa-item__meta"><span data-text="state"></span> · <span data-text="materiality"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel causa-panel--conflict" aria-labelledby="q-con">
+                      <h2 id="q-con"><span class="causa-tone-mark" data-tone="conflict" aria-hidden="true"></span>Contradictions</h2>
+                      <ul class="causa-list">
+                        <template data-each="contradictions" data-key="id">
+                          <li class="causa-item causa-item--conflict" data-bind-data-open="isOpen"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a><span class="causa-item__meta"><span data-text="state"></span> · <span data-text="materiality"></span> · <span data-text="evidenceCount"></span> evidence items</span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel causa-panel--unresolved" aria-labelledby="q-asm">
+                      <h2 id="q-asm"><span class="causa-tone-mark" data-tone="unresolved" aria-hidden="true"></span>Assumptions</h2>
+                      <ul class="causa-list">
+                        <template data-each="assumptions" data-key="id">
+                          <li class="causa-item causa-item--unresolved" data-bind-data-open="isUnverified"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="proposition"></a><span class="causa-item__meta"><span data-text="state"></span> · <span data-text="materiality"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="q-act">
+                      <h2 id="q-act">Investigative actions and findings</h2>
+                      <ul class="causa-list">
+                        <template data-each="actions" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="purpose"></a><span class="causa-item__meta"><span data-text="kind"></span> · <span data-text="state"></span></span></li>
+                        </template>
+                        <template data-each="findings" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected"><span class="causa-label">Finding</span> <span class="causa-quote" data-text="result"></span></a><span class="causa-item__meta" data-text="interpretation"></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="q-prop">
+                      <h2 id="q-prop">Proposals (never evidence)</h2>
+                      <ul class="causa-list">
+                        <template data-each="proposals" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="text"></a><span class="causa-item__meta"><span data-text="kind"></span> · <span data-text="state"></span> · by <span data-text="actor"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                  </div>
+                </template>
+
+                <!-- Causes & verification -->
+                <template data-if="isCauses">
+                  <div class="causa-grid">
+                    <section class="causa-panel" aria-labelledby="c-causes">
+                      <h2 id="c-causes">Causal assertions</h2>
+                      <ul class="causa-list">
+                        <template data-each="causes" data-key="id">
+                          <li class="causa-item" data-bind-data-confirmed="isConfirmed"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="outcome"></a><span class="causa-item__meta"><span data-text="state"></span> · <span data-text="members"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="c-corr">
+                      <h2 id="c-corr">Corrective actions</h2>
+                      <ul class="causa-list">
+                        <template data-each="corrections" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="description"></a><span class="causa-item__meta"><span data-text="kind"></span> · <span data-text="state"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="c-crit">
+                      <h2 id="c-crit">Verification criteria and outcomes</h2>
+                      <ul class="causa-list">
+                        <template data-each="criteria" data-key="id">
+                          <li class="causa-item"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="expected"></a><span class="causa-item__meta" data-text="method"></span></li>
+                        </template>
+                        <template data-each="verifications" data-key="id">
+                          <li class="causa-item" data-bind-data-satisfied="isSatisfied"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected"><span class="causa-label">Verification</span> <span data-text="outcome"></span></a><span class="causa-item__meta"><span data-text="evidence"></span> evidence · version <span data-text="version"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                    <section class="causa-panel" aria-labelledby="c-concl">
+                      <h2 id="c-concl">Conclusions</h2>
+                      <ul class="causa-list">
+                        <template data-each="conclusions" data-key="id">
+                          <li class="causa-item" data-bind-data-current="isCurrent"><a class="causa-item__link" data-bind-href="href" data-bind-aria-current="selected" data-text="statement"></a><span class="causa-item__meta"><span data-text="strength"></span> · residual: <span data-text="residual"></span> · version <span data-text="version"></span></span></li>
+                        </template>
+                      </ul>
+                    </section>
+                  </div>
+                </template>
+
+                <!-- Timeline -->
+                <template data-if="isTimeline">
+                  <section class="causa-panel" aria-labelledby="tl-title">
+                    <div class="causa-toolbar">
+                      <h2 id="tl-title">Timeline</h2>
+                      <label class="causa-inline-field">
+                        <span>Show</span>
+                        <select data-event="timeline.filter" data-bind-value="timelineFilter">
+                          <option value="all">All events</option>
+                          <option value="lifecycle">Lifecycle</option>
+                          <option value="observation">Observations</option>
+                          <option value="hypothesis">Hypotheses</option>
+                          <option value="evidence">Evidence</option>
+                          <option value="question">Unknowns, assumptions, contradictions</option>
+                          <option value="action">Actions and findings</option>
+                          <option value="cause">Causes and verification</option>
+                          <option value="proposal">Proposals</option>
+                        </select>
+                      </label>
+                    </div>
+                    <p class="causa-help">Ordered by the canonical event sequence (aggregate version), not by clock time. <span data-text="timelineCount"></span> events shown.</p>
+                    <ol class="causa-timeline">
+                      <template data-each="timeline" data-key="id">
+                        <li class="causa-timeline__event" data-bind-data-category="category">
+                          <span class="causa-timeline__seq">v<span data-text="seq"></span></span>
+                          <div class="causa-timeline__body">
+                            <p class="causa-timeline__summary" data-text="summary"></p>
+                            <p class="causa-timeline__meta"><code data-text="type"></code> · <span data-text="actor"></span> · decided <span data-text="at"></span></p>
+                          </div>
+                        </li>
+                      </template>
+                    </ol>
+                  </section>
+                </template>
+
+                <!-- Report (Folio) -->
+                <template data-if="isReport">
+                  <section class="causa-panel causa-report-panel" aria-labelledby="rp-title">
+                    <div class="causa-toolbar causa-no-print">
+                      <h2 id="rp-title">Investigation report</h2>
+                      <button type="button" class="causa-button causa-button--primary" data-causa-print>Print or save as PDF</button>
+                    </div>
+                    <p class="causa-help causa-no-print">Generated from the same projection as every other view. It never elevates a hypothesis to a confirmed cause.</p>
+                    <ef-print-document class="causa-report">
+                      <ef-print-title-page>
+                        <h1 data-text="invTitle"></h1>
+                        <p>Lifecycle: <span data-text="invLifecycle"></span> · Version <span data-text="invVersion"></span> · <span data-text="invEventCount"></span> events</p>
+                        <p>Generated <span data-text="reportGenerated"></span> · Causa build <span data-text="sourceCommit"></span> · <span data-text="contractVersion"></span></p>
+                      </ef-print-title-page>
+                      <ef-print-section>
+                        <h2>Conclusion</h2>
+                        <ef-print-callout><p data-text="currentConclusion"></p></ef-print-callout>
+                        <h2>Observations</h2>
+                        <ul><template data-each="observations" data-key="id"><li><span data-text="text"></span> (recorded <span data-text="recorded"></span>)</li></template></ul>
+                        <h2>Hypotheses</h2>
+                        <ul><template data-each="hypotheses" data-key="id"><li><strong data-text="state"></strong>: <span data-text="statement"></span> — <span data-text="supports"></span> supporting, <span data-text="contradicts"></span> contradicting</li></template></ul>
+                        <h2>Evidence and provenance</h2>
+                        <ul><template data-each="evidence" data-key="id"><li><span data-text="content"></span> — <span data-text="category"></span>, source <span data-text="source"></span>, <span data-text="verification"></span></li></template></ul>
+                        <h2>Contradictions</h2>
+                        <ul><template data-each="contradictions" data-key="id"><li><span data-text="statement"></span> (<span data-text="state"></span>, <span data-text="materiality"></span>)</li></template></ul>
+                        <h2>Unresolved unknowns</h2>
+                        <ul><template data-each="unknowns" data-key="id"><li><span data-text="question"></span> (<span data-text="state"></span>, <span data-text="materiality"></span>)</li></template></ul>
+                        <h2>Causal conclusions</h2>
+                        <ul><template data-each="causes" data-key="id"><li><span data-text="outcome"></span> — <span data-text="state"></span>: <span data-text="members"></span></li></template></ul>
+                        <h2>Corrective actions and verification</h2>
+                        <ul><template data-each="corrections" data-key="id"><li><span data-text="kind"></span>: <span data-text="description"></span> (<span data-text="state"></span>)</li></template></ul>
+                        <ul><template data-each="verifications" data-key="id"><li>Verification <span data-text="outcome"></span> at version <span data-text="version"></span></li></template></ul>
+                        <h2>Chronology</h2>
+                        <ol><template data-each="timeline" data-key="id"><li>v<span data-text="seq"></span> · <span data-text="at"></span> · <span data-text="summary"></span></li></template></ol>
+                      </ef-print-section>
+                    </ef-print-document>
+                  </section>
+                </template>
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <template data-if="isNotFound">
+          <section class="causa-panel" aria-labelledby="nf-title">
+            <h1 id="nf-title">This address does not match a Causa view</h1>
+            <p>The link may be mistyped or from a newer version.</p>
+            <a class="causa-button causa-button--primary" data-bind-href="homeHref" href="#/">Back to investigations</a>
+          </section>
+        </template>
+      </main>
+
+      <aside class="causa-detail" aria-label="Details">
+        <template data-if="hasSelection">
+          <section class="causa-inspector" aria-labelledby="sel-title">
+            <div class="causa-inspector__head">
+              <p class="causa-record__kicker" data-text="selKind"></p>
+              <a class="causa-button causa-button--quiet" data-bind-href="selCloseHref" aria-label="Close details">Close</a>
+            </div>
+            <h2 id="sel-title" class="causa-inspector__body causa-quote" data-text="selBody"></h2>
+            <template data-if="hasSelUrl"><p><a data-bind-href="selUrl" rel="noopener noreferrer nofollow" target="_blank">Open artifact (external link)</a></p></template>
+            <dl class="causa-facts">
+              <template data-each="selMeta" data-key="id"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template>
+            </dl>
+            <h3 class="causa-section-title">Actions</h3>
+            <ul class="causa-command-list">
+              <template data-each="selActions" data-key="id">
+                <li class="causa-command">
+                  <button type="button" class="causa-button" data-event="cmd.open" data-bind-disabled="disabled" data-text="label"></button>
+                  <template data-if="disabled"><span class="causa-command__reason" data-text="reason"></span></template>
+                </li>
+              </template>
+            </ul>
+            <h3 class="causa-section-title">Linked</h3>
+            <ul class="causa-links">
+              <template data-each="selLinks" data-key="id"><li><a data-bind-href="href" data-text="label"></a></li></template>
+            </ul>
+          </section>
+        </template>
+      </aside>
+    </div>
+
+    <template data-if="dialogOpen">
+      <div class="causa-dialog-backdrop">
+        <section class="causa-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+          <form class="causa-form" data-event="cmd.submit" autocomplete="off">
+            <h2 id="dlg-title" data-text="dialogTitle"></h2>
+            <p class="causa-dialog__target" data-text="dialogTarget"></p>
+            <template data-if="hasDialogError"><div class="causa-alert" data-tone="critical" role="alert"><p data-text="dialogError"></p></div></template>
+            <div class="ef-field" data-bind-hidden="textBHidden">
+              <label class="ef-field__label" for="dlg-textB" data-text="textBLabel"></label>
+              <textarea id="dlg-textB" rows="4" data-causa-autofocus data-event="cmd.textB" data-bind-value="textBValue" data-bind-required="textBRequired"></textarea>
+              <span class="ef-field__description" data-text="textBHelp"></span>
+            </div>
+            <div class="ef-field" data-bind-hidden="textAHidden">
+              <label class="ef-field__label" for="dlg-textA" data-text="textALabel"></label>
+              <input id="dlg-textA" type="text" data-event="cmd.textA" data-bind-value="textAValue" data-bind-required="textARequired">
+              <span class="ef-field__description" data-text="textAHelp"></span>
+            </div>
+            <div class="ef-field" data-bind-hidden="enumAHidden">
+              <label class="ef-field__label" for="dlg-enumA" data-text="enumALabel"></label>
+              <select id="dlg-enumA" data-event="cmd.enumA" data-bind-value="enumAValue" data-bind-required="enumARequired">
+                <template data-each="enumAOptions" data-key="id"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template>
+              </select>
+              <span class="ef-field__description" data-text="enumAHelp"></span>
+            </div>
+            <div class="ef-field" data-bind-hidden="enumBHidden">
+              <label class="ef-field__label" for="dlg-enumB" data-text="enumBLabel"></label>
+              <select id="dlg-enumB" data-event="cmd.enumB" data-bind-value="enumBValue" data-bind-required="enumBRequired">
+                <template data-each="enumBOptions" data-key="id"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template>
+              </select>
+              <span class="ef-field__description" data-text="enumBHelp"></span>
+            </div>
+            <div class="ef-field" data-bind-hidden="refAHidden">
+              <label class="ef-field__label" for="dlg-refA" data-text="refALabel"></label>
+              <select id="dlg-refA" data-event="cmd.refA" data-bind-value="refAValue" data-bind-required="refARequired">
+                <template data-each="refAOptions" data-key="id"><option data-bind-value="value" data-bind-selected="selected" data-text="label"></option></template>
+              </select>
+              <span class="ef-field__description" data-text="refAHelp"></span>
+            </div>
+            <fieldset class="causa-choices" data-bind-hidden="refsBHidden">
+              <legend data-text="refsBLabel"></legend>
+              <span class="ef-field__description" data-text="refsBHelp"></span>
+              <template data-each="refsBOptions" data-key="id">
+                <label class="causa-choice"><input type="checkbox" data-event="cmd.refsB" data-bind-checked="checked"> <span data-text="label"></span></label>
+              </template>
+            </fieldset>
+            <template data-if="hasConfirm"><div class="causa-alert" data-tone="attention" role="alert"><p data-text="dialogConfirm"></p></div></template>
+            <div class="causa-actions">
+              <button type="submit" class="causa-button causa-button--primary" data-text="dialogSubmitLabel"></button>
+              <button type="button" class="causa-button" data-event="cmd.cancel">Cancel</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </template>
+  </div>
 </body>
 </html>

@@ -1,4 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- Independent verification of the Causa engine (Shell.handle) against an in-memory fake GitHub seeded with the
+       frozen causa-data v1.0.0 fixtures (.cache/causa-data, test-only; never copied into src/). -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -7,7 +9,10 @@
     <ProjectReference Include="../../src/engine/App.Engine.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RouteTests.fs" />
+    <Compile Include="Fixtures.fs" />
+    <Compile Include="FakeGitHub.fs" />
+    <Compile Include="Harness.fs" />
+    <Compile Include="EngineTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />

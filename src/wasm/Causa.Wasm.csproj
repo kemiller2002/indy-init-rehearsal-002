@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <!-- .NET WebAssembly host for the Causa F# engine (Limen guest pattern, limen guests/minimal/fsharp).
+       One [JSExport] method forwards one serialized Limen message; no decision is made here.
+       AllowUnsafeBlocks is required by the JSExport source generator's marshalling code.
+       Trimming is off: the engine formats domain unions with %A and the vendored domain was not written for
+       reflection-free compilation; warnings stay errors, and the untrimmed bundle is larger (recorded in
+       docs/architecture/ARCHITECTURE.md). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>Causa.Wasm</RootNamespace>
+    <AssemblyName>Causa.Wasm</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../engine/App.Engine.fsproj" />
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+</Project>

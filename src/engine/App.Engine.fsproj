@@ -1,17 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- The Causa application engine: Limen boundary, session state, GitHub provider (as data), command catalog,
+       capabilities and projection. Domain decisions are delegated to Causa.Domain; the wire format to
+       Causa.Contract. No browser, network or file I/O happens here. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>Causa.Engine</AssemblyName>
+    <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="EchelonFoundry.Aegis.Core" Version="1.0.0" />
+    <PackageReference Include="EchelonFoundry.Limen.Contract" Version="0.9.0" />
+    <PackageReference Include="EchelonFoundry.Limen.Guest" Version="0.9.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Operational.fs" />
-    <Compile Include="Routes.fs" />
+    <Compile Include="BuildInfo.fs" />
     <Compile Include="Schemas.fs" />
+    <Compile Include="Ids.fs" />
+    <Compile Include="GitHub.fs" />
+    <Compile Include="CommandForms.fs" />
+    <Compile Include="Session.fs" />
+    <Compile Include="App.fs" />
+    <Compile Include="Capabilities.fs" />
+    <Compile Include="View.fs" />
+    <Compile Include="Shell.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../contract/Causa.Contract.fsproj" />

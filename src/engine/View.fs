@@ -129,7 +129,8 @@ module View =
           "syncTone", t (toneKey tone)
           "syncBusy", b busy
           "hasHeld", b (held (fun _ -> true))
-          "canRetry", b (held (function NotSent _ | WriteFailed _ | WriteDenied _ -> true | _ -> false))
+          "canRetry", b (held (function NotSent _ | WriteFailed _ -> true | _ -> false))
+          "canRenew", b (held (function WriteDenied _ -> true | _ -> false))
           "canReapply", b (held (function Conflict _ -> true | _ -> false))
           "canReconcile", b (held (function Unknown _ -> true | _ -> false))
           "canDiscard", b (held (fun _ -> true))
@@ -211,7 +212,9 @@ module View =
               match live with
               | None -> "No investigations: no data repository is connected."
               | Some l when rows.IsEmpty -> "This workspace has no investigations yet (" + Target.rootLabel l.Target + ")."
-              | Some _ -> string rows.Length + " investigation directories: " + string valid + " verified, " + string invalid + " refused."
+              | Some l ->
+                  string rows.Length + " investigation directories: " + string valid + " verified, " + string invalid + " refused."
+                  + (if l.Truncated > 0 then " GitHub truncated the listing: " + string l.Truncated + " further entries could not be listed and are not shown." else "")
           )
           "canCreate", b (Result.isOk createGate)
           "createDisabled", b (Result.isError createGate)
@@ -646,6 +649,16 @@ module View =
           "hasNotice", b app.Notice.IsSome
           "noticeText", t (app.Notice |> Option.map (fun x -> x.Text) |> Option.defaultValue "")
           "noticeTone", t (app.Notice |> Option.map (fun x -> toneKey x.Tone) |> Option.defaultValue "neutral")
+          // Permanently mounted live regions: content changes inside an existing region are announced reliably,
+          // while a region inserted together with its content often is not. Critical news is assertive.
+          "liveStatus", t (match app.Notice with Some { Tone = tone; Text = text } when tone <> Critical -> text | _ -> "")
+          "liveAlert",
+          t (
+              match app.Notice, App.live app with
+              | Some { Tone = Critical; Text = text }, _ -> text
+              | _, Some { Sync = Held(_, (Conflict _ | WriteDenied _ | WriteFailed _ | Unknown _)) } -> "Your change was not confirmed as saved. It is held on this page; review the held change."
+              | _ -> ""
+          )
           "contractVersion", t "Causa storage contract 1.0.0"
           "engineVersion", t BuildInfo.version
           "sourceCommit", t BuildInfo.commit ]

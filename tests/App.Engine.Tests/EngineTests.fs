@@ -477,11 +477,14 @@ let ``11c a read-back that differs from what was written is never reported as su
     let w1 = { w0 with Rules = [] } |> withRule (fun r -> isGetBlob r && r.CorrelationId <> "") (Respond(200L, sprintf """{"sha":"x","encoding":"base64","content":"%s"}""" bogus))
     let after = w1 |> createInvestigation "Corrupt" "read-back tampered"
     Assert.True(requestsSince n after |> List.exists isPatch)
+    // After the PATCH a mismatch is not a definite failure: the branch moved, so the outcome is unknown (DC-003).
     match sync after with
-    | Held(_, WriteFailed _) -> ()
-    | other -> failwithf "expected Held WriteFailed, got %A" other
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
     Assert.Equal(None, (live after).LastVerified)
-    Assert.Equal("failed", text "syncState" after)
+    Assert.Equal("unknown", text "syncState" after)
+    Assert.False(flag "canRetry" after)
+    Assert.True(flag "canReconcile" after)
 
 // ---------------------------------------------------------------------------------------------------------------
 // 12. Credential confinement
@@ -716,3 +719,111 @@ let ``4d a truncated tree listing fails closed as incompatible`` () =
         |> connect "r4d"
     Assert.Equal("incompatible", text "connState" w)
     Assert.Empty(items "investigations" w)
+
+// ---------------------------------------------------------------------------------------------------------------
+// DC-002 / DC-003 regressions (security review F1–F4, F6, F9)
+// ---------------------------------------------------------------------------------------------------------------
+
+/// Deliver the submit but answer nothing yet: the write is in flight with its blob requests queued.
+let private submitUnanswered (title: string) (w: World) =
+    w |> openCommand "new-investigation" |> send "cmd.textA" title |> send "cmd.textB" "in flight" |> deliver (event "cmd.submit" None None)
+
+[<Fact>]
+let ``15 sync events during an in-flight write neither replace nor discard it (DC-002)`` () =
+    let run = "r15"
+    let w0 = connected run (workspaceRepo run)
+    let n = w0.Requests.Length
+    let inflight = w0 |> submitUnanswered "Racing"
+    match sync inflight with
+    | InFlight _ -> ()
+    | other -> failwithf "expected InFlight, got %A" other
+    let poked =
+        inflight
+        |> deliver (event "sync.reapply" None None)
+        |> deliver (event "sync.discard" None None)
+        |> deliver (event "sync.retry" None None)
+        |> deliver (event "sync.refresh" None None)
+    match sync poked with
+    | InFlight _ -> ()
+    | other -> failwithf "an event replaced the in-flight write: %A" other
+    let after = poked |> pump
+    Assert.Equal(Idle, sync after)
+    Assert.True((live after).LastVerified.IsSome)
+    Assert.Equal(1, requestsSince n after |> List.filter isPatch |> List.length)
+    patchBodiesNeverForce after
+
+[<Fact>]
+let ``15b a second submission while a write is in flight starts nothing (DC-002)`` () =
+    let run = "r15b"
+    let w0 = connected run (workspaceRepo run)
+    let n = w0.Requests.Length
+    let first = w0 |> submitUnanswered "First"
+    let http (w: World) = w.Pending |> List.filter (function EffectRequest.Http _ -> true | _ -> false) |> List.length
+    // A second command composed and submitted before any answer arrives (nothing is pumped in between).
+    let second =
+        first
+        |> deliver (event "cmd.open" None (Some "new-investigation"))
+        |> deliver (event "cmd.textA" (Some "Second") None)
+        |> deliver (event "cmd.textB" (Some "in flight") None)
+        |> deliver (event "cmd.submit" None None)
+    Assert.Equal(http first, http second)
+    let after = second |> pump
+    Assert.Equal(1, requestsSince n after |> List.filter isPatch |> List.length)
+    Assert.Equal(Idle, sync after)
+
+[<Fact>]
+let ``15c a write answer from an earlier generation is ignored (DC-002)`` () =
+    let run = "r15c"
+    let w0 = connected run (workspaceRepo run) |> withRule isPostBlob NetworkDown
+    let held = w0 |> createInvestigation "Held" "offline first"
+    match sync held with
+    | Held(_, NotSent _) -> ()
+    | other -> failwithf "expected NotSent, got %A" other
+    // Forge a late answer carrying an old correlation id: it answers no open question.
+    let stale =
+        held |> deliver (BrowserToEngineMessage.EffectResult(EffectResult.HttpResult(CorrelationId "gh-1", EffectOutcome.Success(201L, Limen.Contract.RawJson """{"sha":"0000000000000000000000000000000000000000"}""", None))))
+    Assert.Equal(sync held, sync stale)
+    Assert.Empty(stale.Pending)
+
+[<Fact>]
+let ``16 a network failure after the ref update was sent is outcome-unknown, never "not written" (DC-003)`` () =
+    let run = "r16"
+    let w0 = connected run (workspaceRepo run) |> withRule isPatch NetworkDown
+    let after = w0 |> createInvestigation "Lost" "the answer was lost"
+    match sync after with
+    | Held(_, Unknown _) -> ()
+    | other -> failwithf "expected Held Unknown, got %A" other
+    Assert.False(flag "canRetry" after)
+    Assert.True(flag "canReconcile" after)
+    // Reconciling (the PATCH never applied) publishes it as a fast-forward and verifies it.
+    let reconciled = after |> fire "sync.reconcile"
+    Assert.Equal(Idle, sync reconciled)
+    Assert.True((live reconciled).LastVerified.IsSome)
+    patchBodiesNeverForce reconciled
+
+[<Fact>]
+let ``17 a repository answered under another name is refused, not loaded (F6)`` () =
+    let w =
+        world (workspaceRepo "r17")
+        |> withRule (fun r -> r.Method = "GET" && r.Route = Some "") (Respond(200L, """{"full_name":"someone-else/moved","private":true,"permissions":{"push":true}}"""))
+        |> init
+        |> connect "r17"
+    Assert.Equal("incompatible", text "connState" w)
+    Assert.Empty(items "investigations" w)
+
+[<Fact>]
+let ``18 a refused write can be retried with a renewed credential without losing the change (F9)`` () =
+    let run = "r18"
+    let w0 = connected run (workspaceRepo run) |> withRule isPostBlob (Respond(401L, """{"message":"Bad credentials"}"""))
+    let denied = w0 |> createInvestigation "Renew" "token expired"
+    match sync denied with
+    | Held(_, WriteDenied _) -> ()
+    | other -> failwithf "expected WriteDenied, got %A" other
+    Assert.True(flag "canRenew" denied)
+    Assert.False(flag "canRetry" denied)
+    // The owner rotates the credential: GitHub now accepts only the new one, so success proves it was used.
+    let rotated = { denied with Repo = { denied.Repo with Token = token + "-renewed" } }
+    let renewed = rotated |> send "connect.token" (token + "-renewed") |> fire "auth.renew"
+    Assert.Equal(Idle, sync renewed)
+    Assert.True((live renewed).LastVerified.IsSome)
+    Assert.False((renewed.App.ConnectForm).ContainsKey "token")

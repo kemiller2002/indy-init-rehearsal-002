@@ -74,9 +74,11 @@
         </div>
       </nav>
 
+      <div class="causa-visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-text="liveStatus"></div>
+      <div class="causa-visually-hidden" role="alert" aria-atomic="true" data-text="liveAlert"></div>
       <main class="causa-main" id="causa-main" tabindex="-1">
         <template data-if="hasNotice">
-          <div class="causa-notice" data-bind-data-tone="noticeTone" role="status" aria-live="polite">
+          <div class="causa-notice" data-bind-data-tone="noticeTone">
             <p data-text="noticeText"></p>
             <button type="button" class="causa-button causa-button--quiet" data-event="notice.dismiss">Dismiss</button>
           </div>
@@ -163,11 +165,12 @@
                 </section>
 
                 <template data-if="hasHeld">
-                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-title" role="alert">
+                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-title">
                     <h2 id="held-title" data-text="syncLabel"></h2>
                     <p data-text="syncDetail"></p>
                     <div class="causa-actions">
                       <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
+                      <template data-if="canRenew"><div class="ef-field causa-renew"><label class="ef-field__label" for="renew-token">New access token</label><input id="renew-token" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></template>
                       <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
                       <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
                       <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>
@@ -262,11 +265,12 @@
             <template data-if="hasInvestigation">
               <div class="causa-stack">
                 <template data-if="hasHeld">
-                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-inv-title" role="alert">
+                  <section class="causa-panel causa-held" data-bind-data-tone="syncTone" aria-labelledby="held-inv-title">
                     <h2 id="held-inv-title" data-text="syncLabel"></h2>
                     <p data-text="syncDetail"></p>
                     <div class="causa-actions">
                       <template data-if="canRetry"><button type="button" class="causa-button causa-button--primary" data-event="sync.retry">Retry save</button></template>
+                      <template data-if="canRenew"><div class="ef-field causa-renew"><label class="ef-field__label" for="renew-token-inv">New access token</label><input id="renew-token-inv" type="password" autocomplete="off" spellcheck="false" data-event="connect.token"></div><button type="button" class="causa-button causa-button--primary" data-event="auth.renew">Use new token and retry</button></template>
                       <template data-if="canReapply"><button type="button" class="causa-button causa-button--primary" data-event="sync.reapply">Reload latest and re-apply</button></template>
                       <template data-if="canReconcile"><button type="button" class="causa-button causa-button--primary" data-event="sync.reconcile">Check what GitHub received</button></template>
                       <button type="button" class="causa-button" data-event="sync.discard">Discard my change</button>

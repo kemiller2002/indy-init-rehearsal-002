@@ -36,6 +36,8 @@ type Write =
       Blobs: Map<string, string>
       Commit: string option
       Attempts: int
+      /// Unique per publication attempt sequence; answers carrying another generation are ignored (DC-002).
+      Generation: int
       Received: Map<string, byte[]>
       /// The head the write produced, once its commit and tree are known (set during verification).
       NewHead: Head option }
@@ -93,6 +95,8 @@ type Live =
       Sync: Sync
       Refreshing: bool
       LastVerified: (string * DateTimeOffset) option
+      /// Investigation directories beyond the display limit (shown, never silently dropped).
+      Truncated: int
       /// A held command to re-decide once the investigation has been reloaded (conflict recovery).
       Reapply: Write option }
 
@@ -108,7 +112,7 @@ type Op =
     | OpRef
     | OpCommit of commit: string
     | OpTree of head: Head
-    | OpBlob of investigation: string * file: string
+    | OpBlob of investigation: string * file: string * sha: string
     | OpWriteBlob of file: string
     | OpWriteTree
     | OpWriteCommit
@@ -128,6 +132,8 @@ module Session =
     let actor = Actor.human "causa-investigator"
     let fileNames = Store.fileNames
     let maxInvestigations = 40
+    /// Contract files are small (the frozen scenarios are a few KiB); anything larger is refused before it is fetched.
+    let maxFileBytes = 4L * 1024L * 1024L
     let maxRebases = 3
 
     let schemaSet () = Schemas.set.Force()
@@ -157,7 +163,10 @@ module Session =
             match live.Sync with
             | InFlight _ -> Error "A change is being saved to GitHub."
             | Held _ -> Error "Resolve the pending change first (retry or discard)."
-            | Idle -> if live.Refreshing then Error "The workspace is being reloaded." else Ok()
+            | Idle ->
+                if live.Reapply.IsSome then Error "A held change is being re-applied to the latest version."
+                elif live.Refreshing then Error "The workspace is being reloaded."
+                else Ok()
 
     let refusalOf (failure: ProviderFailure) : Refusal =
         match failure with
@@ -169,26 +178,30 @@ module Session =
         | NotFastForward | ProviderFailure.Rejected _ | ProviderFailure.OutcomeUnknown -> ProviderError(GitHub.describe failure)
 
     /// Turn a completed listing into catalog entries and the blob reads they need.
-    let catalogOf (target: Target) (tree: TreeEntry list) : CatalogEntry list * (Op * ApiRequest) list =
-        let groups = GitHub.investigations (Target.prefix target) tree |> List.truncate maxInvestigations
+    let catalogOf (target: Target) (tree: TreeEntry list) : CatalogEntry list * (Op * ApiRequest) list * int =
+        let all = GitHub.investigations (Target.prefix target) tree
+        let groups = all |> List.truncate maxInvestigations
+        let tooLarge (files: (string * TreeEntry) list) = files |> List.exists (fun (_, e) -> e.Size |> Option.exists (fun s -> s > maxFileBytes))
         let entries = groups |> List.map (fun (id, files) -> { Id = id; Entries = files; Received = Map.empty; Status = Fetching })
         let reads =
             groups
             |> List.collect (fun (id, files) ->
                 let wellFormed = files |> List.map fst |> List.sort = List.sort fileNames && files |> List.forall (fun (_, e) -> e.Kind = "blob")
-                if wellFormed then files |> List.map (fun (name, e) -> OpBlob(id, name), GitHub.getBlob target e.Sha) else [])
+                if wellFormed && not (tooLarge files) then files |> List.map (fun (name, e) -> OpBlob(id, name, e.Sha), GitHub.getBlob target e.Sha) else [])
         let settled =
             entries
             |> List.map (fun e ->
                 let wellFormed = e.Entries |> List.map fst |> List.sort = List.sort fileNames && e.Entries |> List.forall (fun (_, x) -> x.Kind = "blob")
-                if wellFormed then e
+                if wellFormed && tooLarge e.Entries then
+                    { e with Status = Invalid(CausaError.create "R002.FILE_TOO_LARGE" ("a file exceeds " + string maxFileBytes + " bytes; it was not fetched")) }
+                elif wellFormed then e
                 else
                     // Every directory entry counts (CONTRACT §3.3); the reader reports the exact path problem.
                     let names = e.Entries |> List.map (fun (n, _) -> n, [||]) |> Map.ofList
                     match Store.ofFileMap e.Id names with
                     | Error err -> { e with Status = Invalid err }
                     | Ok _ -> { e with Status = Invalid(CausaError.create Codes.pathInvalid "unreadable investigation directory") })
-        settled, reads
+        settled, reads, all.Length - groups.Length
 
     /// A received blob; when the third file arrives the directory is validated through the full contract pipeline,
     /// including the domain's History.validate (EXT-DATA-005). Invalid data fails closed and is never partially shown.

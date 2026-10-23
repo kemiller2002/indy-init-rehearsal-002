@@ -47,7 +47,8 @@ type App =
       ConnectForm: Map<string, string>
       Dialog: Dialog option
       Notice: Notice option
-      Inflight: Map<string, Op>
+      /// Correlation id → the question asked and the write generation that asked it (0 = not a write).
+      Inflight: Map<string, Op * int>
       Counter: int
       Context: Context
       TimelineFilter: string

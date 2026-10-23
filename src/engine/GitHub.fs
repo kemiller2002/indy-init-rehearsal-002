@@ -28,7 +28,7 @@ type Access =
 
 type Head = { Commit: string; Tree: string }
 
-type TreeEntry = { Path: string; Kind: string; Sha: string }
+type TreeEntry = { Path: string; Kind: string; Sha: string; Size: int64 option }
 
 /// One GitHub REST conversation step, described as data. The Limen kernel performs it (CONTRACT §9.4).
 type ApiRequest =
@@ -208,6 +208,10 @@ module GitHub =
         | 422L when body.Contains("fast forward", StringComparison.OrdinalIgnoreCase) || body.Contains("fast-forward", StringComparison.OrdinalIgnoreCase) -> Error NotFastForward
         | s -> Error(Rejected(s, "HTTP " + string s))
 
+    /// GitHub follows renames and transfers by redirect; the repository answering must be the one selected.
+    let sameRepository (t: Target) (a: Access) =
+        String.Equals(a.FullName, t.Owner + "/" + t.Repo, StringComparison.OrdinalIgnoreCase)
+
     let parseRepository body =
         parse body (fun e ->
             match str "full_name" e, flag "private" e with
@@ -235,8 +239,9 @@ module GitHub =
             | _, Some items when items.ValueKind = JsonValueKind.Array ->
                 items.EnumerateArray()
                 |> Seq.map (fun item ->
+                    let size = prop "size" item |> Option.bind (fun v -> if v.ValueKind = JsonValueKind.Number then Some(v.GetInt64()) else None)
                     match str "path" item, str "type" item, sha "sha" item with
-                    | Some path, Some kind, Some s -> Some { Path = path; Kind = kind; Sha = s }
+                    | Some path, Some kind, Some s -> Some { Path = path; Kind = kind; Sha = s; Size = size }
                     | _ -> None)
                 |> Seq.toList
                 |> fun xs -> if xs |> List.forall Option.isSome then Some(List.choose id xs) else None
@@ -267,7 +272,13 @@ module GitHub =
             items
             |> List.filter (fun (_, segments) -> segments.Length >= 2)
             |> List.map (fun (e, segments) -> (if segments.Length = 2 then segments[1] else segments[1] + "/"), e)
-            |> List.distinctBy fst)
+            |> List.groupBy fst
+            // A nested directory legitimately yields many "<name>/" entries; any other repeated name is refused.
+            |> List.collect (fun (name, xs) ->
+                match xs with
+                | [ x ] -> [ x ]
+                | x :: _ when name.EndsWith("/", StringComparison.Ordinal) -> [ x ]
+                | _ -> xs |> List.mapi (fun i (_, e) -> name + "#duplicate-" + string i, e)))
         |> List.sortBy fst
 
     let describe (failure: ProviderFailure) =

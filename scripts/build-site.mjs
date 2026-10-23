@@ -15,7 +15,10 @@ const skipPublish = process.argv.includes("--skip-publish");
 const run = (cmd, args) => execFileSync(cmd, args, { cwd: root, stdio: "inherit" });
 
 if (!skipPublish) {
-  run("dotnet", ["publish", "src/wasm/Causa.Wasm.csproj", "-c", "Release", "-o", wasmOut, `-p:SourceRevisionId=${commit}`, "-nologo"]);
+  // A clean output folder: stale assemblies from earlier builds must never ship. No PDBs (they embed build paths).
+  rmSync(wasmOut, { recursive: true, force: true });
+  run("dotnet", ["publish", "src/wasm/Causa.Wasm.csproj", "-c", "Release", "-o", wasmOut, `-p:SourceRevisionId=${commit}`,
+    "-p:DebugType=none", "-p:DebugSymbols=false", "-nologo"]);
 }
 
 rmSync(out, { recursive: true, force: true });
@@ -37,7 +40,7 @@ copy(join(pkg("print-components"), "src", "components", "register.js"), "vendor/
 copy(join(pkg("print-components"), "src", "styles", "print.css"), "vendor/folio/print.css");
 
 // The .NET WebAssembly runtime and engine. Precompressed variants are dropped: GitHub Pages does not negotiate them.
-copy(relative(root, join(wasmOut, "wwwroot", "_framework")), "wasm/_framework", (src) => !src.endsWith(".gz") && !src.endsWith(".br"));
+copy(relative(root, join(wasmOut, "wwwroot", "_framework")), "wasm/_framework", (src) => !src.endsWith(".gz") && !src.endsWith(".br") && !src.endsWith(".pdb"));
 
 // GitHub Pages must not run Jekyll (it hides the _framework directory).
 writeFileSync(join(out, ".nojekyll"), "");

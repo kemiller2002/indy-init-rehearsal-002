@@ -48,8 +48,9 @@ module Shell =
         | Connected l -> Some l.Token
         | _ -> None
 
-    /// Issue provider requests, correlating each with the question it answers.
-    let private emit (ops: (Op * ApiRequest) list) (app: App) : App * EffectRequest list =
+    /// Issue provider requests, correlating each with the question it answers and the write generation that asked
+    /// it. An answer is applied only while that exact question is still open (DC-002).
+    let private emitGen (generation: int) (ops: (Op * ApiRequest) list) (app: App) : App * EffectRequest list =
         match token app with
         | None -> app, []
         | Some t ->
@@ -57,8 +58,10 @@ module Shell =
             |> List.fold
                 (fun (a: App, effects) (op, request) ->
                     let id = "gh-" + string (a.Counter + 1)
-                    { a with Counter = a.Counter + 1; Inflight = a.Inflight |> Map.add id op }, effects @ [ http t id request ])
+                    { a with Counter = a.Counter + 1; Inflight = a.Inflight |> Map.add id (op, generation) }, effects @ [ http t id request ])
                 (app, [])
+
+    let private emit ops app = emitGen 0 ops app
 
     let private navigate (route: Route) (app: App) : App * EffectRequest list =
         let id = "nav-" + string (app.Counter + 1)
@@ -71,7 +74,7 @@ module Shell =
         | EffectOutcome.Failure(HttpFailureReason.Network, _) -> Error Offline
         | EffectOutcome.Failure(_, Some status) -> GitHub.classify status ""
         | EffectOutcome.Failure(reason, None) -> Error(Malformed(sprintf "transport (%A)" reason))
-        | EffectOutcome.Cancelled -> Error Offline
+        | EffectOutcome.Cancelled -> Error ProviderFailure.OutcomeUnknown
         | EffectOutcome.OutcomeUnknown _ -> Error ProviderFailure.OutcomeUnknown
 
     // ------------------------------------------------------------------------------------------------------------
@@ -79,6 +82,9 @@ module Shell =
     // ------------------------------------------------------------------------------------------------------------
 
     let connect (app: App) : App * EffectRequest list =
+      match app.Connection with
+      | Connecting _ | Connected _ -> app, [] // only from Disconnected or Refused (DC-002: events are checked against state)
+      | Disconnected | Refused _ ->
         let f k = app.ConnectForm |> Map.tryFind k |> Option.defaultValue ""
         let credential = f "token"
         let form = app.ConnectForm |> Map.remove "token"
@@ -111,8 +117,14 @@ module Shell =
     // Deciding and publishing commands
     // ------------------------------------------------------------------------------------------------------------
 
+    /// Begin publishing. Only from Idle or Held: a write never replaces another write in flight (DC-002).
     let private startWrite (live: Live) (w: Write) (app: App) =
-        { app with Connection = Connected { live with Sync = InFlight(w, CreatingBlobs) } } |> emit (Session.blobRequests live w)
+        match live.Sync with
+        | InFlight _ -> app |> App.notice Critical "A change is already being saved; nothing else was started.", []
+        | Idle | Held _ ->
+            let generated = { w with Generation = app.Counter + 1 }
+            { app with Connection = Connected { live with Sync = InFlight(generated, CreatingBlobs) } }
+            |> emitGen generated.Generation (Session.blobRequests live generated)
 
     let private refusalText (errors: DomainError list) =
         errors |> List.map (fun e -> e.Message + " (" + e.Code + ")") |> String.concat " "
@@ -130,8 +142,10 @@ module Shell =
         | Error message -> Error message
         | Ok command ->
             let current = if kind = NewInvestigation then None else investigationOf ()
+            let collides = match command with StartInvestigation(id, _, _, _) -> (Session.entry live (Ids.text id.Value)).IsSome | _ -> false
             match kind <> NewInvestigation, current with
             | true, None -> Error "The investigation is not loaded."
+            | false, _ when collides -> Error "A directory with this investigation identifier already exists; nothing was written. Try again."
             | _ ->
                 let invId =
                     match command, current with
@@ -171,6 +185,7 @@ module Shell =
                               Blobs = Map.empty
                               Commit = None
                               Attempts = 0
+                              Generation = 0
                               Received = Map.empty
                               NewHead = None }
 
@@ -239,6 +254,8 @@ module Shell =
             | OpRepository, Ok body ->
                 match GitHub.parseRepository body with
                 | Error f -> refuse f
+                | Ok a when not (GitHub.sameRepository target a) ->
+                    { app with Connection = Refused(target, Incompatible("GitHub answered for " + a.FullName + ", not " + target.Owner + "/" + target.Repo + " (renamed or transferred). Select the repository by its current name.")); Inflight = Map.empty }, []
                 | Ok a -> { app with Connection = Connecting(target, t, ReadingBranch, Some a, None) } |> emit [ OpRef, GitHub.getRef target ]
             | OpRef, Ok body ->
                 match GitHub.parseRef body with
@@ -254,17 +271,23 @@ module Shell =
                 match GitHub.parseTree body, access with
                 | Error f, _ -> refuse f
                 | Ok entries, Some a ->
-                    let catalog, reads = Session.catalogOf target entries
+                    let catalog, reads, truncated = Session.catalogOf target entries
                     let live =
                         { Target = target; Token = t; Access = a; Head = head; Catalog = catalog; Sync = Idle; Refreshing = false
-                          LastVerified = None; Reapply = None }
+                          LastVerified = None; Reapply = None; Truncated = truncated }
                     { app with Connection = Connected live } |> emit reads
                 | Ok _, None -> refuse (Malformed "connection sequence")
             | _ -> app, []
         | _ -> app, []
 
     let private onRefresh (op: Op) (result: Result<string, ProviderFailure>) (live: Live) (app: App) =
-        let stop f = { app with Connection = Connected { live with Refreshing = false } } |> App.notice Critical ("Reload failed: " + GitHub.describe f), []
+        let stop f =
+            // A change waiting to be re-applied is never dropped: it returns to a visible hold.
+            let restored =
+                match live.Reapply with
+                | Some w -> { live with Refreshing = false; Reapply = None; Sync = Held(w, Conflict("Reload failed, so your change was not re-applied. " + GitHub.describe f)) }
+                | None -> { live with Refreshing = false }
+            { app with Connection = Connected restored } |> App.notice Critical ("Reload failed: " + GitHub.describe f), []
         match op, result with
         | _, Error f -> stop f
         | OpRef, Ok body ->
@@ -279,25 +302,48 @@ module Shell =
             match GitHub.parseTree body with
             | Error f -> stop f
             | Ok entries ->
-                let catalog, reads = Session.catalogOf live.Target entries
-                { app with Connection = Connected { live with Head = head; Catalog = catalog; Refreshing = false } } |> emit reads
+                let catalog, reads, truncated = Session.catalogOf live.Target entries
+                let next = { live with Head = head; Catalog = catalog; Refreshing = false; Truncated = truncated }
+                match next.Reapply with
+                | Some w when not w.IsNew && not (catalog |> List.exists (fun e -> e.Id = w.InvestigationId)) ->
+                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "The investigation is no longer in this workspace; your change was not re-applied.") } } |> emit reads
+                | Some w when w.IsNew ->
+                    // A new investigation's conflict means its directory now exists: nothing to re-apply onto.
+                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "An investigation with this identifier now exists; your new investigation was not written.") } } |> emit reads
+                | _ -> { app with Connection = Connected next } |> emit reads
         | _ -> app, []
 
-    let private onBlob (id: string) (file: string) (result: Result<string, ProviderFailure>) (live: Live) (app: App) =
+    /// A blob answer is content-addressed: it is applied only to a catalog entry that still lists exactly that blob
+    /// for that file and is still being read (late answers from an earlier listing are ignored, DC-002).
+    let private onBlob (id: string) (file: string) (sha: string) (result: Result<string, ProviderFailure>) (live: Live) (app: App) =
+        let wants (e: CatalogEntry) =
+            e.Id = id && e.Status = Fetching && e.Entries |> List.exists (fun (n, t) -> n = file && t.Sha = sha)
         let update (f: CatalogEntry -> CatalogEntry) =
-            { live with Catalog = live.Catalog |> List.map (fun e -> if e.Id = id then f e else e) }
+            { live with Catalog = live.Catalog |> List.map (fun e -> if wants e then f e else e) }
         let next =
             match result |> Result.bind GitHub.parseBlob with
             | Ok bytes -> update (fun e -> Session.receive e file bytes)
             | Error f -> update (fun e -> { e with Status = Unreadable f })
-        match next.Reapply, Session.loaded next id with
-        | Some w, Some(_, loaded) when w.InvestigationId = id -> reapply next w loaded { app with Connection = Connected next }
+        match next.Reapply, Session.entry next id with
+        | Some w, Some { Status = Valid(_, loaded) } when w.InvestigationId = id && next.Sync = Idle ->
+            reapply next w loaded { app with Connection = Connected next }
+        | Some w, Some { Status = (Invalid _ | Unreadable _) } when w.InvestigationId = id ->
+            { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "The latest version could not be loaded, so your change was not re-applied.") } }, []
         | _ -> { app with Connection = Connected next }, []
 
     let private onWrite (op: Op) (result: Result<string, ProviderFailure>) (live: Live) (w: Write) (stage: WriteStage) (app: App) =
         let at s w' = { live with Sync = InFlight(w', s) }
-        let continueWith s w' ops = { app with Connection = Connected(at s w') } |> emit ops
-        let fail f = holdFor live w f app
+        let continueWith s w' ops = { app with Connection = Connected(at s w') } |> emitGen w'.Generation ops
+        // Once the ref update has been sent, no failure is a definite "not written": the branch may have moved
+        // (DC-003). Only reconciliation by an independent read can tell.
+        let afterRefSent =
+            match stage with
+            | UpdatingRef | Reconciling | VerifyingRef | VerifyingCommit | VerifyingTree | VerifyingBlobs -> true
+            | CreatingBlobs | CreatingTree | CreatingCommit | ReloadingRef | ReloadingCommit | ReloadingTree -> false
+        let unknown detail = hold live w (Unknown detail) app
+        let fail f =
+            if afterRefSent then unknown ("The branch update may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
+            else holdFor live w f app
         match op, result with
         | OpWriteBlob file, Ok body ->
             match GitHub.parseCreatedSha body with
@@ -323,7 +369,11 @@ module Shell =
             match GitHub.parseRef body with
             | Error f -> fail f
             | Ok sha when Some sha = w.Commit -> continueWith VerifyingCommit w [ OpVerifyCommit sha, GitHub.getCommit live.Target sha ]
-            | Ok sha when sha = w.BaseCommit -> continueWith UpdatingRef w [ OpWriteRef, GitHub.updateRef live.Target (w.Commit |> Option.defaultValue "") ]
+            | Ok sha when sha = w.BaseCommit ->
+                match w.Commit with
+                | Some c -> continueWith UpdatingRef w [ OpWriteRef, GitHub.updateRef live.Target c ]
+                // No commit was created: nothing could have been applied; publish again from the start.
+                | None -> continueWith CreatingBlobs { w with Blobs = Map.empty } (Session.blobRequests live w)
             | Ok sha ->
                 // The branch moved: our commit may be in its history (applied, then built upon) or not (not applied).
                 match w.Commit with
@@ -355,7 +405,7 @@ module Shell =
                     // The branch moved but this investigation did not: rebase onto the new head (CONTRACT §9.4.2a).
                     // The catalog's read point (live.Head) does not move: other investigations were not re-read.
                     let w' = { w with Attempts = w.Attempts + 1; BaseCommit = head.Commit; BaseTree = head.Tree; Moved = true }
-                    { app with Connection = Connected { live with Sync = InFlight(w', CreatingTree) } } |> emit [ Session.treeRequest live w' ]
+                    { app with Connection = Connected { live with Sync = InFlight(w', CreatingTree) } } |> emitGen w'.Generation [ Session.treeRequest live w' ]
                 else
                     hold live w (Conflict "Someone else changed this investigation on GitHub after you loaded it. Your change was not written.") app
         | OpVerifyRef, Ok body ->
@@ -379,7 +429,7 @@ module Shell =
                     |> Option.defaultValue []
                 let expected = Session.fileNames |> List.map (fun f -> f, GitHub.blobSha (Session.filesBytes w.Files f)) |> Map.ofList
                 let actual = found |> List.map (fun (n, e) -> n, e.Sha) |> Map.ofList
-                if actual <> expected then hold live w (WriteFailed "The commit on GitHub does not contain exactly the files that were written.") app
+                if actual <> expected then unknown "The branch was updated, but the commit read back does not contain exactly the files that were written."
                 else
                     let w' = { w with NewHead = Some head; Received = Map.empty }
                     continueWith VerifyingBlobs w' (found |> List.map (fun (n, e) -> OpVerifyBlob n, GitHub.getBlob live.Target e.Sha))
@@ -401,7 +451,7 @@ module Shell =
                     | true, Ok reloaded, Some head ->
                         let entries =
                             Session.paths live.Target w.InvestigationId
-                            |> List.map (fun (f, p) -> f, { Path = p; Kind = "blob"; Sha = GitHub.blobSha (Session.filesBytes w.Files f) })
+                            |> List.map (fun (f, p) -> f, { Path = p; Kind = "blob"; Sha = GitHub.blobSha (Session.filesBytes w.Files f); Size = Some(int64 (Session.filesBytes w.Files f).Length) })
                         let newEntry = { Id = w.InvestigationId; Entries = entries; Received = w'.Received; Status = Valid(w.Files, reloaded) }
                         let catalog =
                             if live.Catalog |> List.exists (fun e -> e.Id = w.InvestigationId) then
@@ -420,7 +470,7 @@ module Shell =
                             |> App.notice Positive ("Saved to GitHub and verified by an independent read-back (commit " + head.Commit.Substring(0, 7) + ").")
                         // Other investigations may have changed on the branch meanwhile: re-read before the next decision.
                         if consistent then saved, [] else refresh saved
-                    | _ -> hold live w (WriteFailed "The read-back from GitHub did not match what was written.") app
+                    | _ -> unknown "The branch was updated, but the bytes read back from GitHub do not match what was written."
         | _, Error f -> fail f
         | _ -> app, []
 
@@ -429,17 +479,17 @@ module Shell =
         | EffectResult.HttpResult(CorrelationId id, o) ->
             match app.Inflight |> Map.tryFind id with
             | None -> app, [] // stale or cancelled: answers a question no longer asked
-            | Some op ->
+            | Some(op, generation) ->
                 let app = { app with Inflight = app.Inflight |> Map.remove id }
                 let r = outcome o
                 match app.Connection, op with
                 | Connecting _, _ -> onConnect op r app
-                | Connected live, OpBlob(inv, file) -> onBlob inv file r live app
-                | Connected live, (OpRef | OpCommit _ | OpTree _) when live.Refreshing -> onRefresh op r live app
+                | Connected live, OpBlob(inv, file, sha) -> onBlob inv file sha r live app
+                | Connected live, (OpRef | OpCommit _ | OpTree _) when generation = 0 && live.Refreshing -> onRefresh op r live app
                 | Connected live, _ ->
                     match live.Sync with
-                    | InFlight(w, stage) -> onWrite op r live w stage app
-                    | _ -> app, []
+                    | InFlight(w, stage) when generation <> 0 && w.Generation = generation -> onWrite op r live w stage app
+                    | _ -> app, [] // an answer for another write generation
                 | _ -> app, []
         | EffectResult.NavigationResult(_, NavigationOutcome.Success location) -> { app with Route = Route.parse location.Hash }, []
         | _ -> app, []
@@ -497,24 +547,39 @@ module Shell =
             match App.live app with
             | Some live ->
                 match live.Sync with
-                | Held(w, (NotSent _ | WriteFailed _ | WriteDenied _)) ->
+                | Held(w, (NotSent _ | WriteFailed _)) when not live.Refreshing ->
                     withEffects (startWrite live { w with Blobs = Map.empty; Commit = None; Received = Map.empty; NewHead = None } app)
                 | _ -> plain app
             | None -> plain app
         | "sync.reconcile" ->
             match App.live app with
             | Some({ Sync = Held(w, Unknown _) } as live) ->
-                withEffects ({ app with Connection = Connected { live with Sync = InFlight(w, Reconciling) } } |> emit [ OpReconcileRef, GitHub.getRef live.Target ])
+                withEffects ({ app with Connection = Connected { live with Sync = InFlight(w, Reconciling) } } |> emitGen w.Generation [ OpReconcileRef, GitHub.getRef live.Target ])
             | _ -> plain app
         | "sync.discard" ->
             match App.live app with
-            | Some live -> withEffects (refresh ({ app with Connection = Connected { live with Sync = Idle; Reapply = None } } |> App.notice Neutral "Your pending change was discarded; nothing was written."))
-            | None -> plain app
+            // Only a held change can be discarded; a write in flight cannot be called "not written" (DC-002).
+            | Some({ Sync = Held(_, hold) } as live) ->
+                let text =
+                    match hold with
+                    | Unknown _ -> "Your pending change was discarded from this tab. It may already be on GitHub; the workspace is being reloaded."
+                    | _ -> "Your pending change was discarded; nothing was written."
+                withEffects (refresh ({ app with Connection = Connected { live with Sync = Idle; Reapply = None } } |> App.notice Neutral text))
+            | _ -> plain app
         | "sync.reapply" ->
             match App.live app with
             | Some({ Sync = Held(w, Conflict _) } as live) ->
                 withEffects (refresh { app with Connection = Connected { live with Sync = Idle; Reapply = Some w } })
             | _ -> plain app
+        | "auth.renew" ->
+            // Replace an expired or narrower credential without losing the held change, then publish it again.
+            let credential = app.ConnectForm |> Map.tryFind "token" |> Option.defaultValue ""
+            let form = { app with ConnectForm = app.ConnectForm |> Map.remove "token" }
+            match App.live form with
+            | Some({ Sync = Held(w, WriteDenied _) } as live) when not (String.IsNullOrWhiteSpace credential) ->
+                let renewed = { live with Token = credential.Trim() }
+                withEffects (startWrite renewed { w with Blobs = Map.empty; Commit = None; Received = Map.empty; NewHead = None } { form with Connection = Connected renewed })
+            | _ -> plain (form |> App.notice Critical "Enter a new token to retry the held change.")
         | "timeline.filter" -> plain { app with TimelineFilter = value }
         | "dashboard.sort" -> plain { app with SortBy = value }
         | "notice.dismiss" -> plain { app with Notice = None }

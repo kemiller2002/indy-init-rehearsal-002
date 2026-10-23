@@ -1,0 +1,32 @@
+Conditor plan for 'causa-rehearsal-002'
+ 1. praxis@3.16.0: praxis init
+ 2. praxis@3.16.0: praxis verify --strict
+ 3. ordo@1.17.0: ordo init
+ 4. ordo@1.17.0: ordo verify --integrity-only --json
+ 5. percepta@0.1.0: percepta-repo init
+ 6. percepta@0.1.0: percepta-repo verify --strict
+ 7. scaffold:fsharp-limen-web@1: ensure managed region agent-entry in AGENTS.md
+ 8. scaffold:fsharp-limen-web@1: ensure managed region build-outputs in .gitignore
+ 9. scaffold:fsharp-limen-web@1: ensure managed region ordo-baseline in context/CURRENT-STATE.md
+10. requirements:rehearsal-dependency-lock@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md
+11. requirements:rehearsal-external-data-boundary@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md
+12. requirements:causa-ui-experience-requirements@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md
+13. requirements:wasm-loading-experience-requirements@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md
+14. requirements:agent-decision-reduction-profile@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md
+15. requirements:rehearsal-agent-interface-freeze@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/REHEARSAL-AGENT-INTERFACE-FREEZE.md
+16. requirements:rehearsal-acceptance-ledger@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/REHEARSAL-ACCEPTANCE-LEDGER.md
+17. requirements:rehearsal-interface-manifest-r001@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/REHEARSAL-INTERFACE-MANIFEST-R001.md
+18. requirements:defect-class-closure-and-release-gates@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md
+19. requirements:screen-contracts@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/SCREEN-CONTRACTS.md
+20. requirements:state-transition-tables@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/STATE-TRANSITION-TABLES.md
+21. requirements:command-event-catalog@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/COMMAND-EVENT-CATALOG.md
+22. requirements:product-requirements@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/PRODUCT-REQUIREMENTS.md
+23. requirements:causa-storage-release-v1-0-0@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/CAUSA-STORAGE-RELEASE-v1.0.0.md
+24. requirements:security-threat-model@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/SECURITY-THREAT-MODEL.md
+25. requirements:design-decision-boundaries@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/DESIGN-DECISION-BOUNDARIES.md
+26. requirements:kickoff-execution-packet@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/KICKOFF-EXECUTION-PACKET.md
+27. requirements:hackathon-boundaries@b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8: materialize github:kemiller2002/Indy-init#b5d9d79ffbbd3966a4e0aef5bc4d6476001b1aa8 -> docs/requirements/HACKATHON-BOUNDARIES.md
+28. praxis@3.16.0: praxis init
+29. praxis@3.16.0: praxis verify --strict
+30. praxis:mission@3.16.0: praxis mission COND-MISSION-001 -> ready
+Conditor completed successfully. Lock file: /home/user/indy-init-rehearsal-002/.conditor/lock.json

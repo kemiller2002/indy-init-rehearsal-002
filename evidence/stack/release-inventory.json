@@ -1,0 +1,959 @@
+{
+  "approvalAuthority": {
+    "catalogSnapshot": {
+      "sha256": "7a394e98a2b5dbb7dc3d96b7469f543e013959f220648dd5b752b519a413945d"
+    },
+    "channel": "echelon-current",
+    "commit": "2d43629b9c875475e3862d9a7944e4595c9752e7",
+    "platform": "linux-x64",
+    "profile": {
+      "id": "echelon-current",
+      "sha256": "83450d917344fc6d29a3edffc2a5bf290d5ae0bb83b9e572b698840a1a51a0ba",
+      "version": "1.25.0"
+    },
+    "repository": "kemiller2002/echelon-registry"
+  },
+  "components": [
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": false,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2",
+          "bytes": 38305836,
+          "error": null,
+          "expectedSha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2",
+          "name": "praxis-linux-x64.tar.gz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/praxis/releases/download/v3.16.0/praxis-linux-x64.tar.gz"
+        },
+        {
+          "actualSha256": "02d5b2e66ab71b31c252871027a7e0f3534b1c96547deea102605443afeeef09",
+          "bytes": 540,
+          "error": null,
+          "expectedSha256": "02d5b2e66ab71b31c252871027a7e0f3534b1c96547deea102605443afeeef09",
+          "name": "native-checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/praxis/releases/download/v3.16.0/native-checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/praxis/releases/tag/v3.16.0"
+      },
+      "distributionClass": "self-contained-native-cli",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v3.16.0",
+        "version": "3.16.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v3.19.0",
+        "githubReleasePublishedAt": "2026-10-21T07:01:33Z",
+        "githubReleasesError": null,
+        "newestTag": "v3.19.0",
+        "packageSources": [],
+        "tag": "v3.19.0"
+      },
+      "observedTagCommit": "bb8fbad82c3266520297f345e0874f5048704bf4",
+      "registryCommit": "bb8fbad82c3266520297f345e0874f5048704bf4",
+      "releaseManifestSha256": "53b4eb6e9a1b22cd76e86af741e84308444d96c244e1f3a52be1f1de2609cf12",
+      "repository": "kemiller2002/praxis",
+      "required": true,
+      "role": "host-tool",
+      "systemId": "praxis",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
+          "bytes": 6363862,
+          "error": null,
+          "expectedSha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
+          "name": "ordo-linux-x64.tar.gz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/ordo/releases/download/v1.17.0/ordo-linux-x64.tar.gz"
+        },
+        {
+          "actualSha256": "01d55b4b897f729d025e8107a67e5d8d41e7aa9ed8a98bbe5954871df7911b11",
+          "bytes": 700,
+          "error": null,
+          "expectedSha256": "01d55b4b897f729d025e8107a67e5d8d41e7aa9ed8a98bbe5954871df7911b11",
+          "name": "native-checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/ordo/releases/download/v1.17.0/native-checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/ordo/releases/tag/v1.17.0"
+      },
+      "distributionClass": "self-contained-native-cli",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v1.17.0",
+        "version": "1.17.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v1.17.0",
+        "githubReleasePublishedAt": "2026-10-20T01:05:34Z",
+        "githubReleasesError": null,
+        "newestTag": "v1.17.0",
+        "packageSources": [],
+        "tag": "v1.17.0"
+      },
+      "observedTagCommit": "bb43c26c106f4cbe972234636c5c67edc235c188",
+      "registryCommit": "bb43c26c106f4cbe972234636c5c67edc235c188",
+      "releaseManifestSha256": "d9ee8be3b8723582389bcade5a969827f92a89266aab801c7e6b6e3bc224e0e8",
+      "repository": "kemiller2002/ordo",
+      "required": true,
+      "role": "host-tool",
+      "systemId": "ordo",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "e46113aa08c9d2a97dfb1f75ca65c986946e1601c5f2c5cdcc9e8c25841d6039",
+          "bytes": 70112393,
+          "error": null,
+          "expectedSha256": "e46113aa08c9d2a97dfb1f75ca65c986946e1601c5f2c5cdcc9e8c25841d6039",
+          "name": "percepta-repo-linux-x64",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/percepta/releases/download/percepta-repo-v0.1.0/percepta-repo-linux-x64"
+        },
+        {
+          "actualSha256": "ff99817e48d4ae09307b2e313a0e6facc645dc952566de1391e510d95a2093d3",
+          "bytes": 452,
+          "error": null,
+          "expectedSha256": "ff99817e48d4ae09307b2e313a0e6facc645dc952566de1391e510d95a2093d3",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/percepta/releases/download/percepta-repo-v0.1.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/percepta/releases/tag/percepta-repo-v0.1.0"
+      },
+      "distributionClass": "self-contained-native-cli",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "percepta-repo-v0.1.0",
+        "version": "0.1.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "percepta-repo-v0.1.0",
+        "githubReleasePublishedAt": "2026-09-28T01:40:33Z",
+        "githubReleasesError": null,
+        "newestTag": "percepta-repo-v0.1.0",
+        "packageSources": [],
+        "tag": "percepta-repo-v0.1.0"
+      },
+      "observedTagCommit": "3027983f20b91d6856a27c1cf8ee2582108ef6be",
+      "registryCommit": "3027983f20b91d6856a27c1cf8ee2582108ef6be",
+      "releaseManifestSha256": "07b6291c63ff25e6b669edb8c845e48ba76831b6a6133efa4ad3a390439b1b2b",
+      "repository": "kemiller2002/percepta",
+      "required": true,
+      "role": "repository-lifecycle",
+      "systemId": "percepta",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": false,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b",
+          "bytes": 31509140,
+          "error": null,
+          "expectedSha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b",
+          "name": "dokimos-linux-x64.tar.gz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/dokimos/releases/download/dokimos-v0.6.0/dokimos-linux-x64.tar.gz"
+        },
+        {
+          "actualSha256": "d462c0ca9f0c6ee8a19d92cacb435f8f2bff35532309a6030c9324172b87a5e5",
+          "bytes": 725,
+          "error": null,
+          "expectedSha256": "d462c0ca9f0c6ee8a19d92cacb435f8f2bff35532309a6030c9324172b87a5e5",
+          "name": "dokimos-checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/dokimos/releases/download/dokimos-v0.6.0/dokimos-checksums.txt"
+        },
+        {
+          "actualSha256": "ffcca38841adb694b6f380647e15f17c446a4d1656fed51a1e2041d064c94cc8",
+          "bytes": 4563,
+          "error": null,
+          "expectedSha256": "ffcca38841adb694b6f380647e15f17c446a4d1656fed51a1e2041d064c94cc8",
+          "name": "LICENSE",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/dokimos/releases/download/dokimos-v0.6.0/LICENSE"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/dokimos/releases/tag/dokimos-v0.6.0"
+      },
+      "distributionClass": "self-contained-native-cli",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "dokimos-v0.6.0",
+        "version": "0.6.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "dokimos-v0.7.0",
+        "githubReleasePublishedAt": "2026-10-20T10:22:41Z",
+        "githubReleasesError": null,
+        "newestTag": "dokimos-v0.7.0",
+        "packageSources": [],
+        "tag": "dokimos-v0.7.0"
+      },
+      "observedTagCommit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+      "registryCommit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+      "releaseManifestSha256": "0da83cfe844ad220324468ddaf7b4ae669828ff96bd25dc5f8a9b8f963952dba",
+      "repository": "kemiller2002/dokimos",
+      "required": true,
+      "role": "repository-lifecycle",
+      "systemId": "dokimos",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "32347d5c134f724cb35f9c33d882c2ed51f860381f0d5802634da3da74fb3f2f",
+          "bytes": 55395,
+          "error": null,
+          "expectedSha256": "32347d5c134f724cb35f9c33d882c2ed51f860381f0d5802634da3da74fb3f2f",
+          "name": "echelon-foundry-visual-engineering-1.0.1.tgz",
+          "status": "PASS",
+          "url": "https://registry.npmjs.org/@echelon-foundry/visual-engineering/-/visual-engineering-1.0.1.tgz"
+        }
+      ],
+      "distribution": {
+        "mechanism": "npm",
+        "package": "@echelon-foundry/visual-engineering",
+        "url": "https://registry.npmjs.org/@echelon-foundry/visual-engineering/-/visual-engineering-1.0.1.tgz"
+      },
+      "distributionClass": "repository-lifecycle",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "visual-engineering-v1.0.1",
+        "version": "1.0.1"
+      },
+      "newestAvailable": {
+        "githubRelease": "visual-engineering-v1.0.1",
+        "githubReleasePublishedAt": "2026-10-06T15:55:42Z",
+        "githubReleasesError": null,
+        "newestTag": "visual-engineering-v1.0.1",
+        "packageSources": [
+          {
+            "integrity": "sha512-1J7h9Gulc7DHfTty6U42Cg4MrYlsHPTm60SUTL4w7jxNv8tLr7HLIHLb/eDd1T7fsHF2v/WVQB/FtOZP1mtqBQ==",
+            "latestDistTag": "1.0.1",
+            "source": "npm",
+            "tarball": "https://registry.npmjs.org/@echelon-foundry/visual-engineering/-/visual-engineering-1.0.1.tgz"
+          }
+        ],
+        "tag": "visual-engineering-v1.0.1"
+      },
+      "observedTagCommit": "b648cdef291d39c443ccb10215529ad69afe8b32",
+      "registryCommit": "b648cdef291d39c443ccb10215529ad69afe8b32",
+      "releaseManifestSha256": "23ab4fdb38d3fc7827519cc3c29df88c950211db1d53d114c53f36a662a0dbda",
+      "repository": "kemiller2002/visual-engineering",
+      "required": true,
+      "role": "repository-lifecycle",
+      "systemId": "visual-engineering",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "d808867e4af59363673e991153ff788146b5a277e0b01c2d84e0f86d98347437",
+          "bytes": 19250,
+          "error": null,
+          "expectedSha256": "d808867e4af59363673e991153ff788146b5a277e0b01c2d84e0f86d98347437",
+          "name": "echelon-foundry-communication-engineering-1.0.0.tgz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/communication-engineering/releases/download/v1.0.0/echelon-foundry-communication-engineering-1.0.0.tgz"
+        },
+        {
+          "actualSha256": "fd4b48a2c7173675ec7a15f44766b8a5b50fde6bcf4813267b234d25eaf5aa1d",
+          "bytes": 118,
+          "error": null,
+          "expectedSha256": "fd4b48a2c7173675ec7a15f44766b8a5b50fde6bcf4813267b234d25eaf5aa1d",
+          "name": "SHA256SUMS",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/communication-engineering/releases/download/v1.0.0/SHA256SUMS"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": "@echelon-foundry/communication-engineering",
+        "url": "https://github.com/kemiller2002/communication-engineering/releases/tag/v1.0.0"
+      },
+      "distributionClass": "repository-lifecycle",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v1.0.0",
+        "version": "1.0.0"
+      },
+      "newestAvailable": {
+        "githubRelease": null,
+        "githubReleasePublishedAt": null,
+        "githubReleasesError": "HTTPError: HTTP Error 403: Forbidden",
+        "newestTag": "v1.0.0",
+        "packageSources": [],
+        "tag": "v1.0.0"
+      },
+      "observedTagCommit": "707396de512065fe35aff6fcf82cd28118df14b3",
+      "registryCommit": "707396de512065fe35aff6fcf82cd28118df14b3",
+      "releaseManifestSha256": "d4b79053301635b6335caf81c2ca28b0721cca4a78967501be820a8eb7118296",
+      "repository": "kemiller2002/communication-engineering",
+      "required": true,
+      "role": "repository-lifecycle",
+      "systemId": "communication-engineering",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "222fdaafa88b3798363fb4664682b409a05cdecf9b23178f028749898b40a861",
+          "bytes": 7775,
+          "error": null,
+          "expectedSha256": "222fdaafa88b3798363fb4664682b409a05cdecf9b23178f028749898b40a861",
+          "name": "echelon-foundry-tutela-0.1.0.tgz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/tutela/releases/download/v0.1.0/echelon-foundry-tutela-0.1.0.tgz"
+        },
+        {
+          "actualSha256": "bf75418b013c735a6e240ed9b0519f69a2d811c33c7755c4c1a026481b66a02d",
+          "bytes": 99,
+          "error": null,
+          "expectedSha256": "bf75418b013c735a6e240ed9b0519f69a2d811c33c7755c4c1a026481b66a02d",
+          "name": "SHA256SUMS",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/tutela/releases/download/v0.1.0/SHA256SUMS"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": "@echelon-foundry/tutela",
+        "url": "https://github.com/kemiller2002/tutela/releases/tag/v0.1.0"
+      },
+      "distributionClass": "repository-lifecycle",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.1.0",
+        "version": "0.1.0"
+      },
+      "newestAvailable": {
+        "githubRelease": null,
+        "githubReleasePublishedAt": null,
+        "githubReleasesError": "HTTPError: HTTP Error 403: Forbidden",
+        "newestTag": "v0.1.0",
+        "packageSources": [],
+        "tag": "v0.1.0"
+      },
+      "observedTagCommit": "94afcc91a84bd3b94a4ee639f169d0727eaac727",
+      "registryCommit": "94afcc91a84bd3b94a4ee639f169d0727eaac727",
+      "releaseManifestSha256": "5db1e8a1f039ae88b2b9426c7cbeec1783b40e29d58b0dfd40dfa90104a3c4ba",
+      "repository": "kemiller2002/tutela",
+      "required": true,
+      "role": "repository-lifecycle",
+      "systemId": "tutela",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "24255d245463f1ce819ce98f10bc5f6a062f8b3342d0bf4eee00fef9a45a835d",
+          "bytes": 228420,
+          "error": null,
+          "expectedSha256": "24255d245463f1ce819ce98f10bc5f6a062f8b3342d0bf4eee00fef9a45a835d",
+          "name": "EchelonFoundry.Aegis.Core.1.0.0.nupkg",
+          "status": "PASS",
+          "url": "https://api.nuget.org/v3-flatcontainer/echelonfoundry.aegis.core/1.0.0/echelonfoundry.aegis.core.1.0.0.nupkg"
+        }
+      ],
+      "distribution": {
+        "mechanism": "nuget",
+        "package": "EchelonFoundry.Aegis.Core",
+        "url": "https://api.nuget.org/v3-flatcontainer/echelonfoundry.aegis.core/1.0.0/echelonfoundry.aegis.core.1.0.0.nupkg"
+      },
+      "distributionClass": "nuget-library",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "nuget:EchelonFoundry.Aegis.Core@1.0.0",
+        "version": "1.0.0"
+      },
+      "newestAvailable": {
+        "githubRelease": null,
+        "githubReleasePublishedAt": null,
+        "githubReleasesError": null,
+        "newestTag": null,
+        "packageSources": [
+          {
+            "newestStable": "1.0.0",
+            "source": "nuget.org"
+          }
+        ],
+        "tag": null
+      },
+      "observedTagCommit": null,
+      "registryCommit": "56935c889b4f5cbf0b8046d3c2078f205cdb20c7",
+      "releaseManifestSha256": "4530cfa3396c1e57d3e1a6500c661cd2d520236e852d1d9e88aa44c385d0bd6b",
+      "repository": "kemiller2002/aegis",
+      "required": true,
+      "role": "project-binding",
+      "systemId": "aegis",
+      "tagCommitCheck": "UNRESOLVED",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "45b64d580548fc5ecd13bb391104bc3d1d135faf5fccab46900c1a7cc64685ec",
+          "bytes": 29155770,
+          "error": null,
+          "expectedSha256": "45b64d580548fc5ecd13bb391104bc3d1d135faf5fccab46900c1a7cc64685ec",
+          "name": "echelon-foundry-limen-0.9.0.tgz",
+          "status": "PASS",
+          "url": "https://registry.npmjs.org/@echelon-foundry/limen/-/limen-0.9.0.tgz"
+        }
+      ],
+      "distribution": {
+        "mechanism": "npm",
+        "package": "@echelon-foundry/limen",
+        "url": "https://registry.npmjs.org/@echelon-foundry/limen/-/limen-0.9.0.tgz"
+      },
+      "distributionClass": "web-package",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.9.0",
+        "version": "0.9.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.9.0",
+        "githubReleasePublishedAt": "2026-10-08T21:10:20Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.9.0",
+        "packageSources": [
+          {
+            "integrity": "sha512-noI4TcIfuomBmb2IDSEtm93RpYV3l+9D1eeqtHhW6dld63hpe9McKT335hEaLhc0EEbxNVd1dKlcvw+Nb+PMsw==",
+            "latestDistTag": "0.9.0",
+            "source": "npm",
+            "tarball": "https://registry.npmjs.org/@echelon-foundry/limen/-/limen-0.9.0.tgz"
+          }
+        ],
+        "tag": "v0.9.0"
+      },
+      "observedTagCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "registryCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "releaseManifestSha256": "5ffc580705cb612f9a5c99ee7ee0f81c7f18904947336a6e14a9be19393a74db",
+      "repository": "kemiller2002/limen",
+      "required": true,
+      "role": "project-binding",
+      "systemId": "limen",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "0158986344f1330fe5b42f83d332f3f75a3dcfab66ddc279080eb6526f245218",
+          "bytes": 339761,
+          "error": null,
+          "expectedSha256": "0158986344f1330fe5b42f83d332f3f75a3dcfab66ddc279080eb6526f245218",
+          "name": "echelon-foundry-design-system-0.9.0.tgz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/forma/releases/download/v0.9.0/echelon-foundry-design-system-0.9.0.tgz"
+        },
+        {
+          "actualSha256": "ccf12574371a4fbe42e307d926985ca432af856972594a8931b5cbe14b9720d2",
+          "bytes": 360,
+          "error": null,
+          "expectedSha256": "ccf12574371a4fbe42e307d926985ca432af856972594a8931b5cbe14b9720d2",
+          "name": "forma-marketing.sha256",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/forma/releases/download/v0.9.0/forma-marketing.sha256"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": "@echelon-foundry/design-system",
+        "url": "https://github.com/kemiller2002/forma/releases/tag/v0.9.0"
+      },
+      "distributionClass": "web-package",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.9.0",
+        "version": "0.9.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.9.0",
+        "githubReleasePublishedAt": "2026-10-17T15:00:08Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.9.0",
+        "packageSources": [],
+        "tag": "v0.9.0"
+      },
+      "observedTagCommit": "18e6ff7b15e54862521a101ac2589da0c597fc98",
+      "registryCommit": "18e6ff7b15e54862521a101ac2589da0c597fc98",
+      "releaseManifestSha256": "674c10a5a317c5e4dbf2f52a495ae3ec4a995907c24d86e02c0bdc3625f70da9",
+      "repository": "kemiller2002/forma",
+      "required": true,
+      "role": "project-binding",
+      "systemId": "forma",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": false,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "50453b89c055135f4991a5b81532d4aad198f3226e874692fd4b317fc2d3156d",
+          "bytes": 14752,
+          "error": null,
+          "expectedSha256": "50453b89c055135f4991a5b81532d4aad198f3226e874692fd4b317fc2d3156d",
+          "name": "echelon-foundry-print-components-0.4.0.tgz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/echelon-foundry-print-components-0.4.0.tgz"
+        },
+        {
+          "actualSha256": "e03983078bb0c15eeecde9a58b4ce5c9a1daf35d7fd9ca17817d970d8828be4b",
+          "bytes": 109,
+          "error": null,
+          "expectedSha256": "e03983078bb0c15eeecde9a58b4ce5c9a1daf35d7fd9ca17817d970d8828be4b",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": "@echelon-foundry/print-components",
+        "url": "https://github.com/kemiller2002/folio/releases/tag/v0.4.0"
+      },
+      "distributionClass": "web-package",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.4.0",
+        "version": "0.4.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.4.1",
+        "githubReleasePublishedAt": "2026-10-13T20:57:02Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.4.1",
+        "packageSources": [],
+        "tag": "v0.4.1"
+      },
+      "observedTagCommit": "de2832735f3b8a4426f7e180af2859bf4888a938",
+      "registryCommit": "de2832735f3b8a4426f7e180af2859bf4888a938",
+      "releaseManifestSha256": "1263b1825061e33dd71134659293b3d73946b5fd70e59d9526956d586905df4a",
+      "repository": "kemiller2002/folio",
+      "required": true,
+      "role": "project-binding",
+      "systemId": "folio",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "497ec245b60994e13b8a8923ec6a8fb994acdb8365d022e9e4fcf955605f2a1b",
+          "bytes": 36089944,
+          "error": null,
+          "expectedSha256": "497ec245b60994e13b8a8923ec6a8fb994acdb8365d022e9e4fcf955605f2a1b",
+          "name": "strata-linux-x64.tar.gz",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/strata/releases/download/v0.1.1/strata-linux-x64.tar.gz"
+        },
+        {
+          "actualSha256": "fc42113dfbeb48f361cd2b402c1a3a5dbdcd3c38c35034e2856544f7d618a1fe",
+          "bytes": 353,
+          "error": null,
+          "expectedSha256": "fc42113dfbeb48f361cd2b402c1a3a5dbdcd3c38c35034e2856544f7d618a1fe",
+          "name": "native-checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/strata/releases/download/v0.1.1/native-checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/strata/releases/tag/v0.1.1"
+      },
+      "distributionClass": "self-contained-native-cli",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.1.1",
+        "version": "0.1.1"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.1.1",
+        "githubReleasePublishedAt": "2026-10-08T07:23:01Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.1.1",
+        "packageSources": [],
+        "tag": "v0.1.1"
+      },
+      "observedTagCommit": "f650d91e2930dfcbe82a1d2c52d8c5245e0f9996",
+      "registryCommit": "f650d91e2930dfcbe82a1d2c52d8c5245e0f9996",
+      "releaseManifestSha256": "262bf735e8af934a5d104cad910e34d55e8ffcf310696f8604560bc73eb8ab04",
+      "repository": "kemiller2002/strata",
+      "required": false,
+      "role": "repository-lifecycle",
+      "systemId": "strata",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "a593126db171bcb94212ae288fffbc821d6b2d0a6b312aa3e3a490843f8afee4",
+          "bytes": 428543,
+          "error": null,
+          "expectedSha256": "a593126db171bcb94212ae288fffbc821d6b2d0a6b312aa3e3a490843f8afee4",
+          "name": "EchelonFoundry.Arca.Core.0.5.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/arca/releases/download/v0.5.0/EchelonFoundry.Arca.Core.0.5.0.nupkg"
+        },
+        {
+          "actualSha256": "bbd6383ee3c1ca698c83cdb311b1d03665a6231188a65b8e5bad60ef8b3570aa",
+          "bytes": 124656,
+          "error": null,
+          "expectedSha256": "bbd6383ee3c1ca698c83cdb311b1d03665a6231188a65b8e5bad60ef8b3570aa",
+          "name": "EchelonFoundry.Arca.GitHub.0.5.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/arca/releases/download/v0.5.0/EchelonFoundry.Arca.GitHub.0.5.0.nupkg"
+        },
+        {
+          "actualSha256": "a2fb27e9023698acb14e4228cb657983a9c016aa36880b574e56c945dd175b44",
+          "bytes": 99823,
+          "error": null,
+          "expectedSha256": "a2fb27e9023698acb14e4228cb657983a9c016aa36880b574e56c945dd175b44",
+          "name": "EchelonFoundry.Arca.Limen.0.5.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/arca/releases/download/v0.5.0/EchelonFoundry.Arca.Limen.0.5.0.nupkg"
+        },
+        {
+          "actualSha256": "d790bd43e67d7ccdfe2fc07d6fa05d33dc54caf341da7bbf88a7dbc882493340",
+          "bytes": 312,
+          "error": null,
+          "expectedSha256": "d790bd43e67d7ccdfe2fc07d6fa05d33dc54caf341da7bbf88a7dbc882493340",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/arca/releases/download/v0.5.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/arca/releases/tag/v0.5.0"
+      },
+      "distributionClass": "nuget-library",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.5.0",
+        "version": "0.5.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.5.0",
+        "githubReleasePublishedAt": "2026-10-13T12:43:01Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.5.0",
+        "packageSources": [],
+        "tag": "v0.5.0"
+      },
+      "observedTagCommit": "5dd00d94de60f82db623211a8e5bcab2ab8b2e84",
+      "registryCommit": "5dd00d94de60f82db623211a8e5bcab2ab8b2e84",
+      "releaseManifestSha256": "1cab5320290e6084f873e942465fe2289c8bc952b8ec7ce3a445ad24b8ac2e84",
+      "repository": "kemiller2002/arca",
+      "required": false,
+      "role": "project-binding",
+      "systemId": "arca",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "ee557e9285894d898f6a727b8ced968fc08c6f73bc8b3cc86bc5f5c669a31863",
+          "bytes": 93519,
+          "error": null,
+          "expectedSha256": "ee557e9285894d898f6a727b8ced968fc08c6f73bc8b3cc86bc5f5c669a31863",
+          "name": "EchelonFoundry.Fides.0.2.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/fides/releases/download/v0.2.0/EchelonFoundry.Fides.0.2.0.nupkg"
+        },
+        {
+          "actualSha256": "c7c8df26a47d49f0385d39f1614d03837671e7b6c071baa399cab910bb42b84b",
+          "bytes": 8510,
+          "error": null,
+          "expectedSha256": "c7c8df26a47d49f0385d39f1614d03837671e7b6c071baa399cab910bb42b84b",
+          "name": "EchelonFoundry.Fides.Arca.0.2.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/fides/releases/download/v0.2.0/EchelonFoundry.Fides.Arca.0.2.0.nupkg"
+        },
+        {
+          "actualSha256": "b65efb1357cd10fcf2d9a2e2080e24cb2f488c470ba8802e6d4a578628936e95",
+          "bytes": 52531,
+          "error": null,
+          "expectedSha256": "b65efb1357cd10fcf2d9a2e2080e24cb2f488c470ba8802e6d4a578628936e95",
+          "name": "EchelonFoundry.Fides.Client.0.2.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/fides/releases/download/v0.2.0/EchelonFoundry.Fides.Client.0.2.0.nupkg"
+        },
+        {
+          "actualSha256": "53f8126e8b74002d71bd2ae539640951c5a103bcf2c6e17d33a527d75128f944",
+          "bytes": 20915,
+          "error": null,
+          "expectedSha256": "53f8126e8b74002d71bd2ae539640951c5a103bcf2c6e17d33a527d75128f944",
+          "name": "EchelonFoundry.Fides.Hosting.0.2.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/fides/releases/download/v0.2.0/EchelonFoundry.Fides.Hosting.0.2.0.nupkg"
+        },
+        {
+          "actualSha256": "a32e49303d650afa60cd51f860732216afb633c103f0c4ce0cbf76c93592378d",
+          "bytes": 513,
+          "error": null,
+          "expectedSha256": "a32e49303d650afa60cd51f860732216afb633c103f0c4ce0cbf76c93592378d",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/fides/releases/download/v0.2.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/fides/releases/tag/v0.2.0"
+      },
+      "distributionClass": "nuget-library",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.2.0",
+        "version": "0.2.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.2.0",
+        "githubReleasePublishedAt": "2026-10-08T10:58:52Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.2.0",
+        "packageSources": [],
+        "tag": "v0.2.0"
+      },
+      "observedTagCommit": "dea13cef62b0bd34e2d4295659b4965da87f2698",
+      "registryCommit": "dea13cef62b0bd34e2d4295659b4965da87f2698",
+      "releaseManifestSha256": "0ef2204d8ec298e6d930ce11d66629794486a5e31367959d7f9dbd39468b6a2a",
+      "repository": "kemiller2002/fides",
+      "required": false,
+      "role": "project-binding",
+      "systemId": "fides",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "8ef0e595f9749edac7fc3c46c1d400ba1a4d44f10090c3ed27291855845d15f1",
+          "bytes": 80287,
+          "error": null,
+          "expectedSha256": "8ef0e595f9749edac7fc3c46c1d400ba1a4d44f10090c3ed27291855845d15f1",
+          "name": "EchelonFoundry.Summa.Contracts.0.1.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/summa/releases/download/contracts-v0.1.0/EchelonFoundry.Summa.Contracts.0.1.0.nupkg"
+        },
+        {
+          "actualSha256": "526dc765ac6736de9043a0cc08b4f9932b4b79518c4bff0b049d5366df7f6776",
+          "bytes": 109,
+          "error": null,
+          "expectedSha256": "526dc765ac6736de9043a0cc08b4f9932b4b79518c4bff0b049d5366df7f6776",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/summa/releases/download/contracts-v0.1.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/summa/releases/tag/contracts-v0.1.0"
+      },
+      "distributionClass": "nuget-library",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "contracts-v0.1.0",
+        "version": "0.1.0"
+      },
+      "newestAvailable": {
+        "githubRelease": null,
+        "githubReleasePublishedAt": null,
+        "githubReleasesError": "HTTPError: HTTP Error 403: Forbidden",
+        "newestTag": "contracts-v0.1.0",
+        "packageSources": [],
+        "tag": "contracts-v0.1.0"
+      },
+      "observedTagCommit": "e888cfb102be7001db7129121a5769a02c44a968",
+      "registryCommit": "e888cfb102be7001db7129121a5769a02c44a968",
+      "releaseManifestSha256": "b952e4c667bc83aae23092397e8de3bcd75ecd2a6d59ef7d1047f2f5d094bcfe",
+      "repository": "kemiller2002/summa",
+      "required": false,
+      "role": "project-binding",
+      "systemId": "summa-contracts",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    },
+    {
+      "approvalSource": "kemiller2002/echelon-registry channels/echelon-current/linux-x64.json",
+      "approvedIsNewest": true,
+      "artifactStatus": "PASS",
+      "artifacts": [
+        {
+          "actualSha256": "1db1ec2c19f45331b31fc0d13a876259e12efa4de7509f6ee4939567984c2817",
+          "bytes": 772725,
+          "error": null,
+          "expectedSha256": "1db1ec2c19f45331b31fc0d13a876259e12efa4de7509f6ee4939567984c2817",
+          "name": "EchelonFoundry.Limen.Contract.0.9.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/limen/releases/download/v0.9.0/EchelonFoundry.Limen.Contract.0.9.0.nupkg"
+        },
+        {
+          "actualSha256": "8d626c5c63d4695b866bcddc7893c7661fc495f307519d597f0e7199196be388",
+          "bytes": 10588,
+          "error": null,
+          "expectedSha256": "8d626c5c63d4695b866bcddc7893c7661fc495f307519d597f0e7199196be388",
+          "name": "EchelonFoundry.Limen.Guest.0.9.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/limen/releases/download/v0.9.0/EchelonFoundry.Limen.Guest.0.9.0.nupkg"
+        },
+        {
+          "actualSha256": "278e3f221cd98aaec3bf0b3069bc222a1554eababaf66931e8baa6c2fb7561a0",
+          "bytes": 86551,
+          "error": null,
+          "expectedSha256": "278e3f221cd98aaec3bf0b3069bc222a1554eababaf66931e8baa6c2fb7561a0",
+          "name": "EchelonFoundry.Limen.Routing.0.9.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/limen/releases/download/v0.9.0/EchelonFoundry.Limen.Routing.0.9.0.nupkg"
+        },
+        {
+          "actualSha256": "ce71b5bbdc38704615c212b4a5955467598ed97c8d9982a9b8bac0b6b4b7bc8d",
+          "bytes": 116017,
+          "error": null,
+          "expectedSha256": "ce71b5bbdc38704615c212b4a5955467598ed97c8d9982a9b8bac0b6b4b7bc8d",
+          "name": "EchelonFoundry.Limen.Store.0.9.0.nupkg",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/limen/releases/download/v0.9.0/EchelonFoundry.Limen.Store.0.9.0.nupkg"
+        },
+        {
+          "actualSha256": "91983b9587c4fdafc0aef079db8690ae0f31d9cde025fff0483b1c4515f44e35",
+          "bytes": 425,
+          "error": null,
+          "expectedSha256": "91983b9587c4fdafc0aef079db8690ae0f31d9cde025fff0483b1c4515f44e35",
+          "name": "checksums.txt",
+          "status": "PASS",
+          "url": "https://github.com/kemiller2002/limen/releases/download/v0.9.0/checksums.txt"
+        }
+      ],
+      "distribution": {
+        "mechanism": "github-release",
+        "package": null,
+        "url": "https://github.com/kemiller2002/limen/releases/tag/v0.9.0"
+      },
+      "distributionClass": "nuget-library",
+      "newestApprovedStable": {
+        "lifecycleState": "active",
+        "releaseStage": "stable",
+        "tag": "v0.9.0",
+        "version": "0.9.0"
+      },
+      "newestAvailable": {
+        "githubRelease": "v0.9.0",
+        "githubReleasePublishedAt": "2026-10-08T21:10:20Z",
+        "githubReleasesError": null,
+        "newestTag": "v0.9.0",
+        "packageSources": [],
+        "tag": "v0.9.0"
+      },
+      "observedTagCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "registryCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "releaseManifestSha256": "d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a",
+      "repository": "kemiller2002/limen",
+      "required": false,
+      "role": "project-binding",
+      "systemId": "limen-fsharp",
+      "tagCommitCheck": "PASS",
+      "tagsError": null
+    }
+  ],
+  "discoveredAt": "2026-10-23T13:12:28+00:00",
+  "discoveryStatus": "DISCOVERED_NOT_VERIFIED",
+  "note": "Discovery records identities and digests. Compatibility is established only by the smoke tests in compatibility-matrix.json.",
+  "schema": "causa-r002.release-inventory/1"
+}

@@ -81,7 +81,7 @@ const start = async () => {
     transport,
     document,
     {
-      report: (event) => {
+      report: (/** @type {{ kind: string, phase?: string }} */ event) => {
         diagnostics.push({ kind: event.kind, phase: "phase" in event ? event.phase : undefined });
       },
     },

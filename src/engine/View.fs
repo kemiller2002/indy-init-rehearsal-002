@@ -401,6 +401,7 @@ module View =
         let empty =
             [ "invTitle", t ""; "invId", t ""; "invLifecycle", t ""; "invLifecycleTone", t "neutral"; "invVersion", n 0L; "invCreated", t ""; "invUpdated", t ""
               "invLocal", b false; "invReadOnly", b true; "invReadOnlyReason", t ""; "invNext", t ""; "invEventCount", n 0L
+              "actionsBlocked", b true; "actionsOpen", b false
               "invLoading", b false; "invMissing", b false; "invMissingText", t ""; "hasInvestigation", b false
               "tabs", items []; "invActions", items []; "observations", items []; "hypotheses", items []; "evidence", items []
               "relationships", items []; "unknowns", items []; "assumptions", items []; "contradictions", items []; "predictions", items []
@@ -471,6 +472,8 @@ module View =
                   "invUpdated", t (time (List.last loaded.Events).At)
                   "invLocal", b local
                   "invReadOnly", b (Result.isError gate)
+                  "actionsBlocked", b (Result.isError gate)
+                  "actionsOpen", b (Result.isOk gate)
                   "invReadOnlyReason", t (match gate with Ok() -> "" | Error r -> r)
                   "invNext", t (Capabilities.nextLifecycle now inv)
                   "invEventCount", n (int64 loaded.Events.Length)

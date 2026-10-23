@@ -287,7 +287,8 @@
 
                 <section class="causa-commands" aria-labelledby="cmd-title">
                   <h2 id="cmd-title" class="causa-section-title">Actions the domain permits now</h2>
-                  <ul class="causa-command-list">
+                  <template data-if="actionsBlocked"><p class="causa-reason causa-reason--block">No changes can be made here: <span data-text="invReadOnlyReason"></span></p></template>
+                  <ul class="causa-command-list" data-bind-hidden="actionsBlocked">
                     <template data-each="invActions" data-key="id">
                       <li class="causa-command" data-bind-data-group="group">
                         <button type="button" class="causa-button" data-event="cmd.open" data-bind-disabled="disabled" data-text="label"></button>
@@ -603,7 +604,8 @@
               <template data-each="selMeta" data-key="id"><div><dt data-text="label"></dt><dd data-text="value"></dd></div></template>
             </dl>
             <h3 class="causa-section-title">Actions</h3>
-            <ul class="causa-command-list">
+            <template data-if="actionsBlocked"><p class="causa-reason">Read-only: <span data-text="invReadOnlyReason"></span></p></template>
+            <ul class="causa-command-list" data-bind-hidden="actionsBlocked">
               <template data-each="selActions" data-key="id">
                 <li class="causa-command">
                   <button type="button" class="causa-button" data-event="cmd.open" data-bind-disabled="disabled" data-text="label"></button>

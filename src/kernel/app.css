@@ -135,7 +135,7 @@
   .causa-main:focus, .causa-main:focus-visible { outline: none; }
   .causa-shell[data-detail="false"] { grid-template-columns: minmax(200px, 240px) minmax(0, 1fr); }
   .causa-shell[data-detail="false"] .causa-detail { display: none; }
-  .causa-detail { position: sticky; top: 0; padding: 20px 16px; max-height: 100vh; overflow: auto; border-left: 1px solid var(--causa-color-border); min-height: calc(100vh - 64px); }
+  .causa-detail { position: sticky; top: 0; padding: 20px 16px; max-height: 100vh; overflow: auto; border-left: 1px solid var(--causa-color-border); }
   .causa-detail:empty { display: none; }
 
   /* iPad portrait and narrow laptops: rail stays, detail drops below main. */
@@ -275,6 +275,10 @@
   .causa-detail .causa-command-list { flex-direction: column; }
 
   .causa-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .causa-list:not(:has(li))::before, .causa-relations:not(:has(li))::before, .causa-timeline:not(:has(li))::before, .causa-links:not(:has(li))::before,
+  .causa-command-list:not(:has(li))::before { content: "None recorded."; color: var(--causa-color-text-secondary); font-style: italic; }
+  .causa-command-list:not(:has(li))::before { content: "No actions apply to this item."; }
+  .causa-reason--block { font-size: 0.95rem; }
   .causa-item { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--causa-radius-small); border: 1px solid var(--causa-color-border); background: var(--causa-color-workspace); border-left: 4px solid var(--causa-color-border); }
   .causa-item__link { color: var(--causa-color-text); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; min-height: 24px; }
   .causa-item__link:hover { text-decoration: underline; }

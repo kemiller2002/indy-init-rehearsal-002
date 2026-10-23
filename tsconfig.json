@@ -5,7 +5,19 @@
     "moduleResolution": "Bundler",
     "strict": true,
     "noEmit": true,
-    "lib": ["ES2022", "DOM"]
+    "allowJs": true,
+    "checkJs": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "rootDirs": [
+      "./src/kernel",
+      "./.cache/typecheck"
+    ]
   },
-  "include": ["src/kernel/**/*.ts"]
+  "include": [
+    "src/kernel/**/*.js"
+  ]
 }

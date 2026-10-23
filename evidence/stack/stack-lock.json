@@ -1,0 +1,799 @@
+{
+  "schema": "causa-r002.stack-lock/1",
+  "run": "causa-rehearsal-002",
+  "status": "FROZEN",
+  "frozenAt": "2026-10-23T13:15:00Z",
+  "discoveredAt": "2026-10-23T13:12:28+00:00",
+  "approvalAuthority": {
+    "catalogSnapshot": {
+      "sha256": "7a394e98a2b5dbb7dc3d96b7469f543e013959f220648dd5b752b519a413945d"
+    },
+    "channel": "echelon-current",
+    "commit": "2d43629b9c875475e3862d9a7944e4595c9752e7",
+    "platform": "linux-x64",
+    "profile": {
+      "id": "echelon-current",
+      "sha256": "83450d917344fc6d29a3edffc2a5bf290d5ae0bb83b9e572b698840a1a51a0ba",
+      "version": "1.25.0"
+    },
+    "repository": "kemiller2002/echelon-registry"
+  },
+  "verificationSourceSha": "5675d7c9721fe8357aa178bbf62627f9d8711710",
+  "policy": "Exact versions for this run (DEP-CURRENT-006). Upstream releases after freezing are drift, recorded in evidence/stack/drift.json, never silently introduced. tools/stack/check_lock.py enforces it in CI.",
+  "components": [
+    {
+      "systemId": "praxis",
+      "repository": "kemiller2002/praxis",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v3.19.0",
+      "newestApprovedStable": "v3.16.0",
+      "selectedVersion": "3.16.0",
+      "selectedTag": "v3.16.0",
+      "sourceCommit": "bb8fbad82c3266520297f345e0874f5048704bf4",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "53b4eb6e9a1b22cd76e86af741e84308444d96c244e1f3a52be1f1de2609cf12",
+      "artifacts": [
+        {
+          "name": "praxis-linux-x64.tar.gz",
+          "sha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2",
+          "status": "PASS"
+        },
+        {
+          "name": "native-checksums.txt",
+          "sha256": "02d5b2e66ab71b31c252871027a7e0f3534b1c96547deea102605443afeeef09",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "conditor",
+          "id": "praxis",
+          "version": "3.16.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C02",
+        "C03",
+        "C15"
+      ],
+      "note": "3.19.0 exists on GitHub but is not in the echelon-current channel; not approved, not selected."
+    },
+    {
+      "systemId": "ordo",
+      "repository": "kemiller2002/ordo",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v1.17.0",
+      "newestApprovedStable": "v1.17.0",
+      "selectedVersion": "1.17.0",
+      "selectedTag": "v1.17.0",
+      "sourceCommit": "bb43c26c106f4cbe972234636c5c67edc235c188",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "d9ee8be3b8723582389bcade5a969827f92a89266aab801c7e6b6e3bc224e0e8",
+      "artifacts": [
+        {
+          "name": "ordo-linux-x64.tar.gz",
+          "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
+          "status": "PASS"
+        },
+        {
+          "name": "native-checksums.txt",
+          "sha256": "01d55b4b897f729d025e8107a67e5d8d41e7aa9ed8a98bbe5954871df7911b11",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "conditor",
+          "id": "ordo",
+          "version": "1.17.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C02",
+        "C03"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "percepta",
+      "repository": "kemiller2002/percepta",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "percepta-repo-v0.1.0",
+      "newestApprovedStable": "percepta-repo-v0.1.0",
+      "selectedVersion": "0.1.0",
+      "selectedTag": "percepta-repo-v0.1.0",
+      "sourceCommit": "3027983f20b91d6856a27c1cf8ee2582108ef6be",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "07b6291c63ff25e6b669edb8c845e48ba76831b6a6133efa4ad3a390439b1b2b",
+      "artifacts": [
+        {
+          "name": "percepta-repo-linux-x64",
+          "sha256": "e46113aa08c9d2a97dfb1f75ca65c986946e1601c5f2c5cdcc9e8c25841d6039",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "ff99817e48d4ae09307b2e313a0e6facc645dc952566de1391e510d95a2093d3",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "conditor",
+          "id": "percepta",
+          "version": "0.1.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C02",
+        "C03"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "dokimos",
+      "repository": "kemiller2002/dokimos",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "dokimos-v0.7.0",
+      "newestApprovedStable": "dokimos-v0.6.0",
+      "selectedVersion": "0.6.0",
+      "selectedTag": "dokimos-v0.6.0",
+      "sourceCommit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "0da83cfe844ad220324468ddaf7b4ae669828ff96bd25dc5f8a9b8f963952dba",
+      "artifacts": [
+        {
+          "name": "dokimos-linux-x64.tar.gz",
+          "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b",
+          "status": "PASS"
+        },
+        {
+          "name": "dokimos-checksums.txt",
+          "sha256": "d462c0ca9f0c6ee8a19d92cacb435f8f2bff35532309a6030c9324172b87a5e5",
+          "status": "PASS"
+        },
+        {
+          "name": "LICENSE",
+          "sha256": "ffcca38841adb694b6f380647e15f17c446a4d1656fed51a1e2041d064c94cc8",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02",
+        "C16"
+      ],
+      "note": "0.7.0 exists but is not registry-approved; 0.6.0 selected. Used for code-quality snapshots (evidence/quality)."
+    },
+    {
+      "systemId": "aegis",
+      "repository": "kemiller2002/aegis",
+      "applicability": "APPLICABLE",
+      "newestAvailable": null,
+      "newestApprovedStable": "nuget:EchelonFoundry.Aegis.Core@1.0.0",
+      "selectedVersion": "1.0.0",
+      "selectedTag": "nuget:EchelonFoundry.Aegis.Core@1.0.0",
+      "sourceCommit": "56935c889b4f5cbf0b8046d3c2078f205cdb20c7",
+      "tagCommitCheck": "UNRESOLVED",
+      "releaseManifestSha256": "4530cfa3396c1e57d3e1a6500c661cd2d520236e852d1d9e88aa44c385d0bd6b",
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Aegis.Core.1.0.0.nupkg",
+          "sha256": "24255d245463f1ce819ce98f10bc5f6a062f8b3342d0bf4eee00fef9a45a835d",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "nuget",
+          "package": "EchelonFoundry.Aegis.Core",
+          "version": "1.0.0"
+        },
+        {
+          "kind": "conditor",
+          "id": "aegis",
+          "version": "1.0.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C06"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "limen",
+      "repository": "kemiller2002/limen",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v0.9.0",
+      "newestApprovedStable": "v0.9.0",
+      "selectedVersion": "0.9.0",
+      "selectedTag": "v0.9.0",
+      "sourceCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "5ffc580705cb612f9a5c99ee7ee0f81c7f18904947336a6e14a9be19393a74db",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-limen-0.9.0.tgz",
+          "sha256": "45b64d580548fc5ecd13bb391104bc3d1d135faf5fccab46900c1a7cc64685ec",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "@echelon-foundry/limen",
+          "version": "0.9.0",
+          "resolved": "https://registry.npmjs.org/@echelon-foundry/limen/-/limen-0.9.0.tgz",
+          "integrity": "sha512-noI4TcIfuomBmb2IDSEtm93RpYV3l+9D1eeqtHhW6dld63hpe9McKT335hEaLhc0EEbxNVd1dKlcvw+Nb+PMsw=="
+        },
+        {
+          "kind": "conditor",
+          "id": "limen",
+          "version": "0.9.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C04",
+        "C09"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "limen-fsharp",
+      "repository": "kemiller2002/limen",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v0.9.0",
+      "newestApprovedStable": "v0.9.0",
+      "selectedVersion": "0.9.0",
+      "selectedTag": "v0.9.0",
+      "sourceCommit": "96eb75fb5c5aeea41f59e7476d76e143dc35a759",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a",
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Limen.Contract.0.9.0.nupkg",
+          "sha256": "1db1ec2c19f45331b31fc0d13a876259e12efa4de7509f6ee4939567984c2817",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Limen.Guest.0.9.0.nupkg",
+          "sha256": "8d626c5c63d4695b866bcddc7893c7661fc495f307519d597f0e7199196be388",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Limen.Routing.0.9.0.nupkg",
+          "sha256": "278e3f221cd98aaec3bf0b3069bc222a1554eababaf66931e8baa6c2fb7561a0",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Limen.Store.0.9.0.nupkg",
+          "sha256": "ce71b5bbdc38704615c212b4a5955467598ed97c8d9982a9b8bac0b6b4b7bc8d",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "91983b9587c4fdafc0aef079db8690ae0f31d9cde025fff0483b1c4515f44e35",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "nuget",
+          "package": "EchelonFoundry.Limen.Contract",
+          "version": "0.9.0"
+        },
+        {
+          "kind": "nuget",
+          "package": "EchelonFoundry.Limen.Guest",
+          "version": "0.9.0"
+        },
+        {
+          "kind": "conditor",
+          "id": "limen-fsharp",
+          "version": "0.9.0"
+        },
+        {
+          "kind": "nuget-feed",
+          "packages": {
+            "EchelonFoundry.Limen.Contract": "1db1ec2c19f45331b31fc0d13a876259e12efa4de7509f6ee4939567984c2817",
+            "EchelonFoundry.Limen.Guest": "8d626c5c63d4695b866bcddc7893c7661fc495f307519d597f0e7199196be388"
+          }
+        }
+      ],
+      "verification": [
+        "C05",
+        "C06",
+        "C09"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "forma",
+      "repository": "kemiller2002/forma",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v0.9.0",
+      "newestApprovedStable": "v0.9.0",
+      "selectedVersion": "0.9.0",
+      "selectedTag": "v0.9.0",
+      "sourceCommit": "18e6ff7b15e54862521a101ac2589da0c597fc98",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "674c10a5a317c5e4dbf2f52a495ae3ec4a995907c24d86e02c0bdc3625f70da9",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-design-system-0.9.0.tgz",
+          "sha256": "0158986344f1330fe5b42f83d332f3f75a3dcfab66ddc279080eb6526f245218",
+          "status": "PASS"
+        },
+        {
+          "name": "forma-marketing.sha256",
+          "sha256": "ccf12574371a4fbe42e307d926985ca432af856972594a8931b5cbe14b9720d2",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "@echelon-foundry/design-system",
+          "version": "0.9.0",
+          "resolved": "https://registry.npmjs.org/@echelon-foundry/design-system/-/design-system-0.9.0.tgz",
+          "integrity": "sha512-nQuknl2iFfSeE44k6gJTdU2g7+p3MfsgQAKCgO0kn6HAVR040d+YX5lAqQqs1kMo6riHOAkuQn54qv3t4f+qxg=="
+        },
+        {
+          "kind": "conditor",
+          "id": "forma",
+          "version": "0.9.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C04",
+        "C10",
+        "C11"
+      ],
+      "note": ""
+    },
+    {
+      "systemId": "folio",
+      "repository": "kemiller2002/folio",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v0.4.1",
+      "newestApprovedStable": "v0.4.0",
+      "selectedVersion": "0.4.0",
+      "selectedTag": "v0.4.0",
+      "sourceCommit": "de2832735f3b8a4426f7e180af2859bf4888a938",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "1263b1825061e33dd71134659293b3d73946b5fd70e59d9526956d586905df4a",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-print-components-0.4.0.tgz",
+          "sha256": "50453b89c055135f4991a5b81532d4aad198f3226e874692fd4b317fc2d3156d",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "e03983078bb0c15eeecde9a58b4ce5c9a1daf35d7fd9ca17817d970d8828be4b",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "@echelon-foundry/print-components",
+          "version": "0.4.0",
+          "resolved": "https://github.com/kemiller2002/folio/releases/download/v0.4.0/echelon-foundry-print-components-0.4.0.tgz",
+          "integrity": "sha512-/oNXz5XilT9ZLcxdYLObgKH4UBNWXdrTQImAIUq2AEyJsV3rSdBnRmdX3cR3v/M5fk25pEWnoyffGKsIUk21xA=="
+        },
+        {
+          "kind": "conditor",
+          "id": "folio",
+          "version": "0.4.0"
+        }
+      ],
+      "verification": [
+        "C01",
+        "C04",
+        "C11"
+      ],
+      "note": "0.4.1 exists but is not registry-approved; 0.4.0 selected. Folio declares engines.node >=24 <25 (drives Node 24 selection)."
+    },
+    {
+      "systemId": "arca",
+      "repository": "kemiller2002/arca",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "v0.5.0",
+      "newestApprovedStable": "v0.5.0",
+      "selectedVersion": "0.5.0",
+      "selectedTag": "v0.5.0",
+      "sourceCommit": "5dd00d94de60f82db623211a8e5bcab2ab8b2e84",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "1cab5320290e6084f873e942465fe2289c8bc952b8ec7ce3a445ad24b8ac2e84",
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Arca.Core.0.5.0.nupkg",
+          "sha256": "a593126db171bcb94212ae288fffbc821d6b2d0a6b312aa3e3a490843f8afee4",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Arca.GitHub.0.5.0.nupkg",
+          "sha256": "bbd6383ee3c1ca698c83cdb311b1d03665a6231188a65b8e5bad60ef8b3570aa",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Arca.Limen.0.5.0.nupkg",
+          "sha256": "a2fb27e9023698acb14e4228cb657983a9c016aa36880b574e56c945dd175b44",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "d790bd43e67d7ccdfe2fc07d6fa05d33dc54caf341da7bbf88a7dbc882493340",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Evaluated: Arca's record format and paths are its own; the Causa storage contract v1.0.0 (ADRP-005) is the sole wire contract and requires its exact layout and one-commit file sets. The R002 provider implements the contract's \u00a79.4 directly (as data, executed by Limen)."
+    },
+    {
+      "systemId": "fides",
+      "repository": "kemiller2002/fides",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "v0.2.0",
+      "newestApprovedStable": "v0.2.0",
+      "selectedVersion": "0.2.0",
+      "selectedTag": "v0.2.0",
+      "sourceCommit": "dea13cef62b0bd34e2d4295659b4965da87f2698",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "0ef2204d8ec298e6d930ce11d66629794486a5e31367959d7f9dbd39468b6a2a",
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Fides.0.2.0.nupkg",
+          "sha256": "ee557e9285894d898f6a727b8ced968fc08c6f73bc8b3cc86bc5f5c669a31863",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Arca.0.2.0.nupkg",
+          "sha256": "c7c8df26a47d49f0385d39f1614d03837671e7b6c071baa399cab910bb42b84b",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Client.0.2.0.nupkg",
+          "sha256": "b65efb1357cd10fcf2d9a2e2080e24cb2f488c470ba8802e6d4a578628936e95",
+          "status": "PASS"
+        },
+        {
+          "name": "EchelonFoundry.Fides.Hosting.0.2.0.nupkg",
+          "sha256": "53f8126e8b74002d71bd2ae539640951c5a103bcf2c6e17d33a527d75128f944",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "a32e49303d650afa60cd51f860732216afb633c103f0c4ce0cbf76c93592378d",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Evaluated: Fides needs a deployed server-side exchange (GitHub App client secret; AWS hosting) that this run is not authorized to deploy (ADRP 'still deliberately open': production OAuth/Fides integration). R002 uses an explicitly entered, short-lived, fine-grained token held only in engine memory (EXT-DATA-004)."
+    },
+    {
+      "systemId": "strata",
+      "repository": "kemiller2002/strata",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "v0.1.1",
+      "newestApprovedStable": "v0.1.1",
+      "selectedVersion": "0.1.1",
+      "selectedTag": "v0.1.1",
+      "sourceCommit": "f650d91e2930dfcbe82a1d2c52d8c5245e0f9996",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "262bf735e8af934a5d104cad910e34d55e8ffcf310696f8604560bc73eb8ab04",
+      "artifacts": [
+        {
+          "name": "strata-linux-x64.tar.gz",
+          "sha256": "497ec245b60994e13b8a8923ec6a8fb994acdb8365d022e9e4fcf955605f2a1b",
+          "status": "PASS"
+        },
+        {
+          "name": "native-checksums.txt",
+          "sha256": "fc42113dfbeb48f361cd2b402c1a3a5dbdcd3c38c35034e2856544f7d618a1fe",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02"
+      ],
+      "note": "PostgreSQL schema management; Causa has no database. Installed by the workstation profile, unused."
+    },
+    {
+      "systemId": "visual-engineering",
+      "repository": "kemiller2002/visual-engineering",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "visual-engineering-v1.0.1",
+      "newestApprovedStable": "visual-engineering-v1.0.1",
+      "selectedVersion": "1.0.1",
+      "selectedTag": "visual-engineering-v1.0.1",
+      "sourceCommit": "b648cdef291d39c443ccb10215529ad69afe8b32",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "23ab4fdb38d3fc7827519cc3c29df88c950211db1d53d114c53f36a662a0dbda",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-visual-engineering-1.0.1.tgz",
+          "sha256": "32347d5c134f724cb35f9c33d882c2ed51f860381f0d5802634da3da74fb3f2f",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Repository-lifecycle research context; not declared by the Conditor indy-init preset for application builds."
+    },
+    {
+      "systemId": "communication-engineering",
+      "repository": "kemiller2002/communication-engineering",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "v1.0.0",
+      "newestApprovedStable": "v1.0.0",
+      "selectedVersion": "1.0.0",
+      "selectedTag": "v1.0.0",
+      "sourceCommit": "707396de512065fe35aff6fcf82cd28118df14b3",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "d4b79053301635b6335caf81c2ca28b0721cca4a78967501be820a8eb7118296",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-communication-engineering-1.0.0.tgz",
+          "sha256": "d808867e4af59363673e991153ff788146b5a277e0b01c2d84e0f86d98347437",
+          "status": "PASS"
+        },
+        {
+          "name": "SHA256SUMS",
+          "sha256": "fd4b48a2c7173675ec7a15f44766b8a5b50fde6bcf4813267b234d25eaf5aa1d",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Repository-lifecycle context; not declared by the indy-init preset."
+    },
+    {
+      "systemId": "tutela",
+      "repository": "kemiller2002/tutela",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "v0.1.0",
+      "newestApprovedStable": "v0.1.0",
+      "selectedVersion": "0.1.0",
+      "selectedTag": "v0.1.0",
+      "sourceCommit": "94afcc91a84bd3b94a4ee639f169d0727eaac727",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "5db1e8a1f039ae88b2b9426c7cbeec1783b40e29d58b0dfd40dfa90104a3c4ba",
+      "artifacts": [
+        {
+          "name": "echelon-foundry-tutela-0.1.0.tgz",
+          "sha256": "222fdaafa88b3798363fb4664682b409a05cdecf9b23178f028749898b40a861",
+          "status": "PASS"
+        },
+        {
+          "name": "SHA256SUMS",
+          "sha256": "bf75418b013c735a6e240ed9b0519f69a2d811c33c7755c4c1a026481b66a02d",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Security-metrics lifecycle; not declared by the indy-init preset. Security review performed independently (evidence/security)."
+    },
+    {
+      "systemId": "summa-contracts",
+      "repository": "kemiller2002/summa",
+      "applicability": "NOT_APPLICABLE",
+      "newestAvailable": "contracts-v0.1.0",
+      "newestApprovedStable": "contracts-v0.1.0",
+      "selectedVersion": "0.1.0",
+      "selectedTag": "contracts-v0.1.0",
+      "sourceCommit": "e888cfb102be7001db7129121a5769a02c44a968",
+      "tagCommitCheck": "PASS",
+      "releaseManifestSha256": "b952e4c667bc83aae23092397e8de3bcd75ecd2a6d59ef7d1047f2f5d094bcfe",
+      "artifacts": [
+        {
+          "name": "EchelonFoundry.Summa.Contracts.0.1.0.nupkg",
+          "sha256": "8ef0e595f9749edac7fc3c46c1d400ba1a4d44f10090c3ed27291855845d15f1",
+          "status": "PASS"
+        },
+        {
+          "name": "checksums.txt",
+          "sha256": "526dc765ac6736de9043a0cc08b4f9932b4b79518c4bff0b049d5366df7f6776",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C02-artifact-digest"
+      ],
+      "note": "Ledger/invoicing contracts; outside Causa scope."
+    },
+    {
+      "systemId": "conditor",
+      "repository": "kemiller2002/conditor",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v0.10.8",
+      "newestApprovedStable": "v0.10.8 (registry releases/conditor/0.10.8.release.json, stable, active)",
+      "selectedVersion": "0.10.8",
+      "selectedTag": "v0.10.8",
+      "sourceCommit": "902277d656c950d96642a8925d5ff6a49ed961fa",
+      "tagCommitCheck": "PASS",
+      "artifacts": [
+        {
+          "name": "conditor-linux-x64",
+          "sha256": "1b4440a4be0df80a0e8c5b63ff8502fe393496f1d05acf38c67b4e698bc82111",
+          "status": "PASS"
+        }
+      ],
+      "bindings": [],
+      "verification": [
+        "C01",
+        "C02",
+        "C03",
+        "C05"
+      ]
+    },
+    {
+      "systemId": "dotnet-sdk",
+      "repository": "dotnet/sdk",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "10.0.402",
+      "newestApprovedStable": "10.0.402 (latest-sdk in releases-index; also pinned by causa-data global.json)",
+      "selectedVersion": "10.0.402",
+      "sourceCommit": "release-metadata 10.0/releases.json latest-sdk",
+      "bindings": [
+        {
+          "kind": "sdk",
+          "version": "10.0.402"
+        }
+      ],
+      "verification": [
+        "C06",
+        "C07",
+        "C08",
+        "C09"
+      ],
+      "note": "F# compiler/FSharp.Core 10.1.402 come from this SDK."
+    },
+    {
+      "systemId": "node",
+      "repository": "nodejs/node",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "v24.22.1 (24.x LTS)",
+      "newestApprovedStable": "v24.22.1",
+      "selectedVersion": "24.22.1",
+      "sourceCommit": "SHASUMS256 6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6 (linux-x64.tar.xz)",
+      "bindings": [],
+      "verification": [
+        "C04"
+      ],
+      "note": "Folio 0.4.0 engines.node >=24 <25. The scaffold's Node 22 is incompatible."
+    },
+    {
+      "systemId": "playwright",
+      "repository": "microsoft/playwright",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "1.64.1",
+      "newestApprovedStable": "1.64.1 (npm latest)",
+      "selectedVersion": "1.64.1",
+      "sourceCommit": "npm integrity sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg==",
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "@playwright/test",
+          "version": "1.64.1",
+          "resolved": "https://registry.npmjs.org/@playwright/test/-/test-1.64.1.tgz",
+          "integrity": "sha512-IaYGml/nSOiZWROfPtuIL7neuu9qDOZ3TNvNljUIrhDMxiGTgPjzj/g9p9RxpS2tSepPDRY+UwAaEeiKtUvIAg=="
+        }
+      ],
+      "verification": [
+        "C12"
+      ],
+      "note": "Locally drives the preinstalled Chromium 141 (rev 1194); CI uses Playwright's own Chromium 156 (rev 1248)."
+    },
+    {
+      "systemId": "axe-core-playwright",
+      "repository": "dequelabs/axe-core-npm",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "4.14.0",
+      "newestApprovedStable": "4.14.0",
+      "selectedVersion": "4.14.0",
+      "sourceCommit": "npm integrity sha512-SGUhG5PIHd2eMdpgBF2PyQLOhX+qyDR2PT4cmoS4Qk2ak+jX/rrSvst9l0PGv5WTHolKpUMvVmoHpr4cZgf1RQ==",
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "@axe-core/playwright",
+          "version": "4.14.0",
+          "resolved": "https://registry.npmjs.org/@axe-core/playwright/-/playwright-4.14.0.tgz",
+          "integrity": "sha512-SGUhG5PIHd2eMdpgBF2PyQLOhX+qyDR2PT4cmoS4Qk2ak+jX/rrSvst9l0PGv5WTHolKpUMvVmoHpr4cZgf1RQ=="
+        }
+      ],
+      "verification": [
+        "C14"
+      ]
+    },
+    {
+      "systemId": "typescript",
+      "repository": "microsoft/TypeScript",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "7.0.2",
+      "newestApprovedStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "sourceCommit": "npm integrity sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==",
+      "bindings": [
+        {
+          "kind": "npm",
+          "package": "typescript",
+          "version": "7.0.2",
+          "resolved": "https://registry.npmjs.org/typescript/-/typescript-7.0.2.tgz",
+          "integrity": "sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA=="
+        }
+      ],
+      "verification": [
+        "C13"
+      ]
+    },
+    {
+      "systemId": "causa-storage-contract",
+      "repository": "kemiller2002/causa-data",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "causa-storage-v1.0.0",
+      "newestApprovedStable": "causa-storage-v1.0.0 (released; CAUSA-STORAGE-RELEASE-v1.0.0.md)",
+      "selectedVersion": "1.0.0",
+      "sourceCommit": "c947c7e354be80766573a782546c8186336774cc",
+      "identities": {
+        "schemaBundleSha256": "0a68af8c93190d2e4d6c27beb2f8cb67c3aebdda586d01beb7122b71af179152",
+        "datasetSha256": "f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
+        "releaseLockSha256": "6a7e7802ff2a3ff500ab6065662514a96e09e6c15eb30212ba1377fcc5bf8fc5"
+      },
+      "bindings": [
+        {
+          "kind": "vendor",
+          "id": "causa-storage-contract",
+          "commit": "c947c7e354be80766573a782546c8186336774cc"
+        }
+      ],
+      "verification": [
+        "C07",
+        "C08"
+      ]
+    },
+    {
+      "systemId": "causa-domain-engine",
+      "repository": "kemiller2002/indy-init-rehearsal-001",
+      "applicability": "APPLICABLE",
+      "newestAvailable": "n/a (pinned oracle)",
+      "newestApprovedStable": "55f49f61c939a3a780cee592f36f732a1328f981 (causa-data engine.lock.json)",
+      "selectedVersion": "55f49f61",
+      "sourceCommit": "55f49f61c939a3a780cee592f36f732a1328f981",
+      "sterileAssemblySha256": "b3904277e72390667a35ccaeb7986f5d6c4848ffd5b8c28fc13f9673b5e13a44",
+      "bindings": [
+        {
+          "kind": "vendor",
+          "id": "causa-domain-engine",
+          "commit": "55f49f61c939a3a780cee592f36f732a1328f981"
+        }
+      ],
+      "verification": [
+        "C07",
+        "C08"
+      ]
+    }
+  ]
+}

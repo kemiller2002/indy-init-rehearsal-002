@@ -1,0 +1,266 @@
+{
+  "schema": "causa-r002.compatibility-matrix/1",
+  "stackLock": "evidence/stack/stack-lock.json",
+  "checks": [
+    {
+      "id": "C01",
+      "claim": "Conditor 0.10.8 qualifies the exact echelon-current selection (praxis 3.16.0, ordo 1.17.0, percepta 0.1.0, aegis 1.0.0, limen 0.9.0, forma 0.9.0, folio 0.4.0)",
+      "components": [
+        "conditor",
+        "praxis",
+        "ordo",
+        "percepta",
+        "aegis",
+        "limen",
+        "forma",
+        "folio"
+      ],
+      "command": "conditor compatibility; conditor plan --manifest conditor.json",
+      "result": "PASS",
+      "evidence": "conditor plan output (no unqualified component)"
+    },
+    {
+      "id": "C02",
+      "claim": "Clean workstation install of native host tools with Registry digest verification",
+      "components": [
+        "conditor",
+        "praxis",
+        "ordo",
+        "percepta",
+        "dokimos",
+        "strata"
+      ],
+      "command": "conditor workstation plan/apply --resolved-set channels/echelon-current/linux-x64.json --resolved-set-sha256 06026da5\u2026",
+      "result": "PASS",
+      "evidence": "all downloads matched Registry sha256; praxis --version 3.16.0, ordo 1.17.0, percepta-repo 0.1.0, dokimos version 0.6.0"
+    },
+    {
+      "id": "C02-artifact-digest",
+      "claim": "Every channel artifact downloaded and digest-checked against the Registry release manifest; every tag resolves to the Registry commit",
+      "components": [
+        "all channel components"
+      ],
+      "command": "python3 tools/stack/discover_stack.py --download",
+      "result": "PASS",
+      "evidence": "evidence/stack/release-inventory.json (16/16 artifactStatus PASS; tagCommitCheck PASS except aegis, a NuGet-only tag whose commit 56935c88 was fetched and exists)"
+    },
+    {
+      "id": "C03",
+      "claim": "Clean repository bootstrap (praxis init/verify --strict, ordo init/verify --integrity-only, percepta-repo init/verify --strict, fsharp-limen-web scaffold, requirements materialization)",
+      "components": [
+        "conditor",
+        "praxis",
+        "ordo",
+        "percepta",
+        "limen",
+        "forma",
+        "folio",
+        "aegis"
+      ],
+      "command": "conditor init --manifest conditor.json",
+      "result": "PASS",
+      "evidence": "evidence/stack/logs/conditor-init.log; .conditor/lock.json. Required workaround for DEF-STACK-003."
+    },
+    {
+      "id": "C04",
+      "claim": "Pinned web packages install and are byte-identical to the approved artifacts; engines constraints satisfied",
+      "components": [
+        "limen",
+        "forma",
+        "folio",
+        "node"
+      ],
+      "command": "npm install (Node 24.22.1); sha256 compare npm vs release assets",
+      "result": "PASS",
+      "evidence": "Forma npm tgz = release tgz 0158986\u2026; Limen npm tgz = Registry 45b64d5\u2026; Folio from release tgz 50453b8\u2026. DEF-STACK-001 fixed (Folio not on npm). Folio engines.node >=24 <25 \u2192 Node 24."
+    },
+    {
+      "id": "C05",
+      "claim": "limen-fsharp 0.9.0 opt-in through Conditor's NuGet release-asset feed",
+      "components": [
+        "conditor",
+        "limen-fsharp"
+      ],
+      "command": "conditor upgrade --current --resolved-set \u2026 --authorize sha256:909cf265\u2026",
+      "result": "PASS",
+      "evidence": "vendor/nuget/*.nupkg equal Registry digests; second-plan version drift none"
+    },
+    {
+      "id": "C06",
+      "claim": "F# build of vendored domain + contract + engine with Aegis.Core 1.0.0 and Limen.Contract/Guest 0.9.0 on SDK 10.0.402 (warnings as errors)",
+      "components": [
+        "dotnet-sdk",
+        "aegis",
+        "limen-fsharp",
+        "causa-domain-engine",
+        "causa-storage-contract"
+      ],
+      "command": "dotnet build App.slnx -c Release",
+      "result": "PASS",
+      "evidence": "0 warnings, 0 errors"
+    },
+    {
+      "id": "C07",
+      "claim": "causa-data v1.0.0 compatibility gate anchored to the release tag (schema, dataset, release identities; engine sterile assembly; 5 golden + 90 negative)",
+      "components": [
+        "causa-storage-contract",
+        "causa-domain-engine",
+        "dotnet-sdk"
+      ],
+      "command": "causa gate . --anchor causa-storage-v1.0.0",
+      "result": "PASS",
+      "evidence": "evidence/stack/logs/causa-data-gate.json (PASS). First attempt FAILED engine.loaded: DEF-STACK-002 (FSharp.Core 10.1.402 exists as two byte-different artifacts). PASS with an isolated NuGet package folder."
+    },
+    {
+      "id": "C08",
+      "claim": "R002's own compiled reader replays the frozen dataset: 5 golden state digests + golden equality, 90 negatives with exact primary and domain codes",
+      "components": [
+        "causa-storage-contract",
+        "causa-domain-engine"
+      ],
+      "command": "dotnet test tests/Causa.Conformance.Tests",
+      "result": "PASS",
+      "evidence": "94/94"
+    },
+    {
+      "id": "C09",
+      "claim": "Limen 0.9.0 browser kernel + .NET 10 WebAssembly engine: handshake (protocol 1.4, limen.core v1 fingerprint) and first projection in Chromium",
+      "components": [
+        "limen",
+        "limen-fsharp",
+        "dotnet-sdk"
+      ],
+      "command": "dotnet publish src/wasm; node scripts/build-site.mjs; Playwright smoke",
+      "result": "PASS",
+      "evidence": "boot ready in ~1.0 s locally; diagnostics: Handshake only"
+    },
+    {
+      "id": "C10",
+      "claim": "Forma 0.9.0 BrandCompiler compiles the Causa brand with its contrast gate",
+      "components": [
+        "forma"
+      ],
+      "command": "dotnet run --project forma@18e6ff7 tools/BrandCompiler -- brands \u2026",
+      "result": "PASS",
+      "evidence": "'brand compilation passed: causa' \u2192 src/kernel/brands/causa.css"
+    },
+    {
+      "id": "C11",
+      "claim": "Forma components + Folio 0.4.0 print elements render and print in the browser",
+      "components": [
+        "forma",
+        "folio"
+      ],
+      "command": "tests/browser (report/print, color)",
+      "result": "PENDING",
+      "evidence": "browser suite in progress"
+    },
+    {
+      "id": "C12",
+      "claim": "Playwright 1.64.1 drives Chromium for the acceptance suite",
+      "components": [
+        "playwright"
+      ],
+      "command": "npx playwright test",
+      "result": "PASS",
+      "evidence": "locally against preinstalled Chromium 141 (rev 1194); CI runs Playwright's own browser"
+    },
+    {
+      "id": "C13",
+      "claim": "TypeScript 7.0.2 checkJs of the kernel composition root against Limen's shipped declarations",
+      "components": [
+        "typescript",
+        "limen"
+      ],
+      "command": "npm run check",
+      "result": "PASS",
+      "evidence": "0 errors"
+    },
+    {
+      "id": "C14",
+      "claim": "axe-core 4.14.0 accessibility scans run against the app",
+      "components": [
+        "axe-core-playwright"
+      ],
+      "command": "tests/browser accessibility",
+      "result": "PENDING",
+      "evidence": "browser suite in progress"
+    },
+    {
+      "id": "C15",
+      "claim": "Praxis 3.16.0 documented intake: .praxis/inbox/documents claim",
+      "components": [
+        "praxis"
+      ],
+      "command": "./praxis inbox claim \u2026",
+      "result": "PASS",
+      "evidence": "INPUT-3896785a51f77d4d"
+    },
+    {
+      "id": "C16",
+      "claim": "Dokimos 0.6.0 snapshot of R002 sources",
+      "components": [
+        "dokimos"
+      ],
+      "command": "dokimos snapshot src/engine src/kernel --repository \u2026 --revision \u2026",
+      "result": "PASS",
+      "evidence": "evidence/quality/dokimos-snapshot.json"
+    }
+  ],
+  "defects": [
+    {
+      "id": "DEF-STACK-001",
+      "producer": "conditor fsharp-limen-web scaffold",
+      "consumer": "npm install",
+      "contract": "Folio distribution (github-release tarball)",
+      "repro": "scaffold package.json pins @echelon-foundry/print-components 0.4.0 from npm \u2192 npm 404",
+      "resolution": "pinned the Registry-verified release tarball URL; digest equals Registry",
+      "status": "FIXED_IN_R002 (upstream defect remains)"
+    },
+    {
+      "id": "DEF-STACK-002",
+      "producer": "dotnet SDK 10.0.402 library-pack vs nuget.org",
+      "consumer": "causa-data gate engine.loaded",
+      "contract": "sterile engine assembly identity",
+      "repro": "restore FSharp.Core 10.1.402 from nuget.org into the global package folder first (dll e6c3\u2026), then build causa-data: engine.loaded FAIL; library-pack copy is 7b71\u2026",
+      "resolution": "isolated NuGet package folder for the gate; R002 runs every fixture through its own build regardless of byte identity",
+      "status": "MITIGATED"
+    },
+    {
+      "id": "DEF-STACK-003",
+      "producer": "conditor 0.10.8 SourceCache",
+      "consumer": "requirements materialization in proxied environments",
+      "contract": "git credential configuration",
+      "repro": "with GH_TOKEN set, Conditor sends it as an http extraheader that replaces the environment's git auth \u2192 'could not read Username'",
+      "resolution": "ran conditor with GH_TOKEN/GITHUB_TOKEN unset (public sources)",
+      "status": "WORKAROUND"
+    },
+    {
+      "id": "DEF-STACK-004",
+      "producer": "Indy-init tools/echelon-stack-sources.json + discover-echelon-stack.py",
+      "consumer": "stack discovery",
+      "contract": "approval source",
+      "repro": "sources name echelon-foundry/* repositories that do not exist and treat GitHub 'latest release' as approved",
+      "resolution": "tools/stack/discover_stack.py uses the echelon-registry echelon-current channel as approval authority and checks newest available separately",
+      "status": "FIXED_IN_R002"
+    },
+    {
+      "id": "DEF-STACK-005",
+      "producer": "conditor 0.10.8 built-in indy-init preset",
+      "consumer": "bootstrap",
+      "contract": "echelon-current selection",
+      "repro": "preset pins ordo 1.5.0, forma 0.5.0, folio 0.3.0 although echelon-current selects 1.17.0/0.9.0/0.4.0",
+      "resolution": "explicit conditor.json at the current selection (no silent downgrade)",
+      "status": "WORKAROUND"
+    },
+    {
+      "id": "DEF-STACK-006",
+      "producer": "conditor workstation apply",
+      "consumer": "installation registration",
+      "contract": "praxis installation.register",
+      "repro": "registration invalid: environment target needs explicit logical id",
+      "resolution": "non-blocking; tools installed and verified",
+      "status": "OPEN (low)"
+    }
+  ]
+}

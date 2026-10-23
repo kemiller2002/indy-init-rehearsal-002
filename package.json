@@ -3,8 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "tsc --noEmit",
-    "test:browser": "playwright test"
+    "check": "node scripts/prepare-typecheck.mjs && tsc --noEmit -p tsconfig.json",
+    "build:site": "node scripts/build-site.mjs",
+    "serve": "node scripts/serve.mjs dist/site 8080",
+    "test:browser": "playwright test",
+    "test:live": "playwright test -c playwright.live.config.js",
+    "check:no-demo-data": "node scripts/check-no-demo-data.mjs"
   },
   "dependencies": {
     "@echelon-foundry/design-system": "0.9.0",

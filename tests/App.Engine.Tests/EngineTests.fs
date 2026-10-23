@@ -1126,3 +1126,70 @@ let ``23b a renewal refused during a reload changes nothing and keeps the typed 
     let refused = reloading |> send "connect.token" (token + "-new") |> fire "auth.renew"
     Assert.Equal(before, (live refused).Token)
     Assert.Equal(Some(token + "-new"), refused.App.ConnectForm |> Map.tryFind "token")
+
+// ---------------------------------------------------------------------------------------------------------------
+// Fourth independent closure review (evidence/quality/closure-review-4.md, Q1-Q4)
+// ---------------------------------------------------------------------------------------------------------------
+
+let private refBody (sha: string) = sprintf """{"ref":"refs/heads/main","object":{"sha":"%s","type":"commit"}}""" sha
+let private isCompare (r: Request) = r.Method = "GET" && (r.Route |> Option.exists (fun p -> p.StartsWith "/compare/"))
+
+[<Fact>]
+let ``24 Q1 the reload after a moved save is anchored on the verified save, not the old read point`` () =
+    let run = "r24"
+    let prefix = Fixtures.workspacePrefix run
+    let w0 = connected run (workspaceRepo run)
+    let h0 = w0.Repo.Head
+    let after =
+        w0
+        |> withRule isGetRef (Concurrent(otherWriterAppends prefix openIds[1] "after patch"))
+        |> withRule isGetRef (Respond(200L, refBody h0))
+        |> createInvestigation "Auto" "moved save"
+    Assert.Equal(after.Repo.Head, (live after).Head.Commit)
+    Assert.Equal(6, (live after).Catalog.Length)
+
+[<Fact>]
+let ``24b Q2b the reload after a rebased save never adopts the rebase's intermediate head`` () =
+    let run = "r24b"
+    let prefix = Fixtures.workspacePrefix run
+    let mid = ref ""
+    let seen = ref 0
+    // The first PATCH meets another writer's commit (mid); the engine rebases and saves on top of it.
+    let submitted =
+        connected run (workspaceRepo run)
+        |> withRule isPatch (Concurrent(fun repo -> let moved = otherWriterAppends prefix openIds[1] "other" repo in mid.Value <- moved.Head; moved))
+        |> openCommand "new-investigation" |> send "cmd.textA" "Rebased" |> send "cmd.textB" "auto reload"
+        |> deliver (event "cmd.submit" None None)
+    // Hold back the third ref read (rebase reload, verify, then the automatic reload) and answer it with mid.
+    let paused, held = submitted |> pumpHolding (fun r -> isGetRef r && (seen.Value <- seen.Value + 1; seen.Value = 3)) []
+    Assert.Equal(1, held.Length)
+    let after = { paused with Rules = [] } |> withRule isGetRef (Respond(200L, refBody mid.Value)) |> answer held[0] |> pump
+    Assert.Equal(after.Repo.Head, (live after).Head.Commit)
+    Assert.Equal(6, (live after).Catalog.Length)
+
+[<Fact>]
+let ``24c Q3 a deliberate rollback is shown after one confirming read, and the next save builds on it`` () =
+    let run = "r24c"
+    let w0 = connected run (workspaceRepo run)
+    let h0 = w0.Repo.Head
+    let saved = w0 |> createInvestigation "First" "then rolled back"
+    let c1 = saved.Repo.Head
+    let rolled = { saved with Repo = { saved.Repo with Head = h0 } } |> fire "refresh"
+    Assert.Equal(h0, (live rolled).Head.Commit)
+    Assert.Equal(5, (live rolled).Catalog.Length)
+    let second = rolled |> createInvestigation "Second" "after rollback"
+    Assert.Equal<string list>([ h0 ], (headCommit second.Repo).Parents)
+    Assert.True(c1 <> (headCommit second.Repo).Parents.Head)
+
+[<Fact>]
+let ``24d Q4 a compare GitHub cannot answer adopts the ref instead of failing every reload`` () =
+    let run = "r24d"
+    let prefix = Fixtures.workspacePrefix run
+    let w0 = connected run (workspaceRepo run)
+    let moved = { w0 with Repo = w0.Repo |> otherWriterAppends prefix openIds[0] "someone" }
+    let after =
+        moved
+        |> withRule isCompare (Respond(404L, """{"message":"No common ancestor between a and b."}"""))
+        |> fire "refresh"
+    Assert.Equal(moved.Repo.Head, (live after).Head.Commit)
+    Assert.False((live after).Refreshing)

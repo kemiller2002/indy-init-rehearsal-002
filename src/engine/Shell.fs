@@ -297,26 +297,35 @@ module Shell =
                 | Some w -> { live with Refreshing = false; Reapply = None; Sync = Held(w, Conflict("Reload failed, so your change was not re-applied. " + GitHub.describe f)) }
                 | None -> { live with Refreshing = false }
             { app with Connection = Connected restored } |> App.notice Critical ("Reload failed: " + GitHub.describe f), []
+        let adopt commit = app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
         match op, result with
+        // No common history (GitHub answers 404/422): the branch was replaced; show what GitHub holds (review 4, Q4).
+        | OpRefreshCompare commit, Error(ProviderFailure.NotFound | ProviderFailure.Rejected _) -> adopt commit
         | _, Error f -> stop f
         | OpRef, Ok body ->
+            // The newest commit this session knows is on the branch: its own last verified save, or the read point.
+            let anchor = live.LastVerified |> Option.map fst |> Option.defaultValue live.Head.Commit
             match GitHub.parseRef body with
             | Error f -> stop f
-            | Ok commit when commit = live.Head.Commit -> app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
-            // A different head: a reload never moves the view back in history, so decide by ancestry first.
-            | Ok commit -> app |> emit [ OpRefreshCompare commit, GitHub.compare live.Target live.Head.Commit commit ]
+            | Ok commit when commit = anchor -> adopt commit
+            // A different commit: decide by ancestry before showing it (DC-005).
+            | Ok commit -> app |> emit [ OpRefreshCompare commit, GitHub.compare live.Target anchor commit ]
         | OpRefreshCompare commit, Ok body ->
             match GitHub.parseCompareStatus body with
             | Error f -> stop f
-            // Older than what is shown (a lagging replica answered): keep the newer, verified state (DC-005).
-            | Ok "behind" ->
-                let kept =
-                    match live.Reapply with
-                    | Some w -> { live with Refreshing = false; Reapply = None; Sync = Held(w, Conflict "GitHub answered with an older version of the branch, so your change was not re-applied. Try again in a moment.") }
-                    | None -> { live with Refreshing = false }
-                { app with Connection = Connected kept } |> App.notice Neutral "GitHub answered with an older version of the branch than the one shown; the newer state is kept. Reload again in a moment.", []
-            // Newer, or rewritten by someone: show what GitHub holds.
-            | Ok _ -> app |> emit [ OpCommit commit, GitHub.getCommit live.Target commit ]
+            // Older than a commit known to be on the branch: a lagging replica, or a deliberate reset. Read once more
+            // under a fresh URL; the second answer decides (review 4, Q1-Q3).
+            | Ok "behind" -> app |> emit [ OpRefreshReread commit, GitHub.getRef live.Target ]
+            // Newer, identical, or rewritten by someone: show what GitHub holds.
+            | Ok _ -> adopt commit
+        | OpRefreshReread first, Ok body ->
+            match GitHub.parseRef body with
+            | Error f -> stop f
+            // Still the older commit: the branch really is there (reset by someone). Show it; never build on a state
+            // GitHub no longer holds, or the next save would re-publish what was removed.
+            | Ok again when again = first ->
+                adopt again |> fun (a, fx) -> a |> App.notice Attention "The branch on GitHub is older than the version shown before (it may have been reset by someone); showing what GitHub holds now.", fx
+            | Ok again -> adopt again
         | OpCommit commit, Ok body ->
             match GitHub.parseCommitTree body with
             | Error f -> stop f
@@ -526,7 +535,7 @@ module Shell =
                 match app.Connection, op with
                 | Connecting _, _ -> onConnect op r app
                 | Connected live, OpBlob(inv, file, sha) -> onBlob inv file sha r live app
-                | Connected live, (OpRef | OpRefreshCompare _ | OpCommit _ | OpTree _) when generation = 0 && live.Refreshing -> onRefresh op r live app
+                | Connected live, (OpRef | OpRefreshCompare _ | OpRefreshReread _ | OpCommit _ | OpTree _) when generation = 0 && live.Refreshing -> onRefresh op r live app
                 | Connected live, _ ->
                     match live.Sync with
                     | InFlight(w, stage) when generation <> 0 && w.Generation = generation -> onWrite op r live w stage app

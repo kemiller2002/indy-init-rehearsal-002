@@ -130,6 +130,31 @@ test.describe("WASM-LOAD: a framework file fails once", () => {
   });
 });
 
+test.describe("WASM-LOAD: a retried download on a slow connection", () => {
+  // Review 4, B1: one framework file fails once while another download is still slow; the loader's retry
+  // succeeds, so the start must reach ready even though more than the grace period passes after the failure.
+  test.use({ allowedConsoleErrors: /Failed to load resource|integrity|SRI|Fetch API cannot load/i });
+
+  test("a single 503 while a slow download is still in progress still reaches ready", async ({ page }) => {
+    let attempts = 0;
+    const one = /\/wasm\/_framework\/System\.ComponentModel\.EventBasedAsync\.[^/]*\.wasm$/;
+    const slow = /\/wasm\/_framework\/dotnet\.native\.[^/]*\.wasm$/;
+    await page.route(one, (route) => {
+      attempts += 1;
+      return attempts === 1
+        ? route.fulfill({ status: 503, contentType: "text/html", body: "<h1>503 Service Unavailable</h1>" })
+        : route.continue();
+    });
+    await page.route(slow, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 15_000));
+      await route.continue();
+    });
+    await page.goto("./");
+    await expect(page.locator("html")).toHaveAttribute("data-boot", "ready", { timeout: 60_000 });
+    expect(attempts).toBeGreaterThanOrEqual(2);
+  });
+});
+
 test.describe("WASM-LOAD: reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 

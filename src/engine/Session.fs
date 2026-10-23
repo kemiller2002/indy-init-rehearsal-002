@@ -122,8 +122,10 @@ type Op =
     | OpReloadTree of head: Head
     | OpReconcileRef
     | OpReconcileCompare of ref: string
-    /// A reload's ref read differed from the catalog's read point: is it newer, or a lagging replica (DC-005)?
+    /// A reload's ref read differed from the newest commit known to be on the branch: newer, or older (DC-005)?
     | OpRefreshCompare of ref: string
+    /// The reload's first ref read was older than the newest known commit: the one re-read that decides.
+    | OpRefreshReread of first: string
     | OpVerifyRef
     | OpVerifyCommit of commit: string
     | OpVerifyTree of head: Head

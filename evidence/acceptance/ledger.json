@@ -1,0 +1,1409 @@
+{
+  "run_id": "causa-rehearsal-002",
+  "source_commit_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+  "deployed_commit_sha": null,
+  "contract_version": "causa-storage-v1.0.0",
+  "frozen_fixture_digest": "sha256:f650a2e509a420872b46177b21f57ef6ebd7625ae4c69dd92198d3ca472c2b86",
+  "dependency_lock_sha": "db12f2ed7be76950ac978152c7d48b774d49e6498e7816d40abeca373c9b2427",
+  "interface_manifest_sha": "f8cf9a6b9ff9be505ef3d7bcfd76bedfc3e392070d0cd65782d589501a9a2d98",
+  "requirements": [
+    {
+      "id": "ADRP-001",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Source precedence and conflict stop",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "conditor.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-002",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Scope and screen inventory",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/architecture/VIEW-CONTRACT.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-003",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Locked UI composition default",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/responsive.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-004",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Domain/UI contract",
+      "owner": "engine",
+      "implementation_paths": [],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [
+        "docs/architecture/VIEW-CONTRACT.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-005",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Data and persistence",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/Session.fs",
+        "src/engine/Shell.fs"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [
+        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+      ],
+      "status": "PASS",
+      "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
+    },
+    {
+      "id": "ADRP-006",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Reuse and dependency decision",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/stack-lock.json",
+        "evidence/stack/verification-report.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-007",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Deterministic graph and timeline",
+      "owner": "engine",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/investigation.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": "Timeline deterministic (ordered by version); graph not built (P1)."
+    },
+    {
+      "id": "ADRP-008",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Agent ownership and interfaces",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/architecture/ARCHITECTURE.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-009",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Defect-class prevention and review",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/decisions/DC-002.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-010",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Test cadence and release batching",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        ".github/workflows/build-and-test.yml"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-011",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "No-decision defaults for common UI states",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/data.spec.js",
+        "tests/browser/write.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-012",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Build order and cut strategy",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-013",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Decision escalation",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-014",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Single completion ledger",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tools/ledger/ledger.py"
+      ],
+      "evidence_paths": [
+        "evidence/acceptance/ledger.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-015",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Measurement",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "ADRP-016",
+      "source_doc": "docs/requirements/AGENT-DECISION-REDUCTION-PROFILE.md",
+      "priority": "P0",
+      "title": "Competition compliance",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "Competition compliance not assessed in this run."
+    },
+    {
+      "id": "UI-001",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Investigation dashboard",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/View.fs",
+        "src/kernel/index.html"
+      ],
+      "tests": [
+        "tests/browser/data.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-002",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P1",
+      "title": "Interactive causal graph",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "P1 interactive causal graph not built in this run (cut per ADRP-012)."
+    },
+    {
+      "id": "UI-003",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Investigation timeline",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/browser/investigation.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-004",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Contextual command interface",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/CommandForms.fs",
+        "src/engine/Capabilities.fs"
+      ],
+      "tests": [
+        "tests/browser/write.spec.js",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-005",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Evidence inspector",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/browser/investigation.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-006",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Save, sync and conflict status",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/Shell.fs",
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/browser/write.spec.js",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-007",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P1",
+      "title": "Search and filtering",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "P1: timeline category filter and dashboard sort exist; full-text search not built."
+    },
+    {
+      "id": "UI-008",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P1",
+      "title": "Hypothesis comparison",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "P1 hypothesis comparison not built."
+    },
+    {
+      "id": "UI-009",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P1",
+      "title": "Folio reports and export",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/investigation.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "P1: Folio print report built and tested (print media); export formats not built, so the requirement is not claimed."
+    },
+    {
+      "id": "UI-010",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Empty, error and recovery states",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/main.js",
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js",
+        "tests/browser/data.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-011",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Keyboard, accessibility and iPad usability",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/keyboard.spec.js",
+        "tests/browser/a11y.spec.js",
+        "tests/browser/responsive.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-012",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P1",
+      "title": "First-run guidance",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [],
+      "status": "NOT_RUN",
+      "reason": "P1 first-run guidance beyond the empty-state text not built."
+    },
+    {
+      "id": "UI-013",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Cross-view consistency",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/browser/investigation.spec.js",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-014",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Visual identity and navigation",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/app.css",
+        "brands/causa.brand.json"
+      ],
+      "tests": [
+        "tests/browser/color.spec.js",
+        "tests/browser/responsive.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-016",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Causa semantic color system",
+      "owner": "ui",
+      "implementation_paths": [
+        "brands/causa.brand.json"
+      ],
+      "tests": [
+        "tests/browser/color.spec.js"
+      ],
+      "evidence_paths": [
+        "src/kernel/brands/causa.css"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "UI-015",
+      "source_doc": "docs/requirements/CAUSA-UI-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Acceptance and traceability",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tools/ledger/ledger.py"
+      ],
+      "evidence_paths": [
+        "evidence/acceptance/ledger.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-001",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Early invariant inventory",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/architecture/ARCHITECTURE.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-002",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Early adversarial review",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/decisions/DC-002.md",
+        "docs/decisions/DC-003.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-003",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Defect-class classification",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/decisions/DC-001.md",
+        "docs/decisions/DC-002.md",
+        "docs/decisions/DC-003.md",
+        "docs/decisions/DC-004.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-004",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Class-level correction",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [
+        "docs/decisions/DC-004.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-005",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Proof of closure",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "BLOCKED",
+      "reason": "Independent closure review of DC-002..DC-004 in progress."
+    },
+    {
+      "id": "DCC-006",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Praxis and Dokimos binding",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        ".github/workflows/praxis-validation.yml"
+      ],
+      "evidence_paths": [
+        "evidence/quality/dokimos-snapshot.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-007",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Release candidate policy",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-008",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Acceptance identity",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        ".github/workflows/build-and-test.yml"
+      ],
+      "evidence_paths": [],
+      "status": "BLOCKED",
+      "reason": "Deployed identity check exists; no deployment yet (main branch not created)."
+    },
+    {
+      "id": "DCC-009",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Preserve test rigor",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/browser/"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": "No test skipped, disabled or weakened; changed expectations are documented in DC-003 and F8."
+    },
+    {
+      "id": "DCC-010",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Measured efficiency",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-011",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Baseline and target",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/acceptance/run.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DCC-012",
+      "source_doc": "docs/requirements/DEFECT-CLASS-CLOSURE-AND-RELEASE-GATES.md",
+      "priority": "P0",
+      "title": "Responsibility boundaries",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "docs/architecture/ARCHITECTURE.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-001",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Discover every run",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tools/stack/discover_stack.py"
+      ],
+      "evidence_paths": [
+        "evidence/stack/release-inventory.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-002",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Prefer latest approved stable",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/verification-report.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-003",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Resolve the stack as a set",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/compatibility-matrix.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-004",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Verify before lock",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/verification-report.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-005",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Block on incompatibility",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/compatibility-matrix.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-006",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Freeze at kickoff, refresh next run",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tools/stack/check_lock.py"
+      ],
+      "evidence_paths": [
+        "evidence/stack/stack-lock.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-007",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Avoid invalid experiments",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/verification-report.md"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "DEP-CURRENT-008",
+      "source_doc": "docs/requirements/REHEARSAL-DEPENDENCY-LOCK.md",
+      "priority": "P0",
+      "title": "Enforcement",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "tools/stack/check_lock.py",
+        ".github/workflows/build-and-test.yml"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-001",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The application source, test assets included in production, release artifacts, Pages deployment, and runtime bundle MUST NOT contain the five R001 demonstration",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "scripts/check-no-demo-data.mjs",
+        "tests/browser/data.spec.js",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-002",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "A fresh launch MUST display an accessible empty/disconnected workspace and an explicit Connect data repository action. No implicit demo import or automatic fall",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/data.spec.js",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-003",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The user MUST specify or explicitly select the repository and permitted branch/workspace, and provide a scoped credential through a secure connection flow. A to",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/Shell.fs"
+      ],
+      "tests": [
+        "tests/browser/data.spec.js",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-004",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "Credentials MUST never be committed, bundled, logged, embedded in URLs, exposed in error text, stored in localStorage, or written into domain event files. Prefe",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/Shell.fs",
+        "src/kernel/index.html"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [
+        "docs/decisions/DC-003.md",
+        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-005",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The GitHub provider MUST check repository and branch permissions, validate file paths and manifests, and load only schema-compatible data through the full contr",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/GitHub.fs",
+        "src/engine/Session.fs"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [
+        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+      ],
+      "status": "PASS",
+      "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
+    },
+    {
+      "id": "EXT-DATA-006",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "No data or repository mutation occurs on connect or read. Creating a new investigation is an explicit user action; write/publish requires separately verified au",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/Shell.fs"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [
+        "evidence/acceptance/live-run-39986660673/live-acceptance.json"
+      ],
+      "status": "PASS",
+      "reason": "Real GitHub provider: causa-data run 39986660673 (L1-L6 PASS) on the candidate's source tree."
+    },
+    {
+      "id": "EXT-DATA-007",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The UI MUST distinguish disconnected, connecting, authorized-empty, loading, incompatible, access-denied, offline, and conflict states. Never imply a successful",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/View.fs"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/browser/data.spec.js",
+        "tests/browser/write.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-008",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The app MUST create new Causa v1 file sets from the authoritative schema and engine without copying a demo investigation. A new empty investigation MUST be comm",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/Shell.fs",
+        "src/domain"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/Causa.Conformance.Tests"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-009",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "Build and acceptance tests MUST demonstrate a clean install with zero production investigation fixtures, no preloaded investigation records, successful authoriz",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [
+        "scripts/check-no-demo-data.mjs",
+        ".github/workflows/build-and-test.yml"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-010",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "R001 remains an immutable experimental baseline. The next rehearsal MUST measure external-data startup, authorization, read, write, and recovery independently. ",
+      "owner": "lead",
+      "implementation_paths": [],
+      "tests": [],
+      "evidence_paths": [
+        "evidence/stack/verification-report.md"
+      ],
+      "status": "PASS",
+      "reason": "R001 read only; never pushed."
+    },
+    {
+      "id": "EXT-DATA-011",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "Preserve compatibility with the frozen Causa storage contract as a *reader/writer specification* without vendoring its demonstration records. Version the contra",
+      "owner": "engine",
+      "implementation_paths": [],
+      "tests": [
+        "tests/Causa.Conformance.Tests"
+      ],
+      "evidence_paths": [
+        "evidence/stack/logs/causa-data-gate.json"
+      ],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "EXT-DATA-012",
+      "source_doc": "docs/requirements/REHEARSAL-EXTERNAL-DATA-BOUNDARY.md",
+      "priority": "P0",
+      "title": "The data repository MUST be configurable and isolated from the application repository. Treat repository content as untrusted even when authenticated. Do not gra",
+      "owner": "engine",
+      "implementation_paths": [
+        "src/engine/GitHub.fs"
+      ],
+      "tests": [
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/live/live-acceptance.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-001",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Initial loading screen",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/index.html"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-002",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Loading icon",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/causa-icon.svg"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-003",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Clear states",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/main.js"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-004",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Handoff",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/main.js"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-005",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Failure and recovery",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/main.js"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-006",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Accessibility and responsive behavior",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/boot.spec.js",
+        "tests/browser/responsive.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-007",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Asset and branding requirements",
+      "owner": "ui",
+      "implementation_paths": [
+        "src/kernel/causa-icon.svg"
+      ],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    },
+    {
+      "id": "WASM-LOAD-008",
+      "source_doc": "docs/requirements/WASM-LOADING-EXPERIENCE-REQUIREMENTS.md",
+      "priority": "P0",
+      "title": "Acceptance",
+      "owner": "ui",
+      "implementation_paths": [],
+      "tests": [
+        "tests/browser/boot.spec.js"
+      ],
+      "evidence_paths": [],
+      "status": "PASS",
+      "reason": ""
+    }
+  ],
+  "defect_classes": [
+    {
+      "id": "DC-001",
+      "severity": "critical",
+      "violated_invariant": "a publication is parented by the state it was decided on (CONTRACT 9.4.2)",
+      "original_repro": "tests 9d, 10b, 11d",
+      "variants": [
+        "rebase over another writer",
+        "retry after reload",
+        "unknown outcome after branch moved"
+      ],
+      "fix_sha": "5675d7c",
+      "reviewer_evidence": "engine test owner (independent); closure-review-DC-002-004",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-002",
+      "severity": "high",
+      "violated_invariant": "a provider answer applies only to the question that asked it; events only in legal states",
+      "original_repro": "security review F1",
+      "variants": [
+        "P2",
+        "P3",
+        "P5",
+        "A (second review)",
+        "refused renewal swapped token (third review, low)"
+      ],
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3 (A CLOSED; low residual fixed in 63b2232, not re-reviewed)",
+      "status": "OPEN"
+    },
+    {
+      "id": "DC-003",
+      "severity": "medium",
+      "violated_invariant": "after the ref update is sent, no failure is reported as not written",
+      "original_repro": "security review F2",
+      "variants": [
+        "P1 (crash)",
+        "D (stale commit re-sent)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "closure-review-DC-002-004 (OPEN), closure-review-2 (CLOSED, residual D)",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-004",
+      "severity": "high",
+      "violated_invariant": "an absent or advisory provider field never gates or grants",
+      "original_repro": "live run 39964244367 L4",
+      "variants": [
+        "permissions absent",
+        "permissions.push=false on an Actions token",
+        "B (actions offered during reload)"
+      ],
+      "fix_sha": "645f3ca",
+      "reviewer_evidence": "live runs; closure-review-2 (CLOSED)",
+      "status": "CLOSED"
+    },
+    {
+      "id": "DC-005",
+      "severity": "high",
+      "violated_invariant": "reads of mutable state are never answered from a cache",
+      "original_repro": "live run 39977289458 L4b",
+      "variants": [
+        "browser cache",
+        "nonce repeated across page loads (shared cache)",
+        "C (post-PATCH ref read unjudged)",
+        "reload answered by a lagging replica (third review, medium)"
+      ],
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "live runs 39980845597 (diagnostics), 39982330584, 39986660673, 39990408889 PASS; closure-review-2 (CLOSED); closure-review-3 (OPEN: reload), fixed in 63b2232, not re-reviewed",
+      "status": "OPEN"
+    },
+    {
+      "id": "DC-006",
+      "severity": "medium",
+      "violated_invariant": "a failed framework download ends the start promptly with recovery (WASM-LOAD-005)",
+      "original_repro": "deployed acceptance run 39983316689",
+      "variants": [
+        "CDN 503 + integrity failure on one .wasm",
+        "first fix failed starts the loader would have recovered (third review, medium)"
+      ],
+      "fix_sha": "63b2232",
+      "reviewer_evidence": "closure-review-3 (OPEN), fixed in 63b2232, not re-reviewed",
+      "status": "OPEN"
+    }
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "Scope",
+      "scope": "requirements pinned (Indy-init@b5d9d79), owners, priorities",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "conditor.json",
+        "docs/requirements",
+        "evidence/acceptance/trace.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": "2026-10-23T12:26:32Z"
+    },
+    {
+      "id": "G1",
+      "name": "Dependencies",
+      "scope": "echelon-current 1.25.0 stack verified as a set and frozen",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "evidence/stack/verification-report.md",
+        "evidence/stack/stack-lock.json",
+        "evidence/stack/compatibility-matrix.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": "2026-10-23T13:15:00Z",
+      "note": "lock checked on every CI run (tools/stack/check_lock.py)"
+    },
+    {
+      "id": "G2",
+      "name": "Interfaces",
+      "scope": "engine/kernel view contract; producer and consumer tests",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "docs/architecture/VIEW-CONTRACT.md",
+        "tests/App.Engine.Tests/EngineTests.fs",
+        "tests/browser"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G3",
+      "name": "Domain",
+      "scope": "F# domain decisions, illegal transitions and forged histories",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/Causa.Conformance.Tests",
+        "tests/App.Engine.Tests/EngineTests.fs"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G4",
+      "name": "Frozen data",
+      "scope": "5 golden scenarios, 90 negative fixtures, identities of causa-storage-v1.0.0",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/Causa.Conformance.Tests",
+        "evidence/stack/logs/causa-data-gate.json"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null
+    },
+    {
+      "id": "G5",
+      "name": "UI",
+      "scope": "P0 screens, loading, keyboard, accessibility, responsive, color",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "tests/browser"
+      ],
+      "started_at": "2026-10-23T12:14:13Z",
+      "completed_at": null,
+      "note": "59 browser tests on the candidate in CI"
+    },
+    {
+      "id": "G6",
+      "name": "Persistence",
+      "scope": "real GitHub provider: read, write, read-back, reload, conflict, refusal",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "evidence/acceptance/live-run-39990408889/live-acceptance.json"
+      ],
+      "started_at": "2026-10-23T16:52:40Z",
+      "completed_at": "2026-10-23T16:55:01Z",
+      "note": "causa-data run 39990408889 on 63b2232; its tree 1ce2a0e equals the candidate's"
+    },
+    {
+      "id": "G7",
+      "name": "Defect class",
+      "scope": "independent review and SHA-bound closure of DC-001..DC-006",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "BLOCKED",
+      "evidence_paths": [
+        "docs/decisions",
+        "evidence/quality/closure-review-DC-002-004.md",
+        "evidence/quality/closure-review-2.md",
+        "evidence/quality/closure-review-3.md"
+      ],
+      "started_at": null,
+      "completed_at": null,
+      "note": "the fixes for closure-review-3's findings (63b2232) were merged on the owner's instruction before a fourth independent review reported (UD-4)"
+    },
+    {
+      "id": "G8",
+      "name": "Candidate",
+      "scope": "full CI on the candidate: build, conformance, engine, browser, foundations, Praxis",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "PASS",
+      "evidence_paths": [
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/5608698c63f5f7f447edb716b3fcd5536b5282d2/checks"
+      ],
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "G9",
+      "name": "Deployment",
+      "scope": "served build-info.json names the candidate; deployed acceptance on it",
+      "verified_sha": "5608698c63f5f7f447edb716b3fcd5536b5282d2",
+      "status": "BLOCKED",
+      "evidence_paths": [
+        "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
+        "https://github.com/kemiller2002/indy-init-rehearsal-002/commit/5608698c63f5f7f447edb716b3fcd5536b5282d2/checks"
+      ],
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "metrics": {
+    "first_green_elapsed_seconds": 6255,
+    "first_candidate_elapsed_seconds": 10994,
+    "accepted_elapsed_seconds": null,
+    "candidate_count": 5,
+    "repeated_defect_class_count": 4,
+    "token_count": null,
+    "ci_queue_seconds": null,
+    "ci_test_seconds": null,
+    "verified_requirement_count": 64,
+    "milestones": {
+      "start": "2026-10-23T12:14:13Z",
+      "first_build": "2026-10-23T12:26:32Z",
+      "first_functional_screen": "2026-10-23T12:58:34Z",
+      "first_external_data_load": "2026-10-23T12:59:36Z",
+      "first_green_ci": "2026-10-23T13:58:28Z",
+      "first_verified_remote_write": {
+        "run": 39975799085,
+        "commit": "33dcddee2dc1a54db9de4001608e470a1b67f920",
+        "not_before": "2026-10-23T15:10:31Z",
+        "not_after": "2026-10-23T15:11:41Z"
+      },
+      "first_candidate_on_main": "2026-10-23T15:17:27Z",
+      "accepted": null
+    },
+    "unavailable": {
+      "token_count": "the runtime does not expose token usage to the session",
+      "ci_queue_seconds": "not aggregated across runs; per-run timings are in GitHub Actions",
+      "ci_test_seconds_scope": "wall-clock of the accepted candidate's main run (build, tests, deploy, deployed acceptance); not summed over earlier runs"
+    }
+  },
+  "unresolved_decisions": [
+    {
+      "id": "UD-1",
+      "owner": "repository owner",
+      "impact": "main was created from the session by the owner; branch protection not applied",
+      "disposition": ".github/branch-protection.json is prepared; applying it needs repository admin rights"
+    },
+    {
+      "id": "UD-2",
+      "owner": "repository owner",
+      "impact": "P1 features (causal graph, search, comparison, export, first-run guidance) not built",
+      "disposition": "deferred; listed NOT_RUN in the ledger"
+    },
+    {
+      "id": "UD-4",
+      "owner": "repository owner",
+      "impact": "63b2232 merged to main before the fourth independent closure review reported",
+      "disposition": "owner instruction 'Assume all reviewed please merge'; G7 stays BLOCKED in this ledger until that review is recorded"
+    },
+    {
+      "id": "UD-3",
+      "owner": "Praxis maintainers",
+      "impact": "DEF-STACK-007: checkpoint accepts second-precision times that validate rejects",
+      "disposition": "worked around with millisecond times; upstream fix needed"
+    }
+  ],
+  "summary": {
+    "BLOCKED": 2,
+    "FAIL": 0,
+    "NOT_RUN": 6,
+    "PASS": 64
+  },
+  "accepted": false
+}

@@ -540,10 +540,10 @@
     ],
     "evidence_paths": [
       "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
-      "https://github.com/kemiller2002/indy-init-rehearsal-002/actions/runs/39991592706"
+      "https://github.com/kemiller2002/indy-init-rehearsal-002/actions/runs/40043306191"
     ],
     "status": "PASS",
-    "reason": "Deployed build-info.json names main 5608698; deployed acceptance passed on it (run 39991592706)."
+    "reason": "Deployed build-info.json names main 45644a7; deployed acceptance passed on it (run 40043306191, 00:15:24Z)."
   },
   "DCC-009": {
     "owner": "lead",

@@ -36,8 +36,8 @@ def defect(did, severity, invariant, repro, variants, fix, review, status):
 
 
 def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
-    live = "evidence/acceptance/live-run-40038654015/live-acceptance.json"
-    reviews = ["evidence/quality/closure-review-DC-002-004.md"] + [f"evidence/quality/closure-review-{n}.md" for n in range(2, 10)]
+    live = "evidence/acceptance/live-run-40041756242/live-acceptance.json"
+    reviews = ["evidence/quality/closure-review-DC-002-004.md"] + [f"evidence/quality/closure-review-{n}.md" for n in range(2, 12)]
     ci = f"https://github.com/kemiller2002/indy-init-rehearsal-002/commit/{source}/checks"
     gates = [
         gate("G0", "Scope", "requirements pinned (Indy-init@b5d9d79), owners, priorities", source, "PASS",
@@ -54,11 +54,12 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
         gate("G5", "UI", "P0 screens, loading, keyboard, accessibility, responsive, color", source, "PASS",
              ["tests/browser"], START, None, "61 browser tests on the candidate in CI"),
         gate("G6", "Persistence", "real GitHub provider: read, write, read-back, reload, conflict, refusal", source, "PASS",
-             [live, "evidence/acceptance/live-run-40036025752/live-acceptance.json"], "2026-10-23T23:15:44Z", "2026-10-23T23:17:25Z",
-             "causa-data run 40038654015 on 8d53d70 (L1-L6 PASS, saves through GraphQL createCommitOnBranch); the merge differs from it only by evidence files"),
+             [live, "evidence/acceptance/live-run-40038654015/live-acceptance.json", "evidence/acceptance/live-run-40036025752/live-acceptance.json"],
+             "2026-10-23T23:49:05Z", "2026-10-23T23:51:04Z",
+             "causa-data run 40041756242 on 2f8fb98 (L1-L6 PASS, saves through GraphQL createCommitOnBranch); the candidate's application sources are identical to 2f8fb98"),
         gate("G7", "Defect class", "independent review and SHA-bound closure of DC-001..DC-006", source, g7,
              ["docs/decisions"] + reviews, None, None,
-             "nine independent reviews; every correction merged in this candidate was independently reviewed (closure-review-9 reviews the last one)"
+             "eleven independent reviews; every code correction in this candidate was independently reviewed (closure-review-11 reviews the last; its one finding was a test gap, closed by test 28d)"
              if g7 == "PASS" else "a correction in the candidate lacks an independent review (DCC-005 d)"),
         gate("G8", "Candidate", "full CI on the candidate: build, conformance, engine, browser, foundations, Praxis", source, "PASS",
              [ci], None, None),
@@ -74,8 +75,8 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
                "closure-review-DC-002-004 (OPEN), closure-review-2 (OPEN: A), closure-review-3 (A CLOSED), closure-review-7 and -8 (CLOSED)", "CLOSED" if g7 == "PASS" else "OPEN"),
         defect("DC-003", "medium", "after a save is sent, no failure is reported as not written",
                "security review F2", ["P1 (crash)", "D (stale commit re-sent)", "F1-F5, F7 (seventh review: applied save reported unsent or conflict)",
-                                      "N1 (eighth review: landed then deleted)"], "8d53d70",
-               "closure-review-2 (CLOSED, residual D), closure-review-7 (OPEN), closure-review-8 (CLOSED; N1 low), closure-review-9 (N1)",
+                                      "N1 (eighth review: landed then deleted)", "N2 (ninth review: re-apply texts)", "R10-1, R10-2 (tenth review: flag reset on re-apply, contradictory text)"], "2f8fb98",
+               "closure-review-2 (CLOSED, residual D), closure-review-7 (OPEN), closure-review-8 to -10 (each CLOSED its predecessor's findings; low variants fixed), closure-review-11 (CLOSED; test gap T2 closed by 28d); residual F6 documented",
                "CLOSED" if g7 == "PASS" else "OPEN"),
         defect("DC-004", "high", "an absent or advisory provider field never gates or grants", "live run 39964244367 L4",
                ["permissions absent", "permissions.push=false on an Actions token", "B (actions offered during reload)"], "645f3ca",
@@ -95,7 +96,7 @@ def record(source, deployed, accepted_at, g7, g9, ci_seconds=None):
         "first_green_elapsed_seconds": elapsed("2026-10-23T13:58:28Z"),
         "first_candidate_elapsed_seconds": elapsed("2026-10-23T15:17:27Z"),
         "accepted_elapsed_seconds": elapsed(accepted_at),
-        "candidate_count": 6,
+        "candidate_count": 7,
         "repeated_defect_class_count": 5,
         "token_count": None,
         "ci_queue_seconds": None,

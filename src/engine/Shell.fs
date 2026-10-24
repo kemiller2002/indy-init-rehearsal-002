@@ -227,11 +227,14 @@ module Shell =
                 | Ok set -> Store.append set loaded loaded.State.Version events |> Result.mapError (fun e -> e.Detail + " (" + e.Code + ")")
         match result with
         | Error reason ->
-            { app with Connection = Connected cleared } |> App.notice Critical ("Your pending change could not be re-applied to the latest version and was not saved: " + reason), []
+            // "Not saved" only when no earlier send may have landed (review 9, N2).
+            let outcome = if w.MayHaveApplied then " (it may have been saved earlier, then changed or removed)" else " and was not saved"
+            { app with Connection = Connected cleared } |> App.notice Critical ("Your pending change could not be re-applied to the latest version" + outcome + ": " + reason), []
         | Ok(files, newLoaded) ->
             let rewritten =
                 { w with Envelope = envelope; Files = files; Loaded = newLoaded; BaseEntries = Session.baseEntries live w.InvestigationId
-                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; MayHaveApplied = false; Attempts = 0
+                         // The same command (same id) may already have landed once and been removed: keep the flag (review 10, R10-1).
+                         BaseCommit = live.Head.Commit; Moved = false; Commit = None; Attempts = 0
                          Received = Map.empty; NewHead = None }
             startWrite cleared rewritten app
 
@@ -341,7 +344,10 @@ module Shell =
                     { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "The investigation is no longer in this workspace; your change was not re-applied.") } } |> emit reads
                 | Some w when w.IsNew ->
                     // A new investigation's conflict means its directory now exists: nothing to re-apply onto.
-                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict "An investigation with this identifier now exists; your new investigation was not written.") } } |> emit reads
+                    let text =
+                        if w.MayHaveApplied then "An investigation with this identifier now exists and differs from yours (yours may have been saved, then changed); it was not re-applied."
+                        else "An investigation with this identifier now exists; your new investigation was not written."
+                    { app with Connection = Connected { next with Reapply = None; Sync = Held(w, Conflict text) } } |> emit reads
                 | Some w ->
                     match Session.entry next w.InvestigationId with
                     // Refused at listing time (path, size, duplicate): no blob read will ever end the re-apply (review P2).
@@ -382,15 +388,17 @@ module Shell =
             | ReloadingRef | ReloadingCommit | ReloadingTree | Recognising -> false
         // An Unknown hold always means an earlier send may have landed; the flag travels with the held write.
         let unknown detail = hold live { w with MayHaveApplied = true } (Unknown detail) app
+        // GitHub.describe Offline says "Nothing was sent", which is untrue once a request may have arrived (review 10, R10-2).
+        let cause f = match f with Offline -> "the network connection failed." | _ -> GitHub.describe f
         let fail f =
             match stage, f with
             // An earlier send may have landed: even a refusal of this request says nothing about that one (review 7, F1).
-            | _ when w.MayHaveApplied -> unknown ("The save may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
+            | _ when w.MayHaveApplied -> unknown ("The save may have been applied (" + cause f + ") Confirm what GitHub received before doing anything else.")
             // A refusal GitHub states (HTTP status or GraphQL error) means nothing was applied.
             | Committing, (Unauthorized | Forbidden _ | NotFound) -> holdFor live w f app
             | Committing, ProviderFailure.Rejected(status, _) when status < 500L -> holdFor live w f app
             // A network failure (Offline included) may come after GitHub received the request: never "not written".
-            | _ when afterSend -> unknown ("The save may have been applied (" + GitHub.describe f + ") Confirm what GitHub received before doing anything else.")
+            | _ when afterSend -> unknown ("The save may have been applied (" + cause f + ") Confirm what GitHub received before doing anything else.")
             | _ -> holdFor live w f app
         let publish w' = continueWith Committing w' [ Session.commitRequest live w' ]
         let reload sha = continueWith ReloadingCommit w [ OpReloadCommit sha, GitHub.getCommit live.Target sha ]

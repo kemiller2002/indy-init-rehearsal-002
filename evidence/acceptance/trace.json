@@ -488,9 +488,27 @@
     "tests": [
       "tests/App.Engine.Tests/EngineTests.fs"
     ],
-    "evidence_paths": [],
-    "status": "BLOCKED",
-    "reason": "Independent closure review of DC-002..DC-004 in progress."
+    "evidence_paths": [
+      "docs/decisions/DC-001.md",
+      "docs/decisions/DC-002.md",
+      "docs/decisions/DC-003.md",
+      "docs/decisions/DC-004.md",
+      "docs/decisions/DC-005.md",
+      "docs/decisions/DC-006.md",
+      "evidence/quality/closure-review-DC-002-004.md",
+      "evidence/quality/closure-review-2.md",
+      "evidence/quality/closure-review-3.md",
+      "evidence/quality/closure-review-4.md",
+      "evidence/quality/closure-review-5.md",
+      "evidence/quality/closure-review-6.md",
+      "evidence/quality/closure-review-7.md",
+      "evidence/quality/closure-review-8.md",
+      "evidence/quality/closure-review-9.md",
+      "evidence/quality/closure-review-10.md",
+      "evidence/quality/closure-review-11.md"
+    ],
+    "status": "PASS",
+    "reason": "Each class has a regression test that fails on the earlier code, adversarial variants from eleven independent reviews, and an independent review of every code correction in the candidate; evidence is tied to the candidate SHA in run.json."
   },
   "DCC-006": {
     "owner": "lead",
@@ -522,10 +540,10 @@
     ],
     "evidence_paths": [
       "https://kevinmmiller.us/indy-init-rehearsal-002/build-info.json",
-      "https://github.com/kemiller2002/indy-init-rehearsal-002/actions/runs/39991592706"
+      "https://github.com/kemiller2002/indy-init-rehearsal-002/actions/runs/40043306191"
     ],
     "status": "PASS",
-    "reason": "Deployed build-info.json names main 5608698; deployed acceptance passed on it (run 39991592706)."
+    "reason": "Deployed build-info.json names main 45644a7; deployed acceptance passed on it (run 40043306191, 00:15:24Z)."
   },
   "DCC-009": {
     "owner": "lead",
